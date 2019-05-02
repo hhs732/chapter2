@@ -576,20 +576,20 @@ meanTemp_elevClass_nrc = calculationMeanTempforEachElevClassification(snow_temp_
 #sampling
 sample_size = 100
 fsca_ut_nrc, fsca_0p_nrc = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx)
-fsca_ut_samp_nrc, fsca_0p_samp_nrc = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx,sample_size)
-statistic_nrc1,pvalue_nrc1,average_sample_exp_nrc1,average_sample_shl_nrc1,significant_nrc1 = wilcoxonTest(fsca_ut_samp_nrc, fsca_0p_samp_nrc)
+#fsca_ut_samp_nrc, fsca_0p_samp_nrc = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx,sample_size)
+#statistic_nrc1,pvalue_nrc1,average_sample_exp_nrc1,average_sample_shl_nrc1,significant_nrc1 = wilcoxonTest(fsca_ut_samp_nrc, fsca_0p_samp_nrc)
 
 # under canopy and 0pen fsca // exposed vs. sheltered
 fSCA_ut_exp_nrc, fSCA_ut_shl_nrc, fSCA_0p_exp_nrc, fSCA_0p_shl_nrc = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_nrc, fSCA_0u_shl_nrc = fsca0pn_fscaUnTr(fSCA_ut_exp_nrc, fSCA_ut_shl_nrc, fSCA_0p_exp_nrc, fSCA_0p_shl_nrc, elev_class_inx)
 #sampling
-fSCA_0u_exp_nrc_samp, fSCA_0u_shl_nrc_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx,sample_size)
-statistic_nrc2,pvalue_nrc2,average_sample_exp_nrc2,average_sample_shl_nrc2,significant_nrc2 = wilcoxonTest(fSCA_0u_exp_nrc_samp, fSCA_0u_shl_nrc_samp)
+#fSCA_0u_exp_nrc_samp, fSCA_0u_shl_nrc_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx,sample_size)
+#statistic_nrc2,pvalue_nrc2,average_sample_exp_nrc2,average_sample_shl_nrc2,significant_nrc2 = wilcoxonTest(fSCA_0u_exp_nrc_samp, fSCA_0u_shl_nrc_samp)
 
-# December
-#y = -0.00777x + 17.81629
-tempDec_nrc = -0.00777*elevationBand_nrc + 17.81629
+## December
+##y = -0.00777x + 17.81629
+#tempDec_nrc = -0.00777*elevationBand_nrc + 17.81629
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_nrc = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx)
@@ -598,14 +598,14 @@ fSCA_uT_rad_vegDens_nrc = fSCAcalculation_elevNorthVegDensClassific(snow_temp_ve
 #statistic_sh_nrc,pvalue_sh_nrc,average_sample_l_sh_nrc,average_sample_h_sh_nrc,significant_sh_nrc = wilcoxonTest(fSCA_ut_shl_l_sam_nrc, fSCA_ut_shl_h_sam_nrc)
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/significant_nrc',[significant_nrc1,significant_nrc2,significant_ex_nrc,significant_sh_nrc])
 
-#calculating topo_dimension from cut northness to plot snow on
-snow_temp_vegdens_allExtent_nrc = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_nrc.npy')
-ouputPath_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_nrc_lr2.png'
-T_nrc = 'NRC 2010'
-plotSnowMap_lowResol(snow_temp_vegdens_allExtent_nrc,ouputPath_nrc,T_nrc)
-
-ouputPath_nrt_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_nrc_lr2.png'
-plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_nrc,ouputPath_nrt_nrc,T_nrc)
+##calculating topo_dimension from cut northness to plot snow on
+#snow_temp_vegdens_allExtent_nrc = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_nrc.npy')
+#ouputPath_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_nrc_lr2.png'
+#T_nrc = 'NRC 2010'
+#plotSnowMap_lowResol(snow_temp_vegdens_allExtent_nrc,ouputPath_nrc,T_nrc)
+#
+#ouputPath_nrt_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_nrc_lr2.png'
+#plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_nrc,ouputPath_nrt_nrc,T_nrc)
 
 #%% load data Jemez 2010
 #ascii_grid_veg_indexJmz = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_jmz.npy')
@@ -642,17 +642,17 @@ meanTemp_elevClass_jmz = calculationMeanTempforEachElevClassification(snow_temp_
 
 # under canopy and 0pen fsca
 fsca_ut_jmz, fsca_0p_jmz = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx)
-fsca_ut_samp_jmz, fsca_0p_samp_jmz = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx,sample_size)
-#statistical test
-statistic_jmz1,pvalue_jmz1,average_sample_exp_jmz1,average_sample_shl_jmz1,significant_jmz1 = wilcoxonTest(fsca_ut_samp_jmz, fsca_0p_samp_jmz)
+#fsca_ut_samp_jmz, fsca_0p_samp_jmz = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx,sample_size)
+##statistical test
+#statistic_jmz1,pvalue_jmz1,average_sample_exp_jmz1,average_sample_shl_jmz1,significant_jmz1 = wilcoxonTest(fsca_ut_samp_jmz, fsca_0p_samp_jmz)
 
 # under canopy and 0pen fsca exposed vs. open
 fSCA_ut_exp_Jmz, fSCA_ut_shl_Jmz, fSCA_0p_exp_Jmz, fSCA_0p_shl_Jmz = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_Jmz, fSCA_0u_shl_Jmz = fsca0pn_fscaUnTr(fSCA_ut_exp_Jmz, fSCA_ut_shl_Jmz, fSCA_0p_exp_Jmz, fSCA_0p_shl_Jmz, elev_class_inx)
-#statistical test
-fSCA_0u_exp_Jmz_samp, fSCA_0u_shl_Jmz_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx,sample_size)
-statistic_jmz2,pvalue_jmz2,average_sample_exp_jmz2,average_sample_shl_jmz2,significant_jmz2 = wilcoxonTest(fSCA_0u_exp_Jmz_samp, fSCA_0u_shl_Jmz_samp)
+##statistical test
+#fSCA_0u_exp_Jmz_samp, fSCA_0u_shl_Jmz_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_jmz,elev_class_inx,sample_size)
+#statistic_jmz2,pvalue_jmz2,average_sample_exp_jmz2,average_sample_shl_jmz2,significant_jmz2 = wilcoxonTest(fSCA_0u_exp_Jmz_samp, fSCA_0u_shl_Jmz_samp)
 
 # y = -0.0043x + 5.6707
 tempDec_jmz = -0.0048*elevationBand_jmz + 8.6707
@@ -707,20 +707,20 @@ aaaa_test1 = snow_temp_vegdens_sL30_elevCls_sc26m[0:710,:]
 
 # under canopy and 0pen fsca
 fsca_ut_sc26m, fsca_0p_sc26m = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx)
-fsca_ut_samp_sc26m, fsca_0p_samp_sc26m = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx,sample_size)
-#statistical test
-statistic_sc26m1,pvalue_sc26m1,average_sample_exp_sc26m1,average_sample_shl_sc26m1,significant_sc26m1 = wilcoxonTest(fsca_ut_samp_sc26m, fsca_0p_samp_sc26m)
+#fsca_ut_samp_sc26m, fsca_0p_samp_sc26m = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx,sample_size)
+##statistical test
+#statistic_sc26m1,pvalue_sc26m1,average_sample_exp_sc26m1,average_sample_shl_sc26m1,significant_sc26m1 = wilcoxonTest(fsca_ut_samp_sc26m, fsca_0p_samp_sc26m)
 
 # under canopy and 0pen fsca---exposed vs. open
 fSCA_ut_exp_sc26m, fSCA_ut_shl_sc26m, fSCA_0p_exp_sc26m, fSCA_0p_shl_sc26m = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_sc26m, fSCA_0u_shl_sc26m = fsca0pn_fscaUnTr(fSCA_ut_exp_sc26m, fSCA_ut_shl_sc26m, fSCA_0p_exp_sc26m, fSCA_0p_shl_sc26m, elev_class_inx)
 #statistical test
-fSCA_0u_exp_sc26m_samp, fSCA_0u_shl_sc26m_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx,sample_size)
-statistic_sc26m2,pvalue_sc26m2,average_sample_exp_sc26m2,average_sample_shl_sc26m2,significant_sc26m2 = wilcoxonTest(fSCA_0u_exp_sc26m_samp, fSCA_0u_shl_sc26m_samp)
-
-#y = y = -0.0013047442x + 2.0480940252
-tempDec_sc26m = -0.0013047442 * elevationBand_sc + + 2.0480940252
+#fSCA_0u_exp_sc26m_samp, fSCA_0u_shl_sc26m_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx,sample_size)
+#statistic_sc26m2,pvalue_sc26m2,average_sample_exp_sc26m2,average_sample_shl_sc26m2,significant_sc26m2 = wilcoxonTest(fSCA_0u_exp_sc26m_samp, fSCA_0u_shl_sc26m_samp)
+#
+##y = y = -0.0013047442x + 2.0480940252
+#tempDec_sc26m = -0.0013047442 * elevationBand_sc + + 2.0480940252
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_sc26m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx)
@@ -729,16 +729,16 @@ fSCA_uT_rad_vegDens_sc26m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #statistic_sh_sc26m,pvalue_sh_sc26m,average_sample_l_sh_sc26m,average_sample_h_sh_sc26m,significant_sh_sc26m = wilcoxonTest(fSCA_ut_shl_l_sam_sc26m, fSCA_ut_shl_h_sam_sc26m)
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/significant_sc26m_retile',[significant_sc26m1,significant_sc26m2,significant_ex_sc26m,significant_sh_sc26m])
 #
-#calculating topo_dimension from cut northness to plot snow on
-snow_temp_vegdens_allExtent_sc26m = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sc26m_retile.npy')
-ouputPath_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_sc26m_retile_lr2.png'
-T_sc26m = 'SCWC_26March'
-plotSnowMap_lowResol(snow_temp_vegdens_allExtent_sc26m,ouputPath_sc26m,T_sc26m)
-
-#lat_long_nad83_sc26m = [np.min(snow_temp_vegdens_allExtent_sc26m[:,0]),np.max(snow_temp_vegdens_allExtent_sc26m[:,0]),np.min(snow_temp_vegdens_allExtent_sc26m[:,1]),np.max(snow_temp_vegdens_allExtent_sc26m[:,1])]
-
-ouputPath_nrt_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc26m_retile_lr2.png'
-plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc26m,ouputPath_nrt_sc26m,T_sc26m)
+##calculating topo_dimension from cut northness to plot snow on
+#snow_temp_vegdens_allExtent_sc26m = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sc26m_retile.npy')
+#ouputPath_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_sc26m_retile_lr2.png'
+#T_sc26m = 'SCWC_26March'
+#plotSnowMap_lowResol(snow_temp_vegdens_allExtent_sc26m,ouputPath_sc26m,T_sc26m)
+#
+##lat_long_nad83_sc26m = [np.min(snow_temp_vegdens_allExtent_sc26m[:,0]),np.max(snow_temp_vegdens_allExtent_sc26m[:,0]),np.min(snow_temp_vegdens_allExtent_sc26m[:,1]),np.max(snow_temp_vegdens_allExtent_sc26m[:,1])]
+#
+#ouputPath_nrt_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc26m_retile_lr2.png'
+#plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc26m,ouputPath_nrt_sc26m,T_sc26m)
 
 #%% load data sagehen creek 17 April 2016
 #ascii_grid_veg_index17a = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_sc17A.npy')
@@ -773,20 +773,20 @@ meanTemp_elevClass_sc = calculationMeanTempforEachElevClassification(snow_temp_v
 
 # under canopy and 0pen fsca
 fsca_ut_sc17a, fsca_0p_sc17a = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx)
-fsca_ut_samp_sc17a, fsca_0p_samp_sc17a = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx,sample_size)
-#statistical test
-statistic_sc17a1,pvalue_sc17a1,average_sample_exp_sc17a1,average_sample_shl_sc17a1,significant_sc17a1 = wilcoxonTest(fsca_ut_samp_sc17a, fsca_0p_samp_sc17a)
+#fsca_ut_samp_sc17a, fsca_0p_samp_sc17a = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx,sample_size)
+##statistical test
+#statistic_sc17a1,pvalue_sc17a1,average_sample_exp_sc17a1,average_sample_shl_sc17a1,significant_sc17a1 = wilcoxonTest(fsca_ut_samp_sc17a, fsca_0p_samp_sc17a)
 
 # under canopy and 0pen fsca---exposed vs. open
 fSCA_ut_exp_sc17a, fSCA_ut_shl_sc17a, fSCA_0p_exp_sc17a, fSCA_0p_shl_sc17a = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_sc17a, fSCA_0u_shl_sc17a = fsca0pn_fscaUnTr(fSCA_ut_exp_sc17a, fSCA_ut_shl_sc17a, fSCA_0p_exp_sc17a, fSCA_0p_shl_sc17a, elev_class_inx)
-#statistical test
-fSCA_0u_exp_sc17a_samp, fSCA_0u_shl_sc17a_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx,sample_size)
-statistic_sc17a2,pvalue_sc17a2,average_sample_exp_sc17a2,average_sample_shl_sc17a2,significant_sc17a2 = wilcoxonTest(fSCA_0u_exp_sc17a_samp, fSCA_0u_shl_sc17a_samp)
-
-#y = -0.0013x + 2.7982
-tempDec_sc17a = -0.0013 * elevationBand_sc17a + 2.7982
+##statistical test
+#fSCA_0u_exp_sc17a_samp, fSCA_0u_shl_sc17a_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx,sample_size)
+#statistic_sc17a2,pvalue_sc17a2,average_sample_exp_sc17a2,average_sample_shl_sc17a2,significant_sc17a2 = wilcoxonTest(fSCA_0u_exp_sc17a_samp, fSCA_0u_shl_sc17a_samp)
+#
+##y = -0.0013x + 2.7982
+#tempDec_sc17a = -0.0013 * elevationBand_sc17a + 2.7982
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_sc17a = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx)
@@ -838,20 +838,20 @@ meanTemp_elevClass_sc = calculationMeanTempforEachElevClassification(snow_temp_v
 
 # under canopy and 0pen fsca
 fsca_ut_sc18m, fsca_0p_sc18m = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx)
-fsca_ut_samp_sc18m, fsca_0p_samp_sc18m = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx,sample_size)
-#statistical test
-statistic_sc18m1,pvalue_sc18m1,average_sample_exp_sc18m1,average_sample_shl_sc18m1,significant_sc18m1 = wilcoxonTest(fsca_ut_samp_sc18m, fsca_0p_samp_sc18m)
+#fsca_ut_samp_sc18m, fsca_0p_samp_sc18m = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx,sample_size)
+##statistical test
+#statistic_sc18m1,pvalue_sc18m1,average_sample_exp_sc18m1,average_sample_shl_sc18m1,significant_sc18m1 = wilcoxonTest(fsca_ut_samp_sc18m, fsca_0p_samp_sc18m)
 
 # under canopy and 0pen fsca---exposed vs. open
 fSCA_ut_exp_sc18m, fSCA_ut_shl_sc18m, fSCA_0p_exp_sc18m, fSCA_0p_shl_sc18m = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_sc18m, fSCA_0u_shl_sc18m = fsca0pn_fscaUnTr(fSCA_ut_exp_sc18m, fSCA_ut_shl_sc18m, fSCA_0p_exp_sc18m, fSCA_0p_shl_sc18m, elev_class_inx)
-#statistical test
-fSCA_0u_exp_sc18m_samp, fSCA_0u_shl_sc18m_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx,sample_size)
-statistic_sc18m2,pvalue_sc18m2,average_sample_exp_sc18m2,average_sample_shl_sc18m2,significant_sc18m2 = wilcoxonTest(fSCA_0u_exp_sc18m_samp, fSCA_0u_shl_sc18m_samp)
-
-#y = -0.0020x + 5.2481
-tempDec_sc18m = -0.002 * elevationBand_sc18m + 5.2481
+##statistical test
+#fSCA_0u_exp_sc18m_samp, fSCA_0u_shl_sc18m_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx,sample_size)
+#statistic_sc18m2,pvalue_sc18m2,average_sample_exp_sc18m2,average_sample_shl_sc18m2,significant_sc18m2 = wilcoxonTest(fSCA_0u_exp_sc18m_samp, fSCA_0u_shl_sc18m_samp)
+#
+##y = -0.0020x + 5.2481
+#tempDec_sc18m = -0.002 * elevationBand_sc18m + 5.2481
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_sc18m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx)
@@ -905,21 +905,21 @@ meanTemp_elevClass_krew = calculationMeanTempforEachElevClassification(snow_temp
 
 # under canopy and 0pen fsca
 fsca_ut_krew, fsca_0p_krew = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
-fsca_ut_samp_krew, fsca_0p_samp_krew = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
-#statistical test
-statistic_krew1,pvalue_krew1,average_sample_exp_krew1,average_sample_shl_krew1,significant_krew1 = wilcoxonTest(fsca_ut_samp_krew, fsca_0p_samp_krew)
+#fsca_ut_samp_krew, fsca_0p_samp_krew = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
+##statistical test
+#statistic_krew1,pvalue_krew1,average_sample_exp_krew1,average_sample_shl_krew1,significant_krew1 = wilcoxonTest(fsca_ut_samp_krew, fsca_0p_samp_krew)
 
 # under canopy and 0pen fsca----exposed vs. sheltered
 fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
 #fsca open -minus- fsca under canopy
 fSCA_0u_exp_Krew, fSCA_0u_shl_Krew = fsca0pn_fscaUnTr(fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew, elev_class_inx)
 #statistical test
-sample_size2 = 100      
-fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size2)
-statistic_Krew2,pvalue_Krew2,average_sample_exp_Krew2,average_sample_shl_Krew2,significant_krew2 = wilcoxonTest(fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp)
-
-#y = -0.003300x + 7.287576
-tempDec_krew = -0.0033*elevationBand_krew + 7.287576 
+#sample_size2 = 100      
+#fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size2)
+#statistic_Krew2,pvalue_Krew2,average_sample_exp_Krew2,average_sample_shl_Krew2,significant_krew2 = wilcoxonTest(fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp)
+#
+##y = -0.003300x + 7.287576
+#tempDec_krew = -0.0033*elevationBand_krew + 7.287576 
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_krew = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
@@ -1179,6 +1179,92 @@ for i in range (6):
 plt.title('fSCA classification based on northness and  vegetation density (VD)', fontsize=60, y=2.24, x=-0.65) # loc = 'right', 
 
 plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_vegDens_all8_retile.png')
+#%% ploting error bars
+fsca_op_ut_nrc = np.subtract(fsca_0p_nrc,fsca_ut_nrc)/fsca_0p_nrc
+fsca_op_ut_mean_nrc = np.mean(np.subtract(fsca_0p_nrc,fsca_ut_nrc)/fsca_0p_nrc)
+fsca_op_ut_var_nrc = np.var(fsca_op_ut_nrc)
+temp_mean_nrc = np.mean(snow_temp_vegdens_index_sL30_nrc_df['temp'])
+temp_var_nrc = np.var(snow_temp_vegdens_index_sL30_nrc_df['temp'])
+
+fsca_op_ut_jmz = np.subtract(fsca_0p_jmz,fsca_ut_jmz)/fsca_0p_jmz
+fsca_op_ut_mean_jmz = np.mean(np.subtract(fsca_0p_jmz,fsca_ut_jmz)/fsca_0p_jmz)
+fsca_op_ut_var_jmz = np.var(fsca_op_ut_jmz)
+temp_mean_jmz = np.mean(snow_temp_vegdens_index_sL30_jmz_df['temp'])
+temp_var_jmz = np.var(snow_temp_vegdens_index_sL30_jmz_df['temp'])
+
+fsca_op_ut_krew = np.subtract(fsca_0p_krew,fsca_ut_krew)/fsca_0p_krew
+fsca_op_ut_mean_krew = np.mean(np.subtract(fsca_0p_krew,fsca_ut_krew)/fsca_0p_krew)
+fsca_op_ut_var_krew = np.var(fsca_op_ut_krew)
+temp_mean_krew = np.mean(snow_temp_vegdens_index_sL30_krew_df['temp'])
+temp_var_krew = np.var(snow_temp_vegdens_index_sL30_krew_df['temp'])
+
+fsca_op_ut_sc26m = np.subtract(fsca_0p_sc26m,fsca_ut_sc26m)/fsca_0p_sc26m
+fsca_op_ut_mean_sc26m = np.mean(np.subtract(fsca_0p_sc26m,fsca_ut_sc26m)/fsca_0p_sc26m)
+fsca_op_ut_var_sc26m = np.var(fsca_op_ut_sc26m)
+temp_mean_sc26m = np.mean(snow_temp_vegdens_index_sL30_sc26m_df['temp'])
+temp_var_sc26m = np.var(snow_temp_vegdens_index_sL30_sc26m_df['temp'])
+
+fsca_op_ut_sc17a = np.subtract(fsca_0p_sc17a,fsca_ut_sc17a)/fsca_0p_sc17a
+fsca_op_ut_mean_sc17a = np.mean(np.subtract(fsca_0p_sc17a,fsca_ut_sc17a)/fsca_0p_sc17a)
+fsca_op_ut_var_sc17a = np.var(fsca_op_ut_sc17a)
+temp_mean_sc17a = np.mean(snow_temp_vegdens_index_sL30_sc17a_df['temp'])
+temp_var_sc17a = np.var(snow_temp_vegdens_index_sL30_sc17a_df['temp'])
+
+fsca_op_ut_sc18m = np.subtract(fsca_0p_sc18m,fsca_ut_sc18m)/fsca_0p_sc18m
+fsca_op_ut_mean_sc18m = np.mean(np.subtract(fsca_0p_sc18m,fsca_ut_sc18m)/fsca_0p_sc18m)
+fsca_op_ut_var_sc18m = np.var(fsca_op_ut_sc18m)
+temp_mean_sc18m = np.mean(snow_temp_vegdens_index_sL30_sc18m_df['temp'])
+temp_var_sc18m = np.var(snow_temp_vegdens_index_sL30_sc18m_df['temp'])
+
+fsca_op_ut_mean = [fsca_op_ut_mean_sc26m,fsca_op_ut_mean_sc17a,fsca_op_ut_mean_sc18m,
+                   fsca_op_ut_mean_krew,fsca_op_ut_mean_jmz,fsca_op_ut_mean_nrc]
+fsca_op_ut_var = [fsca_op_ut_var_sc26m,fsca_op_ut_var_sc17a,fsca_op_ut_var_sc18m,
+                  fsca_op_ut_var_krew,fsca_op_ut_var_jmz,fsca_op_ut_var_nrc]
+temp_mean = [temp_mean_sc26m,temp_mean_sc17a,temp_mean_sc18m,temp_mean_krew,temp_mean_jmz,temp_mean_nrc]
+temp_var = [temp_var_sc26m,temp_var_sc17a,temp_var_sc18m,temp_var_krew,temp_var_jmz,temp_var_nrc]
+
+plt.subplots(figsize=(60,40))
+plt.errorbar(temp_mean, fsca_op_ut_mean, yerr=fsca_op_ut_var, xerr=temp_var, linestyle='None', 
+             marker='s', markersize=50, markerfacecolor='green', markeredgecolor='green', 
+             ecolor = 'mediumvioletred', elinewidth=10, capsize=30, capthick=10) # 
+
+plt.ylabel('(fSCA_open - fSCA_underTree) / fSCA_open', fontsize=70)
+plt.yticks(fontsize=70)
+plt.xlabel('average temp of DJF (C)', fontsize=70)
+plt.xticks(fontsize=70)
+    
+plt.title('(fSCA_open - fSCA_underTree)/fSCA_open error bars', fontsize=80, y=1.03) #, x=-0.9loc = 'right', 
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_errorbar.png')
+
+#%%
+fSCA_0u_exp = [np.mean(fSCA_0u_exp_sc26m),np.mean(fSCA_0u_exp_sc17a),np.mean(fSCA_0u_exp_sc18m),
+               np.mean(fSCA_0u_exp_Krew),np.mean(fSCA_0u_exp_Jmz),np.mean(fSCA_0u_exp_nrc)]
+fSCA_0u_shl = [np.mean(fSCA_0u_shl_sc26m),np.mean(fSCA_0u_shl_sc17a),np.mean(fSCA_0u_shl_sc18m),
+               np.mean(fSCA_0u_shl_Krew),np.mean(fSCA_0u_shl_Jmz),np.mean(fSCA_0u_shl_nrc)]
+
+label = ['SCWC 26MAR2016','SCWC 17APR2016','SCWC 18MAY2016','KREW 2010','JRBN 2010','NRC 2010']
+color = ['plum','purple','orchid','red','darkgreen','deepskyblue']#'olive',
+marker = ['^','o','s','X','*','h']
+
+plt.subplots(figsize=(60,40))
+
+for i in range (6):
+    plt.scatter(fSCA_0u_shl[i],fSCA_0u_exp[i], s=70**2, color = 'darkcyan', marker = marker[i], label =  label[i])#
+
+plt.ylabel('(fSCA_open - fSCA_underTree) / fSCA_open in exposed', fontsize=70)
+plt.yticks(fontsize=70)
+plt.xlabel('(fSCA_open - fSCA_underTree) / fSCA_open in sheltered', fontsize=70)
+plt.xticks(fontsize=70)
+plt.legend(fontsize=80)
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_exp_shl.png')
+
+
+
+
+
+
 
 
 
