@@ -1215,340 +1215,103 @@ plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAna
 #%%
 
 fsca_0t = fsca0p_fscaUt_fscaLimit (fsca_0p_sc26m,fsca_0p_sc17a,fsca_0p_sc18m,fsca_0p_krew,fsca_0p_jmz,fsca_0p_nrc,
-                                   fsca_ut_sc26m,fsca_ut_sc17a,fsca_ut_sc18m,fsca_ut_krew,fsca_ut_jmz,fsca_ut_nrc,82)
+                                   fsca_ut_sc26m,fsca_ut_sc17a,fsca_ut_sc18m,fsca_ut_krew,fsca_ut_jmz,fsca_ut_nrc,80)
 fsca_shEx_0p = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,
-                                        fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,82)
+                                        fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,80)
 fsca_shEx_ut = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
-                                        fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,82)
+                                        fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,80)
                                      
+label0 = ['SCWC 26MAR2016-0pen','SCWC 17APR2016-0pen','SCWC 18MAY2016-0pen','KREW 2010-0pen','JRBN 2010-0pen','NRC 2010-0pen']
+label1 = ['SCWC 26MAR2016-underTree','SCWC 17APR2016-underTree','SCWC 18MAY2016-underTree','KREW 2010-underTree','JRBN 2010-underTree','NRC 2010-underTree']
+color = ['plum','purple','hotpink','red','darkgreen','deepskyblue']#'olive',
+marker = ['^','>','v','D','s','o']
 
+plt.subplots(figsize=(60,60))
 
+for i in range (1,6):
+    plt.scatter(fsca_shEx_0p[i],fsca_0t[i], s=80**2, color = 'hotpink', marker = marker[i], label =  label0[i])#
+    plt.scatter(fsca_shEx_ut[i],fsca_0t[i], s=80**2, color = 'darkgreen', marker = marker[i], label =  label1[i])#
 
+plt.ylabel('(fSCA_open - fSCA_underTree)', fontsize=80)
+plt.yticks(fontsize=80)
+plt.xlabel('(fSCA_shl - fSCA_exp)', fontsize=80)
+plt.xticks(fontsize=80)
+plt.ylim((-40,40))
+plt.xlim((-41,40))
+plt.legend(fontsize=80, loc = 'upper left')
 
+x = [-41,-8,-5,-2,0,2,40]
+y = [0,0,0,0,0,0,0]
+plt.plot(x,y, color = 'black') #line_temp_ls[2*i],
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##%% ploting DJF temp vs terrain features
-#
-#fsca_op_exp = [fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc]
-#fsca_op_shl = [fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc]
-#fsca_ut_exp = [fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc]
-#fsca_ut_shl = [fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc]
-#
-#meanTemp2 = [meanTemp_elevClass_sc,meanTemp_elevClass_sc,meanTemp_elevClass_sc,
-#             meanTemp_elevClass_krew,meanTemp_elevClass_jmz,meanTemp_elevClass_nrc]
-#
-#label0 = ['SCWC 26MAR201-op-exp','SCWC 17APR2016-op-exp','SCWC 18MAY2016-op-exp','KREW 2010-op-exp','JRBN 2010-op-exp','NRC 2010-op-exp']
-#label1 = ['SCWC 26MAR2016-op-shl','SCWC 17APR2016-op-shl','SCWC 18MAY2016-op-shl','KREW 2010-op-shl','JRBN 2010-op-shl','NRC 2010-op-shl']
-#label2 = ['SCWC 26MAR201-ut-exp','SCWC 17APR2016-ut-exp','SCWC 18MAY2016-ut-exp','KREW 2010-ut-exp','JRBN 2010-ut-exp','NRC 2010-ut-exp']
-#label3 = ['SCWC 26MAR2016-ut-shl','SCWC 17APR2016-ut-shl','SCWC 18MAY2016-ut-shl','KREW 2010-ut-shl','JRBN 2010-ut-shl','NRC 2010-ut-shl']
-#
-#
-#color = ['orchid','purple','plum','darkorchid',
-#         'orchid','purple','plum','darkorchid',
-#         'orchid','purple','plum','darkorchid',
-#         'red','darkred','gold','orange',
-#         'lightgreen','darkgreen','olive','green',
-#         'deepskyblue','navy','lightblue','blue']
-#
-#marker = ['o','s','^','*',
-#          'o','s','^','*',
-#          'o','s','^','*',
-#          'o','s','^','*',
-#          'o','s','^','*',
-#          'o','s','^','*']
-#
-##markerS3 = [significant_ex_sc26m,significant_ex_sc17a,significant_ex_sc18m,significant_ex_krew,significant_ex_nrc,significant_ex_jmz]
-##markerS4 = [significant_sh_sc26m,significant_sh_sc17a,significant_sh_sc18m,significant_sh_krew,significant_sh_nrc,significant_sh_jmz]
-#
-#
-#location = ['lower left','lower left','uper right','lower left','lower left','lower left']
-#xlimit_deltAfsca = [(-2.4,-1.2),(-2.4,-1.2),(-2.4,-1.2),(0.4,2.8),(-8.3,-3.5),(-10.5,-5)]
-#
-#plt.subplots(figsize=(60,40)) #fig, ax = plt.subplots(figsize=(20,15))
-#
-#for i in range (6):
-#    
-#    plt.subplot(231+i)
-#    
-#    plt.plot(meanTemp2[i],fsca_op_exp[i], color = color[4*i], linewidth=4, marker = marker[4*i], markersize=30, label = label0[i]) #, 
-#    plt.plot(meanTemp2[i],fsca_op_shl[i], color = color[4*i+1], linewidth=4, marker = marker[4*i+1], markersize=25, label = label1[i]) #
-#    plt.plot(meanTemp2[i],fsca_ut_exp[i], color = color[4*i+2], linewidth=4, marker = marker[4*i+2], markersize=35, label = label2[i]) #
-#    plt.plot(meanTemp2[i],fsca_ut_shl[i], color = color[4*i+3], linewidth=4, marker = marker[4*i+3], markersize=40, label = label3[i]) #
-#
-#    plt.ylabel('fSCA%', fontsize=50)
-#    plt.yticks(fontsize=50)
-#    plt.xlabel('average temp of DJF (C)', fontsize=50)
-#    plt.xticks(fontsize=40)
-#    
-#    plt.legend(fontsize=30, loc = location[i])
-#    plt.ylim((-5,110))
-#    plt.xlim(xlimit_deltAfsca[i])
-#    
-#
-##plt.title('fSCA classification based on northness and  vegetation density (VD)', fontsize=60, y=2.24, x=-0.65) # loc = 'right', 
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_all_op_ut.png')
-#
-#
-##%% ploting error bars
-#fsca_op_ut_nrc = np.subtract(fsca_0p_nrc,fsca_ut_nrc)/fsca_0p_nrc
-#fsca_op_ut_mean_nrc = np.mean(np.subtract(fsca_0p_nrc,fsca_ut_nrc)/fsca_0p_nrc)
-#fsca_op_ut_var_nrc = np.var(fsca_op_ut_nrc)
-#temp_mean_nrc = np.mean(snow_temp_vegdens_index_sL30_nrc_df['temp'])
-#temp_var_nrc = np.var(snow_temp_vegdens_index_sL30_nrc_df['temp'])
-#
-#fsca_op_ut_jmz = np.subtract(fsca_0p_jmz,fsca_ut_jmz)/fsca_0p_jmz
-#fsca_op_ut_mean_jmz = np.mean(np.subtract(fsca_0p_jmz,fsca_ut_jmz)/fsca_0p_jmz)
-#fsca_op_ut_var_jmz = np.var(fsca_op_ut_jmz)
-#temp_mean_jmz = np.mean(snow_temp_vegdens_index_sL30_jmz_df['temp'])
-#temp_var_jmz = np.var(snow_temp_vegdens_index_sL30_jmz_df['temp'])
-#
-#fsca_op_ut_krew = np.subtract(fsca_0p_krew,fsca_ut_krew)/fsca_0p_krew
-#fsca_op_ut_mean_krew = np.mean(np.subtract(fsca_0p_krew,fsca_ut_krew)/fsca_0p_krew)
-#fsca_op_ut_var_krew = np.var(fsca_op_ut_krew)
-#temp_mean_krew = np.mean(snow_temp_vegdens_index_sL30_krew_df['temp'])
-#temp_var_krew = np.var(snow_temp_vegdens_index_sL30_krew_df['temp'])
-#
-#fsca_op_ut_sc26m = np.subtract(fsca_0p_sc26m,fsca_ut_sc26m)/fsca_0p_sc26m
-#fsca_op_ut_mean_sc26m = np.mean(np.subtract(fsca_0p_sc26m,fsca_ut_sc26m)/fsca_0p_sc26m)
-#fsca_op_ut_var_sc26m = np.var(fsca_op_ut_sc26m)
-#temp_mean_sc26m = np.mean(snow_temp_vegdens_index_sL30_sc26m_df['temp'])
-#temp_var_sc26m = np.var(snow_temp_vegdens_index_sL30_sc26m_df['temp'])
-#
-#fsca_op_ut_sc17a = np.subtract(fsca_0p_sc17a,fsca_ut_sc17a)/fsca_0p_sc17a
-#fsca_op_ut_mean_sc17a = np.mean(np.subtract(fsca_0p_sc17a,fsca_ut_sc17a)/fsca_0p_sc17a)
-#fsca_op_ut_var_sc17a = np.var(fsca_op_ut_sc17a)
-#temp_mean_sc17a = np.mean(snow_temp_vegdens_index_sL30_sc17a_df['temp'])
-#temp_var_sc17a = np.var(snow_temp_vegdens_index_sL30_sc17a_df['temp'])
-#
-#fsca_op_ut_sc18m = np.subtract(fsca_0p_sc18m,fsca_ut_sc18m)/fsca_0p_sc18m
-#fsca_op_ut_mean_sc18m = np.mean(np.subtract(fsca_0p_sc18m,fsca_ut_sc18m)/fsca_0p_sc18m)
-#fsca_op_ut_var_sc18m = np.var(fsca_op_ut_sc18m)
-#temp_mean_sc18m = np.mean(snow_temp_vegdens_index_sL30_sc18m_df['temp'])
-#temp_var_sc18m = np.var(snow_temp_vegdens_index_sL30_sc18m_df['temp'])
-#
-#fsca_op_ut_mean = [fsca_op_ut_mean_sc26m,fsca_op_ut_mean_sc17a,fsca_op_ut_mean_sc18m,
-#                   fsca_op_ut_mean_krew,fsca_op_ut_mean_jmz,fsca_op_ut_mean_nrc]
-#fsca_op_ut_var = [fsca_op_ut_var_sc26m,fsca_op_ut_var_sc17a,fsca_op_ut_var_sc18m,
-#                  fsca_op_ut_var_krew,fsca_op_ut_var_jmz,fsca_op_ut_var_nrc]
-#temp_mean = [temp_mean_sc26m,temp_mean_sc17a,temp_mean_sc18m,temp_mean_krew,temp_mean_jmz,temp_mean_nrc]
-#temp_var = [temp_var_sc26m,temp_var_sc17a,temp_var_sc18m,temp_var_krew,temp_var_jmz,temp_var_nrc]
-#
-#label = ['SCWC 26MAR2016','SCWC 17APR2016','SCWC 18MAY2016','KREW 2010','JRBN 2010','NRC 2010']
-#markerfacecolor = ['orchid','purple','mediumvioletred','darkred','darkgreen','deepskyblue']
-#markeredgecolor = ['orchid','purple','mediumvioletred','darkred','darkgreen','deepskyblue']
-#plt.subplots(figsize=(60,40))
-#for i in range (6):
-#    plt.errorbar(temp_mean[i], fsca_op_ut_mean[i], yerr=fsca_op_ut_var[i], xerr=temp_var[i], label = label[i],
-#                 linestyle='None', marker='s', markersize=50, markerfacecolor=markerfacecolor[i], 
-#                 markeredgecolor=markeredgecolor[i],ecolor = 'k', elinewidth=10, capsize=30, capthick=10) # 
-#
-#plt.ylabel('(fSCA_open - fSCA_underTree) / fSCA_open', fontsize=70)
-#plt.yticks(fontsize=70)
-#plt.xlabel('average temp of DJF (C)', fontsize=70)
-#plt.xticks(fontsize=70)
-#plt.legend(fontsize=80)
-#    
-#plt.title('(fSCA_open - fSCA_underTree)/fSCA_open error bars', fontsize=80, y=1.03) #, x=-0.9loc = 'right', 
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_errorbar.png')
-#
-##%%
-#fSCA_0u_exp = [np.mean(fSCA_0u_exp_sc26m),np.mean(fSCA_0u_exp_sc17a),np.mean(fSCA_0u_exp_sc18m),
-#               np.mean(fSCA_0u_exp_Krew),np.mean(fSCA_0u_exp_Jmz),np.mean(fSCA_0u_exp_nrc)]
-#fSCA_0u_shl = [np.mean(fSCA_0u_shl_sc26m),np.mean(fSCA_0u_shl_sc17a),np.mean(fSCA_0u_shl_sc18m),
-#               np.mean(fSCA_0u_shl_Krew),np.mean(fSCA_0u_shl_Jmz),np.mean(fSCA_0u_shl_nrc)]
-#
-#label = ['SCWC 26MAR2016','SCWC 17APR2016','SCWC 18MAY2016','KREW 2010','JRBN 2010','NRC 2010']
-#color = ['plum','purple','orchid','red','darkgreen','deepskyblue']#'olive',
-#marker = ['^','>','v','D','s','o']
-#
-#plt.subplots(figsize=(60,60))
-#
-#for i in range (6):
-#    plt.scatter(fSCA_0u_shl[i],fSCA_0u_exp[i], s=80**2, color = 'darkorange', marker = marker[i], label =  label[i])#
-#
-#plt.ylabel('(fSCA_open - fSCA_underTree) / fSCA_open in exposed', fontsize=80)
-#plt.yticks(fontsize=80)
-#plt.xlabel('(fSCA_open - fSCA_underTree) / fSCA_open in sheltered', fontsize=80)
-#plt.xticks(fontsize=80)
-#plt.ylim((-1,0.4))
-#plt.xlim((-1,0.4))
-#plt.legend(fontsize=80)
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_exp_shl.png')
-#
-##%%
-#fsca_op = [np.mean(fsca_0p_sc26m),np.mean(fsca_0p_sc17a),np.mean(fsca_0p_sc18m),np.mean(fsca_0p_krew),np.mean(fsca_0p_jmz),np.mean(fsca_0p_nrc)]
-#fsca_ut = [np.mean(fsca_ut_sc26m),np.mean(fsca_ut_sc17a),np.mean(fsca_ut_sc18m),np.mean(fsca_ut_krew),np.mean(fsca_ut_jmz),np.mean(fsca_ut_nrc)]
-#label = ['SCWC 26MAR2016','SCWC 17APR2016','SCWC 18MAY2016','KREW 2010','JRBN 2010','NRC 2010']
-#color = ['plum','purple','orchid','red','darkgreen','deepskyblue']#'olive',
-#marker = ['^','>','v','D','s','o']
-#
-#plt.subplots(figsize=(60,60))
-#
-#for i in range (6):
-#    plt.scatter(fsca_op[i],fsca_ut[i], s=80**2, color = 'green', marker = marker[i], label =  label[i])#
-#
-#plt.ylabel('fSCA_underTree', fontsize=80)
-#plt.yticks(fontsize=80)
-#plt.xlabel('fSCA_open', fontsize=80)
-#plt.xticks(fontsize=80)
-#plt.ylim((0,110))
-#plt.xlim((0,110))
-#plt.legend(fontsize=80)
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/fsca_op_un.png')
-##%%
-#fsca_op_exp = [np.mean(fSCA_0p_exp_sc26m),np.mean(fSCA_0p_exp_sc17a),np.mean(fSCA_0p_exp_sc18m),np.mean(fSCA_0p_exp_Krew),np.mean(fSCA_0p_exp_Jmz),np.mean(fSCA_0p_exp_nrc)]
-#fsca_op_shl = [np.mean(fSCA_0p_shl_sc26m),np.mean(fSCA_0p_shl_sc17a),np.mean(fSCA_0p_shl_sc18m),np.mean(fSCA_0p_shl_Krew),np.mean(fSCA_0p_shl_Jmz),np.mean(fSCA_0p_shl_nrc)]
-#fsca_ut_exp = [np.mean(fSCA_ut_exp_sc26m),np.mean(fSCA_ut_exp_sc17a),np.mean(fSCA_ut_exp_sc18m),np.mean(fSCA_ut_exp_Krew),np.mean(fSCA_ut_exp_Jmz),np.mean(fSCA_ut_exp_nrc)]
-#fsca_ut_shl = [np.mean(fSCA_ut_shl_sc26m),np.mean(fSCA_ut_shl_sc17a),np.mean(fSCA_ut_shl_sc18m),np.mean(fSCA_ut_shl_Krew),np.mean(fSCA_ut_shl_Jmz),np.mean(fSCA_ut_shl_nrc)]
-#
-#label0 = ['SCWC 26MAR2016-exp','SCWC 17APR2016-exp','SCWC 18MAY2016-exp','KREW 2010-exp','JRBN 2010-exp','NRC 2010-exp']
-#label1 = ['SCWC 26MAR2016-shl','SCWC 17APR2016-shl','SCWC 18MAY2016-shl','KREW 2010-shl','JRBN 2010-shl','NRC 2010-shl']
-#
-#color = ['plum','purple','pink','red','darkgreen','deepskyblue']#'olive',
-##marker = ['^','>','v','D','s','o']
-#
-#plt.subplots(figsize=(60,60))
-#
-#for i in range (6):
-#    plt.scatter(fsca_op_exp[i],fsca_ut_exp[i], s=80**2, color = color[i], marker = 'o', label =  label0[i])#
-#    plt.scatter(fsca_op_shl[i],fsca_ut_shl[i], s=80**2, color = color[i], marker = 's', label =  label1[i])#
-#
-#plt.ylabel('fSCA_underTree', fontsize=80)
-#plt.yticks(fontsize=80)
-#plt.xlabel('fSCA_open', fontsize=80)
-#plt.xticks(fontsize=80)
-#plt.ylim((0,110))
-#plt.xlim((0,110))
-#plt.legend(fontsize=80)
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/fsca_op_un_exp_shl.png')
-#
-##%%
-#fSCA_lv_exp = [np.mean(fSCA_uT_rad_vegDens_sc26m[0]), np.mean(fSCA_uT_rad_vegDens_sc17a[0]),
-#               np.mean(fSCA_uT_rad_vegDens_sc18m[0]), np.mean(fSCA_uT_rad_vegDens_krew[0]), 
-#               np.mean(fSCA_uT_rad_vegDens_jmz[0]), np.mean(fSCA_uT_rad_vegDens_nrc[0])]
-#fSCA_lv_shl = [np.mean(fSCA_uT_rad_vegDens_sc26m[1]), np.mean(fSCA_uT_rad_vegDens_sc17a[1]),
-#               np.mean(fSCA_uT_rad_vegDens_sc18m[1]), np.mean(fSCA_uT_rad_vegDens_krew[1]), 
-#               np.mean(fSCA_uT_rad_vegDens_jmz[1]), np.mean(fSCA_uT_rad_vegDens_nrc[1])]
-#fSCA_hv_exp = [np.mean(fSCA_uT_rad_vegDens_sc26m[2]), np.mean(fSCA_uT_rad_vegDens_sc17a[2]),           
-#               np.mean(fSCA_uT_rad_vegDens_sc18m[2]), np.mean(fSCA_uT_rad_vegDens_krew[2]), 
-#               np.mean(fSCA_uT_rad_vegDens_jmz[2]), np.mean(fSCA_uT_rad_vegDens_nrc[2])]
-#fSCA_hv_shl = [np.mean(fSCA_uT_rad_vegDens_sc26m[3]),np.mean(fSCA_uT_rad_vegDens_sc17a[3]),
-#               np.mean(fSCA_uT_rad_vegDens_sc18m[3]),np.mean(fSCA_uT_rad_vegDens_krew[3]),
-#               np.mean(fSCA_uT_rad_vegDens_jmz[3]),np.mean(fSCA_uT_rad_vegDens_nrc[3])]
-#
-#label0 = ['SCWC 26MAR2016-exp','SCWC 17APR2016-exp','SCWC 18MAY2016-exp','KREW 2010-exp','JRBN 2010-exp','NRC 2010-exp']
-#label1 = ['SCWC 26MAR2016-shl','SCWC 17APR2016-shl','SCWC 18MAY2016-shl','KREW 2010-shl','JRBN 2010-shl','NRC 2010-shl']
-#
-#color = ['plum','purple','pink','red','darkgreen','deepskyblue']#'olive',
-##marker = ['^','>','v','D','s','o']
-#
-#plt.subplots(figsize=(60,60))
-#
-#for i in range (6):
-#    plt.scatter(fSCA_lv_exp[i],fSCA_hv_exp[i], s=80**2, color = color[i], marker = 'o', label =  label0[i])#
-#    plt.scatter(fSCA_lv_shl[i],fSCA_hv_shl[i], s=80**2, color = color[i], marker = 's', label =  label1[i])#
-#
-#plt.ylabel('fSCA_highDensity', fontsize=80)
-#plt.yticks(fontsize=80)
-#plt.xlabel('fSCA_lowDensity', fontsize=80)
-#plt.xticks(fontsize=80)
-#plt.ylim((0,110))
-#plt.xlim((0,110))
-#plt.legend(fontsize=80)
-#
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/fsca_ld_hd_exp_shl.png')
+y2 = [-40,-8,-5,-2,0,2,40]
+x2 = [0,0,0,0,0,0,0]
+plt.plot(x2,y2, color = 'black') #line_temp_ls[2*i],   
+ 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_expShl_opUt.png')
 
 #%%
-#snow_temp_vegdens_index_sL30_nrc = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_nrc.npy')
-#
-#lat_nrc =[]
-#for dx in range (ncols):
-#    lat_nrc.append(450000+dx)
-#
-#lon_nrc = []
-#for dy in range (nrows):
-#    lon_nrc.append(4425500+dy)
-#   
-#lat_rp_nrc = (np.repeat(lat_nrc, nrows)).astype(int)
-#lon_rp_nrc = (np.tile(lon_nrc, ncols)).astype(int)
-#minX = np.min(lat_rp_nrc)
-#minY = np.min(lon_rp_nrc)
-#
-#snwPres_nrc = np.vstack([snow_temp_vegdens_index_sL30_nrc[:,0],snow_temp_vegdens_index_sL30_nrc[:,1].astype(int),
-#                         snow_temp_vegdens_index_sL30_nrc[:,5]]).T
-#snwPres_df_nrc = pd.DataFrame(snwPres_nrc, columns = ['x','y','z'])
-#indx_DF2 = np.vstack([snwPres_df_nrc['x']-minX,snwPres_df_nrc['y']-minY]).T
-#indx_nrc2 = indx_DF2[:,1]+ncols*indx_DF2[:,0]
-#snwPres_df_nrc.index = indx_nrc2.astype(int)
-#
-#snwDist_nrc = np.vstack([lat_rp_nrc,lon_rp_nrc,lon_rp_nrc]).T
-#snwDist_nrc[:,2]=-99
-#snwDist_df_nrc = pd.DataFrame(snwDist_nrc, columns = ['x','y','z'])
-#
-#N=len(snwDist_df_nrc)
-#snowMap = np.array([0]*N)
-#sm=snwPres_df_nrc['z']
-#print("please wait ...")
-#print("total length: %s" %N)
-#nn=0
-#indx_snwPres = list(snwPres_df_nrc.index)
-#snowMap[indx_snwPres[:]] = sm[indx_snwPres[:]]
-#
-#snwMap_test = np.reshape(snowMap,[ncols,nrows])
-#
-#plt.figure(figsize=(30,20))
-#cmap = colors.ListedColormap(['darkgray', 'green', 'wheat', 'white', 'blue'])
-#bounds=[-100,-80,-5,0,50,80]
-#norm = colors.BoundaryNorm(bounds, cmap.N)
-#
-#implot = plt.imshow(snwMap, cmap=cmap, norm=norm, extent=lat_long_nad83_nrc)#'gist_earth'
-#plt.colorbar(orientation='vertical')
+fsca_shEx_ut = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
+                                        fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,80)
+
+fsca_hlvd_exp = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
+                                         fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
+                                         fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
+                                         fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],80)
+
+fsca_hlvd_shl = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
+                                         fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
+                                         fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
+                                         fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],80)
+
+label2 = ['SCWC 26MAR2016-exposed','SCWC 17APR2016-exposed','SCWC 18MAY2016-exposed','KREW 2010-exposed','JRBN 2010-exposed','NRC 2010-exposed']
+label3 = ['SCWC 26MAR2016-sheltered','SCWC 17APR2016-sheltered','SCWC 18MAY2016-sheltered','KREW 2010-sheltered','JRBN 2010-sheltered','NRC 2010-sheltered']
+color = ['plum','purple','hotpink','red','darkgreen','deepskyblue']#'olive',
+marker = ['^','>','v','D','s','o']
+
+plt.subplots(figsize=(60,60))
+
+for i in range (1,6):
+    plt.scatter(fsca_hlvd_exp[i],fsca_shEx_ut[i], s=80**2, color = 'lightblue', marker = marker[i], label =  label2[i])#
+    plt.scatter(fsca_hlvd_shl[i],fsca_shEx_ut[i], s=80**2, color = 'navy', marker = marker[i], label =  label3[i])#
+
+plt.ylabel('(fSCA_sheltered - fSCA_exposed)', fontsize=80)
+plt.yticks(fontsize=80)
+plt.xlabel('(fSCA_highVD - fSCA_lowVD)', fontsize=80)
+plt.xticks(fontsize=80)
+plt.ylim((-40,40))
+plt.xlim((-41,40))
+plt.legend(fontsize=80, loc = 'lower left')
+
+x = [-41,-8,-5,-2,0,2,40]
+y = [0,0,0,0,0,0,0]
+plt.plot(x,y, color = 'black') #line_temp_ls[2*i],
+
+y2 = [-40,-8,-5,-2,0,2,40]
+x2 = [0,0,0,0,0,0,0]
+plt.plot(x2,y2, color = 'black') #line_temp_ls[2*i],   
+ 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_expShl_hlvd.png')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
