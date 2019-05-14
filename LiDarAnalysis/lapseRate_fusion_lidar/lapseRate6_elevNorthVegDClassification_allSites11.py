@@ -1237,7 +1237,8 @@ fsca_0t2550 = fsca0p_fscaUt_fscaLimit (fsca_0p_sc26m,fsca_0p_sc17a,fsca_0p_sc18m
                                        fsca_ut_sc26m,fsca_ut_sc17a,fsca_ut_sc18m,fsca_ut_krew,fsca_ut_jmz,fsca_ut_nrc,25,50)
 fsca_0t5075 = fsca0p_fscaUt_fscaLimit (fsca_0p_sc26m,fsca_0p_sc17a,fsca_0p_sc18m,fsca_0p_krew,fsca_0p_jmz,fsca_0p_nrc,
                                        fsca_ut_sc26m,fsca_ut_sc17a,fsca_ut_sc18m,fsca_ut_krew,fsca_ut_jmz,fsca_ut_nrc,50,75)
-
+fsca_0t7599 = fsca0p_fscaUt_fscaLimit (fsca_0p_sc26m,fsca_0p_sc17a,fsca_0p_sc18m,fsca_0p_krew,fsca_0p_jmz,fsca_0p_nrc,
+                                       fsca_ut_sc26m,fsca_ut_sc17a,fsca_ut_sc18m,fsca_ut_krew,fsca_ut_jmz,fsca_ut_nrc,75,99)
 
 fsca_shEx_0p2550 = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,
                                             fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,25,50)
@@ -1247,16 +1248,248 @@ fsca_shEx_0p5075 = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,
                                             fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,50,75)
 fsca_shEx_ut5075 = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
                                             fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,50,75)
+fsca_shEx_0p7599 = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,
+                                            fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,75,99)
+fsca_shEx_ut7599 = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
+                                            fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,75,99)
 
 #fsca_0pUt_shl2550 = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,
 #                                             fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,25,50)
 #fsca_0pUt_exp2550 = fsca0p_fscaUt_fscaLimit (fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,
 #                                             fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,25,50)
+fsca_hlvd_exp2550 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
+                                             fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
+                                             fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
+                                             fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],25,50)
 
-#label0 = ['SCWC 26MAR2016-0pen-25-50','SCWC 17APR2016-0pen-25-50','SCWC 18MAY2016-0pen-25-50','KREW 2010-0pen-25-50','JRBN 2010-0pen-25-50','NRC 2010-0pen-25-50']
-#label1 = ['SCWC 26MAR2016-underTree-25-50','SCWC 17APR2016-underTree-25-50','SCWC 18MAY2016-underTree-25-50','KREW 2010-underTree-25-50','JRBN 2010-underTree-25-50','NRC 2010-underTree-25-50']
-#label2 = ['SCWC 26MAR2016-0pen-50-75','SCWC 17APR2016-0pen-50-75','SCWC 18MAY2016-0pen-50-75','KREW 2010-0pen-50-75','JRBN 2010-0pen-50-75','NRC 2010-0pen-50-75']
-#label3 = ['SCWC 26MAR2016-underTree-50-75','SCWC 17APR2016-underTree-50-75','SCWC 18MAY2016-underTree-50-75','KREW 2010-underTree-50-75','JRBN 2010-underTree-50-75','NRC 2010-underTree-50-75']
+fsca_hlvd_shl2550 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
+                                             fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
+                                             fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
+                                             fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],25,50)
+
+fsca_hlvd_exp5075 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
+                                             fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
+                                             fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
+                                             fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],50,75)
+
+fsca_hlvd_shl5075 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
+                                             fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
+                                             fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
+                                             fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],50,75)
+
+fsca_hlvd_exp7599 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
+                                             fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
+                                             fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
+                                             fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],75,99)
+
+fsca_hlvd_shl7599 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
+                                             fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
+                                             fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
+                                             fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],75,99)
+
+#%%bar plot open-under
+
+ind = np.arange(0,6)  # the x locations for the groups
+width = 0.2  # the width of the bars
+plt.subplots(figsize=(60,40))
+plt.bar(ind - width, fsca_0t7599, width, #yerr=women_std,
+        color='skyblue', label='fSCA_75_99') #palegoldenrod  goldenrod darkgoldenrod
+plt.bar(ind , fsca_0t5075, width, #yerr=men_std,
+         color='forestgreen', label='fSCA_50_75') # palevioletred mediumvioletred firebrick
+plt.bar(ind + width, fsca_0t2550, width, #yerr=women_std,
+        color='rosybrown', label='fSCA_25_50') #palegoldenrod  goldenrod darkgoldenrod
+
+plt.ylabel('fSCA_open - fSCA_underTree', fontsize=80) #(fSCA_op - fSCA_ut) in sheltered
+plt.yticks(fontsize=80)
+plt.xlabel('Sites', fontsize=90) #(fSCA_op - fSCA_ut) in exposed
+plt.xticks(ind, ('SCWC_Mar', 'SCWC_Mar', 'SCWC_Mar', 'KREW', 'JRBN', 'NRC'),fontsize=70)
+
+x = [-1,-8,-5,-2,0,2,10]
+y = [0,0,0,0,0,0,0]
+plt.plot(x,y, color = 'black',linewidth=4)
+
+marker = ['-1C','-1C','-1C','+2C','-4C','-6C']#
+ytemp = [4.5,2.3,7,2.7,6.7,4.1]
+xtemp = ind-0.2
+for t in range (6):
+    plt.text(xtemp[t],ytemp[t],str(marker[t]),fontsize=90)
+
+nanX = []
+for na in range (6):
+    if np.isnan(fsca_0t2550[na]):
+        nanX.append(ind[na] + width)
+
+plt.bar(nanX[0], 1.5, width, #yerr=women_std,
+        color='white', edgecolor='black', hatch='/', label='nan') 
+plt.bar(nanX[1], 1.5, width, #yerr=women_std,
+        color='white', edgecolor='black', hatch='/')
+plt.bar(nanX[0], -1.5, width, #yerr=women_std,
+        color='white', edgecolor='black', hatch='/') 
+plt.bar(nanX[1], -1.5, width, #yerr=women_std,
+        color='white', edgecolor='black', hatch='/') 
+  
+plt.ylim((-9,9))
+plt.xlim((-0.9,6))
+plt.legend(fontsize=55, loc = 'upper left')
+
+#plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
+ 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_opUt_25507599.png')
+
+#%%bar plot open-under exp-shl
+width = 0.1  # the width of the bars
+
+plt.subplots(figsize=(60,40))
+
+plt.bar(ind - 3*width, fsca_shEx_0p7599, width,color='darkred', label='open_75_99') 
+plt.bar(ind - 2*width, fsca_shEx_0p5075, width,color='mediumvioletred', label='open_50_75') 
+plt.bar(ind - width, fsca_shEx_0p2550, width, color='pink', label='open_25_50') 
+
+plt.bar(ind , fsca_shEx_ut7599, width, color='darkgreen', label='underTree_75_99') 
+plt.bar(ind + width, fsca_shEx_ut5075, width, color='darkseagreen', label='underTree_50_75') 
+plt.bar(ind + 2*width, fsca_shEx_ut2550, width, color='lightgreen', label='underTree_25_50') 
+
+plt.ylabel('fSCA_sheltered - fSCA_exposed', fontsize=80) #(fSCA_op - fSCA_ut) in sheltered
+plt.yticks(fontsize=80)
+plt.xlabel('Sites', fontsize=90) #(fSCA_op - fSCA_ut) in exposed
+plt.xticks(ind, ('SCWC_Mar', 'SCWC_Mar', 'SCWC_Mar', 'KREW', 'JRBN', 'NRC'),fontsize=70)
+
+x = [-1,-8,-5,-2,0,2,10]
+y = [0,0,0,0,0,0,0]
+plt.plot(x,y, color = 'black',linewidth=4)
+
+marker = ['-1C','-1C','-1C','+2C','-4C','-6C']#
+ytemp = [-13,-13,-13,-13,-13,-13]
+xtemp = ind-0.2
+for t in range (6):
+    plt.text(xtemp[t],ytemp[t],str(marker[t]),fontsize=80)
+
+nanX1 = [-0.2,-0.1,0.1,0.2,0.9,1.7,2,2.8,3.9,4.2]
+
+plt.bar(nanX1[0], 1.5, width, color='white', edgecolor='black', hatch='/', label='nan') 
+for bars in range (len(nanX1)):
+    plt.bar(nanX1[bars], 1.5, width, color='white', edgecolor='black', hatch='/') 
+for bars in range (len(nanX1)):
+    plt.bar(nanX1[bars], -1.5, width, color='white', edgecolor='black', hatch='/') 
+    
+plt.ylim((-14,18))
+plt.xlim((-0.9,6))
+plt.legend(fontsize=55, loc = 'upper right')
+
+#plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
+ 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_opUt_shlExp_25507599.png')
+
+#%%bar plot hvd-lvd exp-shl
+fsca_hlvd_shl5075 = np.array([np.nan, -11.95366529, 4.14264728, np.nan, 11.16302138, 0.2])
+fsca_hlvd_exp2550 = np.array([-8.20500649, 8.99780804, np.nan, 8.77211629, np.nan, 0.2])
+
+plt.subplots(figsize=(60,40))
+plt.bar(ind - 3*width, fsca_hlvd_exp7599, width,color='darkgreen', label='exposed_75_99')
+plt.bar(ind - 2*width, fsca_hlvd_exp5075, width,color='darkseagreen', label='exposed_50_75')
+plt.bar(ind - width, fsca_hlvd_exp2550, width, color='lightgreen', label='exposed_25_50') 
+
+plt.bar(ind , fsca_hlvd_shl7599, width,color='navy', label='exposed_75_99')
+plt.bar(ind + width, fsca_hlvd_shl5075, width, color='deepskyblue', label='sheltered_50_75') 
+plt.bar(ind + 2*width, fsca_hlvd_shl2550, width, color='powderblue', label='sheltered_25_50') 
+
+plt.ylabel('fSCA_highVD - fSCA_lowVD', fontsize=80) #(fSCA_op - fSCA_ut) in sheltered
+plt.yticks(fontsize=80)
+plt.xlabel('Sites', fontsize=90) #(fSCA_op - fSCA_ut) in exposed
+plt.xticks(ind, ('SCWC_Mar', 'SCWC_Mar', 'SCWC_Mar', 'KREW', 'JRBN', 'NRC'),fontsize=70)
+
+x = [-1,-8,-5,-2,0,2,10]
+y = [0,0,0,0,0,0,0]
+plt.plot(x,y, color = 'black',linewidth=2)
+
+marker = ['-1C','-1C','-1C','+2C','-4C','-6C']#
+ytemp = [-13,-13,-13,-13,-13,-13]
+xtemp = ind-0.2
+for t in range (6):
+    plt.text(xtemp[t],ytemp[t],str(marker[t]),fontsize=80)
+
+nanX2 = [0.1,0.2,1.2,1.7,1.9,2.8,3.1,3.9,4.2,4.8]
+
+plt.bar(nanX2[0], 1.5, width, color='white', edgecolor='black', hatch='/', label='nan') 
+for bars in range (len(nanX1)):
+    plt.bar(nanX2[bars], 1.5, width, color='white', edgecolor='black', hatch='/') 
+for bars in range (len(nanX1)):
+    plt.bar(nanX2[bars], -1.5, width, color='white', edgecolor='black', hatch='/') 
+
+plt.ylim((-14,18))
+plt.xlim((-0.9,6))
+plt.legend(fontsize=55, loc = 'upper left')
+
+#plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
+ 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_hlvd_shlExp_25507599.png')
+
+#%%
+
+#label4 = ['SCWC 26MAR2016-exposed-25-50','SCWC 17APR2016-exposed-25-50','SCWC 18MAY2016-exposed-25-50','KREW 2010-exposed-25-50','JRBN 2010-exposed-25-50','NRC 2010-exposed-25-50']
+#label5 = ['SCWC 26MAR2016-sheltered-25-50-25-50','SCWC 17APR2016-sheltered-25-50','SCWC 18MAY2016-sheltered-25-50','KREW 2010-sheltered-25-50','JRBN 2010-sheltered-25-50','NRC 2010-sheltered-25-50']
+#label6 = ['SCWC 26MAR2016-exposed-50-75','SCWC 17APR2016-exposed-50-75','SCWC 18MAY2016-exposed-50-75','KREW 2010-exposed-50-75','JRBN 2010-exposed-50-75','NRC 2010-exposed-50-75']
+#label7 = ['SCWC 26MAR2016-sheltered-50-75','SCWC 17APR2016-sheltered-50-75','SCWC 18MAY2016-sheltered-50-75','KREW 2010-sheltered-50-75','JRBN 2010-sheltered-50-75','NRC 2010-sheltered-50-75']
+#
+##color = ['plum','purple','hotpink','red','darkgreen','deepskyblue']#'olive',
+#marker = ['^','>','v','D','s','o']
+#
+#plt.subplots(figsize=(60,60))
+#
+#for i in range (1,6):
+#    plt.scatter(fsca_hlvd_exp2550[i],fsca_shEx_ut2550[i], s=80**2, color = 'lightblue', marker = marker[i], label =  label4[i])#
+#    plt.scatter(fsca_hlvd_shl2550[i],fsca_shEx_ut2550[i], s=80**2, color = 'blue', marker = marker[i], label =  label5[i])#
+#    plt.scatter(fsca_hlvd_exp5075[i],fsca_shEx_ut5075[i], s=80**2, color = 'violet', marker = marker[i], label =  label6[i])#
+#    plt.scatter(fsca_hlvd_shl5075[i],fsca_shEx_ut5075[i], s=80**2, color = 'navy', marker = marker[i], label =  label7[i])#
+#
+#plt.ylabel('(fSCA_sheltered - fSCA_exposed)', fontsize=80)
+#plt.yticks(fontsize=80)
+#plt.xlabel('(fSCA_highVD - fSCA_lowVD)', fontsize=80)
+#plt.xticks(fontsize=80)
+#plt.ylim((-40,40))
+#plt.xlim((-41,40))
+#plt.legend(fontsize=50, loc = 'upper left')
+#
+#x = [-41,-8,-5,-2,0,2,40]
+#y = [0,0,0,0,0,0,0]
+#plt.plot(x,y, color = 'black') #line_temp_ls[2*i],
+#
+#y2 = [-40,-8,-5,-2,0,2,40]
+#x2 = [0,0,0,0,0,0,0]
+#plt.plot(x2,y2, color = 'black') #line_temp_ls[2*i],   
+##plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
+# 
+#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_expShl_hlvd_melt.png')
+
+#%%
+#fSCA_0p_shl_2550 = mean_fsca_Limit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,25,50) 
+#fSCA_0p_exp_2550 = mean_fsca_Limit (fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,25,50) 
+#fSCA_ut_shl_2550 = mean_fsca_Limit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,25,50) 
+#fSCA_ut_exp_2550 = mean_fsca_Limit (fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,25,50) 
+#
+#fSCA_0p_shl_5075 = mean_fsca_Limit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,50,75) 
+#fSCA_0p_exp_5075 = mean_fsca_Limit (fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,50,75) 
+#fSCA_ut_shl_5075 = mean_fsca_Limit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,50,75) 
+#fSCA_ut_exp_5075 = mean_fsca_Limit (fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,50,75) 
+#
+#for sites in range (6):
+#    plt.scatter(ind[sites] - 3*width/2, fSCA_0p_shl_2550[sites], #width, yerr=men_std,
+#                color=colorp[sites], s=60**2, marker = markerp[0]) #, label='0p_shl_2550' palevioletred mediumvioletred firebrick
+#    plt.scatter(ind[sites] - width/2, fSCA_0p_exp_2550[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=60**2, marker = markerp[1]) #, label='0p_exp_2550'palegoldenrod  goldenrod darkgoldenrod
+#    plt.scatter(ind[sites] + width/2, fSCA_ut_shl_2550[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=60**2, marker = markerp[2]) #, label='ut_shl_2550'seagreen palegreen lawngreen darkolivegreen
+#    plt.scatter(ind[sites] + 3*width/2, fSCA_ut_exp_2550[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=60**2, marker = markerp[3]) #, label='ut_exp_2550'powderblue dodgerblue cornflowerblue cadetblue blueviolet
+#    plt.scatter(ind[sites] - 3*width/2, fSCA_0p_shl_5075[sites], #width, 
+#                color=colorp[sites], s=85**2, marker = markerp[0])#, label='0p_shl_5075'bottom=fSCA_0p_shl_2550, 
+#    plt.scatter(ind[sites] - width/2, fSCA_0p_exp_5075[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=85**2, marker = markerp[1]) #, label='0p_exp_5075'palegoldenrod  goldenrod darkgoldenrod
+#    plt.scatter(ind[sites] + width/2, fSCA_ut_shl_5075[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=85**2, marker = markerp[2]) #, label='ut_shl_5075'seagreen palegreen lawngreen darkolivegreen
+#    plt.scatter(ind[sites] + 3*width/2, fSCA_ut_exp_5075[sites], #width, yerr=women_std,
+#                color=colorp[sites], s=85**2, marker = markerp[3]) #, label='ut_exp_5075'powderblue dodgerblue cornflowerblue cadetblue blueviolet
+
 
 #marker = ['^','>','v','D','s','o']
 #for i in range (0,6):
@@ -1271,151 +1504,10 @@ fsca_shEx_ut5075 = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,
 #x = [-41,-8,-5,-2,0,2,40]
 #y = [0,0,0,0,0,0,0]
 #plt.plot(x,y, color = 'black') #line_temp_ls[2*i],
-#
+
 #y2 = [-40,-8,-5,-2,0,2,40]
 #x2 = [0,0,0,0,0,0,0]
 #plt.plot(x2,y2, color = 'black') #line_temp_ls[2*i],   
-
-fSCA_0p_shl_2550 = mean_fsca_Limit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,25,50) 
-fSCA_0p_exp_2550 = mean_fsca_Limit (fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,25,50) 
-fSCA_ut_shl_2550 = mean_fsca_Limit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,25,50) 
-fSCA_ut_exp_2550 = mean_fsca_Limit (fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,25,50) 
-
-fSCA_0p_shl_5075 = mean_fsca_Limit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,50,75) 
-fSCA_0p_exp_5075 = mean_fsca_Limit (fSCA_0p_exp_sc26m,fSCA_0p_exp_sc17a,fSCA_0p_exp_sc18m,fSCA_0p_exp_Krew,fSCA_0p_exp_Jmz,fSCA_0p_exp_nrc,50,75) 
-fSCA_ut_shl_5075 = mean_fsca_Limit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,50,75) 
-fSCA_ut_exp_5075 = mean_fsca_Limit (fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,50,75) 
-
-ind = [0,2,4,6,8,10]  # the x locations for the groups
-width = 0.4  # the width of the bars
-plt.subplots(figsize=(60,40))
-
-colorp = ['palevioletred','violet','pink','palegoldenrod','palegreen','dodgerblue']
-markerp = ['v','*','s','o']
-for sites in range (6):
-    plt.scatter(ind[sites] - 3*width/2, fSCA_0p_shl_2550[sites], #width, yerr=men_std,
-                color=colorp[sites], s=60**2, marker = markerp[0]) #, label='0p_shl_2550' palevioletred mediumvioletred firebrick
-    plt.scatter(ind[sites] - width/2, fSCA_0p_exp_2550[sites], #width, yerr=women_std,
-                color=colorp[sites], s=60**2, marker = markerp[1]) #, label='0p_exp_2550'palegoldenrod  goldenrod darkgoldenrod
-    plt.scatter(ind[sites] + width/2, fSCA_ut_shl_2550[sites], #width, yerr=women_std,
-                color=colorp[sites], s=60**2, marker = markerp[2]) #, label='ut_shl_2550'seagreen palegreen lawngreen darkolivegreen
-    plt.scatter(ind[sites] + 3*width/2, fSCA_ut_exp_2550[sites], #width, yerr=women_std,
-                color=colorp[sites], s=60**2, marker = markerp[3]) #, label='ut_exp_2550'powderblue dodgerblue cornflowerblue cadetblue blueviolet
-    plt.scatter(ind[sites] - 3*width/2, fSCA_0p_shl_5075[sites], #width, 
-                color=colorp[sites], s=85**2, marker = markerp[0])#, label='0p_shl_5075'bottom=fSCA_0p_shl_2550, 
-    plt.scatter(ind[sites] - width/2, fSCA_0p_exp_5075[sites], #width, yerr=women_std,
-                color=colorp[sites], s=85**2, marker = markerp[1]) #, label='0p_exp_5075'palegoldenrod  goldenrod darkgoldenrod
-    plt.scatter(ind[sites] + width/2, fSCA_ut_shl_5075[sites], #width, yerr=women_std,
-                color=colorp[sites], s=85**2, marker = markerp[2]) #, label='ut_shl_5075'seagreen palegreen lawngreen darkolivegreen
-    plt.scatter(ind[sites] + 3*width/2, fSCA_ut_exp_5075[sites], #width, yerr=women_std,
-                color=colorp[sites], s=85**2, marker = markerp[3]) #, label='ut_exp_5075'powderblue dodgerblue cornflowerblue cadetblue blueviolet
-
-x = [-41,-8,-5,-2,0,2,40]
-y = [50,50,50,50,50,50,50]
-plt.plot(x,y, color ='black')
-
-plt.ylabel('fSCA', fontsize=80) #(fSCA_op - fSCA_ut) in sheltered
-plt.yticks(fontsize=80)
-plt.xlabel('sites', fontsize=80) #(fSCA_op - fSCA_ut) in exposed
-plt.xticks(ind, ('scMr', 'scAp', 'scMy', 'krew', 'jmz', 'nrc'),fontsize=80)
-plt.ylim((0,100))
-plt.xlim((-0.9,11))
-plt.legend(fontsize=55, loc = 'upper left')
-
-#plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
- 
-#plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_expShl_opUt_melt.png')
-
-#rects1 = plt.bar(ind - 3*width/2, fSCA_0p_shl_2550, width, #yerr=men_std,
-#                color='palevioletred', label='0p_shl_2550') # palevioletred mediumvioletred firebrick
-#rects2 = plt.bar(ind - width/2, fSCA_0p_exp_2550, width, #yerr=women_std,
-#                color='palegoldenrod', label='0p_exp_2550') #palegoldenrod  goldenrod darkgoldenrod
-#rects3 = plt.bar(ind + width/2, fSCA_ut_shl_2550, width, #yerr=women_std,
-#                color='palegreen', label='ut_shl_2550') #seagreen palegreen lawngreen darkolivegreen
-#rects4 = plt.bar(ind + 3*width/2, fSCA_ut_exp_2550, width, #yerr=women_std,
-#                color='dodgerblue', label='ut_exp_2550') #powderblue dodgerblue cornflowerblue cadetblue blueviolet
-#rects11 = plt.bar(ind - 3*width/2, fSCA_0p_shl_5075, width, 
-#                  color='pink', label='0p_shl_5075')#bottom=fSCA_0p_shl_2550, 
-#rects22 = plt.bar(ind - width/2, fSCA_0p_exp_5075, width, #yerr=women_std,
-#                color='orange', label='0p_exp_5075') #palegoldenrod  goldenrod darkgoldenrod
-#rects33 = plt.bar(ind + width/2, fSCA_ut_shl_5075, width, #yerr=women_std,
-#                color='forestgreen', label='ut_shl_5075') #seagreen palegreen lawngreen darkolivegreen
-#rects44 = plt.bar(ind + 3*width/2, fSCA_ut_exp_5075, width, #yerr=women_std,
-#                color='cornflowerblue', label='ut_exp_5075') #powderblue dodgerblue cornflowerblue cadetblue blueviolet
-
-#%%
-fsca_shEx_ut2550 = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
-                                        fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,25,50)
-
-fsca_hlvd_exp2550 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
-                                         fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
-                                         fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
-                                         fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],25,50)
-
-fsca_hlvd_shl2550 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
-                                         fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
-                                         fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
-                                         fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],25,50)
-
-fsca_shEx_ut5075 = fsca0p_fscaUt_fscaLimit (fSCA_ut_shl_sc26m,fSCA_ut_shl_sc17a,fSCA_ut_shl_sc18m,fSCA_ut_shl_Krew,fSCA_ut_shl_Jmz,fSCA_ut_shl_nrc,
-                                        fSCA_ut_exp_sc26m,fSCA_ut_exp_sc17a,fSCA_ut_exp_sc18m,fSCA_ut_exp_Krew,fSCA_ut_exp_Jmz,fSCA_ut_exp_nrc,50,75)
-
-fsca_hlvd_exp5075 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[2],fSCA_uT_rad_vegDens_sc17a[2],fSCA_uT_rad_vegDens_sc18m[2],
-                                         fSCA_uT_rad_vegDens_krew[2],fSCA_uT_rad_vegDens_jmz[2],fSCA_uT_rad_vegDens_nrc[2],
-                                         fSCA_uT_rad_vegDens_sc26m[0],fSCA_uT_rad_vegDens_sc17a[0],fSCA_uT_rad_vegDens_sc18m[0],
-                                         fSCA_uT_rad_vegDens_krew[0],fSCA_uT_rad_vegDens_jmz[0],fSCA_uT_rad_vegDens_nrc[0],50,75)
-
-fsca_hlvd_shl5075 = fsca0p_fscaUt_fscaLimit (fSCA_uT_rad_vegDens_sc26m[3],fSCA_uT_rad_vegDens_sc17a[3],fSCA_uT_rad_vegDens_sc18m[3],
-                                         fSCA_uT_rad_vegDens_krew[3],fSCA_uT_rad_vegDens_jmz[3],fSCA_uT_rad_vegDens_nrc[3],
-                                         fSCA_uT_rad_vegDens_sc26m[1],fSCA_uT_rad_vegDens_sc17a[1],fSCA_uT_rad_vegDens_sc18m[1],
-                                         fSCA_uT_rad_vegDens_krew[1],fSCA_uT_rad_vegDens_jmz[1],fSCA_uT_rad_vegDens_nrc[1],50,75)
-
-label4 = ['SCWC 26MAR2016-exposed-25-50','SCWC 17APR2016-exposed-25-50','SCWC 18MAY2016-exposed-25-50','KREW 2010-exposed-25-50','JRBN 2010-exposed-25-50','NRC 2010-exposed-25-50']
-label5 = ['SCWC 26MAR2016-sheltered-25-50-25-50','SCWC 17APR2016-sheltered-25-50','SCWC 18MAY2016-sheltered-25-50','KREW 2010-sheltered-25-50','JRBN 2010-sheltered-25-50','NRC 2010-sheltered-25-50']
-label6 = ['SCWC 26MAR2016-exposed-50-75','SCWC 17APR2016-exposed-50-75','SCWC 18MAY2016-exposed-50-75','KREW 2010-exposed-50-75','JRBN 2010-exposed-50-75','NRC 2010-exposed-50-75']
-label7 = ['SCWC 26MAR2016-sheltered-50-75','SCWC 17APR2016-sheltered-50-75','SCWC 18MAY2016-sheltered-50-75','KREW 2010-sheltered-50-75','JRBN 2010-sheltered-50-75','NRC 2010-sheltered-50-75']
-
-#color = ['plum','purple','hotpink','red','darkgreen','deepskyblue']#'olive',
-marker = ['^','>','v','D','s','o']
-
-plt.subplots(figsize=(60,60))
-
-for i in range (1,6):
-    plt.scatter(fsca_hlvd_exp2550[i],fsca_shEx_ut2550[i], s=80**2, color = 'lightblue', marker = marker[i], label =  label4[i])#
-    plt.scatter(fsca_hlvd_shl2550[i],fsca_shEx_ut2550[i], s=80**2, color = 'blue', marker = marker[i], label =  label5[i])#
-    plt.scatter(fsca_hlvd_exp5075[i],fsca_shEx_ut5075[i], s=80**2, color = 'violet', marker = marker[i], label =  label6[i])#
-    plt.scatter(fsca_hlvd_shl5075[i],fsca_shEx_ut5075[i], s=80**2, color = 'navy', marker = marker[i], label =  label7[i])#
-
-plt.ylabel('(fSCA_sheltered - fSCA_exposed)', fontsize=80)
-plt.yticks(fontsize=80)
-plt.xlabel('(fSCA_highVD - fSCA_lowVD)', fontsize=80)
-plt.xticks(fontsize=80)
-plt.ylim((-40,40))
-plt.xlim((-41,40))
-plt.legend(fontsize=50, loc = 'upper left')
-
-x = [-41,-8,-5,-2,0,2,40]
-y = [0,0,0,0,0,0,0]
-plt.plot(x,y, color = 'black') #line_temp_ls[2*i],
-
-y2 = [-40,-8,-5,-2,0,2,40]
-x2 = [0,0,0,0,0,0,0]
-plt.plot(x2,y2, color = 'black') #line_temp_ls[2*i],   
-#plt.title('50% to 75% fSCA', fontsize=60) #, y=2.24, x=-0.65 loc = 'right', 
- 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/deltaFsca_expShl_hlvd_melt.png')
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
