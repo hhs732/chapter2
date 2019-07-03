@@ -602,6 +602,300 @@ def lin_reg(X,Y):
     ssr=np.sum((Yhat-barY )**2)
     
     return {'Yhat':Yhat,'b0':b0,'b1':b1,'e_i': e_i,'sse':sse,'ssr':ssr}
+
+def reshapeData(snow_temp_north_vegdens,col): 
+    
+    lat_long_nad83 = [np.min(snow_temp_north_vegdens[:,0]),np.max(snow_temp_north_vegdens[:,0]),np.min(snow_temp_north_vegdens[:,1]),np.max(snow_temp_north_vegdens[:,1])]
+    ncols = (lat_long_nad83[1]-lat_long_nad83[0]+1).astype(int)
+    nrows = (lat_long_nad83[3]-lat_long_nad83[2]+1).astype(int)
+    snwMap = np.reshape(snow_temp_north_vegdens[:,col],[ncols,nrows])
+    
+    return snwMap
+
+def readTiff_creatDF(tiffFile):    
+    demset = gdal.Open(tiffFile)
+    band = demset.GetRasterBand(1)
+    lwr = band.ReadAsArray()
+    
+    x0, dx, dxdy, y0, dydx, dy = demset.GetGeoTransform()
+    nrows, ncols = lwr.shape
+    #x1 = x0 + dx * ncols
+    #y1 = y0 + dy * nrows
+    #extent1=[x0, x1, y1, y0]
+    
+    latitude =[]
+    for x in range (ncols):
+        latitude.append(dx*x+x0)
+    longitude = []
+    for y in range (nrows):
+        longitude.append(y0-dy*y)
+   
+    latitude_rp = (np.tile(latitude, nrows))
+    longitude_rp = (np.repeat(longitude, ncols))
+    lwr_rp = np.reshape(lwr,(nrows*ncols)).T
+    lwr_lat_lon1 = np.vstack([latitude_rp,longitude_rp,lwr_rp]).T
+
+    lwr_df = pd.DataFrame(lwr_lat_lon1,columns=['x','y','lwr'])
+    lwr_df.sort_values(by=['x','y'],inplace=True)
+    lwr_df.index=np.arange(0,len(lwr_df))
+    
+    return lwr_df
+
+def changeResolution0fMultipleTiffsAndCreateDF (path2imagesIn,path2images0ut):
+    # get the list of images
+    listOfImgs=os.listdir(path2imagesIn)
+    
+    # load image using p2i
+    fullPath2imgs = []
+    for p2i in listOfImgs:
+        fullPath2img=os.path.join(path2imagesIn,p2i)
+        fullPath2imgs.append(fullPath2img)
+        
+    ##changing resolution
+    for tif in range (len(fullPath2imgsS)):
+        gdal.Warp(path2images0ut[tif], fullPath2imgs[tif], xRes=100, yRes=100)
+    
+    df_100 = []
+    for tif in range (len(path2images0ut)):
+        wr_100 = readTiff_creatDF(path2images0ut[0])
+        df_100.append(wr_100) 
+        
+    all_wr = []
+    for df in range (len(path2images0ut)):
+        aaaa = df_100[df]['lwr'].values
+        all_wr.append(aaaa)
+    
+    all_wr_mean = np.mean(all_wr, axis = 0)
+    lat_swr = (df_100[0][['x']].values).T
+    lon_swr = (df_100[0][['y']].values).T
+    latLon_swr = np.vstack([lat_swr,lon_swr,all_wr_mean])
+    
+    return latLon_swr
+#%% #loading LWR 
+path2images_LWR= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/"
+# get the list of images
+listOfImgs=os.listdir(path2images)
+
+# load image using p2i
+fullPath2imgs = []
+for p2i in listOfImgs:
+    fullPath2img=os.path.join(path2images,p2i)
+    fullPath2imgs.append(fullPath2img)
+
+counter = np.arange(1,len(fullPath2imgs)+1) #lst_hillslope_isoCalib1st
+LWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/LWR_100_{}.tif'.format(i) for i in counter]
+
+##changing resolution
+for tif in range (len(fullPath2imgs)):
+    gdal.Warp(LWR_tiff_100[tif], fullPath2imgs[tif], xRes=100, yRes=100)
+
+lwr_100_df_krew = []
+for tif in range (len(LWR_tiff_100)):
+    lwr_100 = readTiff_creatDF(LWR_tiff_100[0])
+    lwr_100_df_krew.append(lwr_100) 
+    
+all_lwr = []
+for df in range (len(LWR_tiff_100)):
+    aaaa = lwr_100_df_krew[df]['lwr'].values
+    all_lwr.append(aaaa)
+
+all_lwr_mean = np.mean(all_lwr, axis = 0)
+lat_lwr = (lwr_100_df_krew[0][['x']].values).T
+lon_lwr = (lwr_100_df_krew[0][['y']].values).T
+latLon_lwr = np.vstack([lat_lwr,lon_lwr,all_lwr_mean])
+
+####### loading SWR
+
+path2imagesS = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/"
+# get the list of images
+listOfImgsS=os.listdir(path2imagesS)
+
+# load image using p2i
+fullPath2imgsS = []
+for p2i in listOfImgsS:
+    fullPath2img=os.path.join(path2imagesS,p2i)
+    fullPath2imgsS.append(fullPath2img)
+
+counterS = np.arange(1,len(fullPath2imgsS)+1) #lst_hillslope_isoCalib1st
+SWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/SWR_100_{}.tif'.format(i) for i in counter]
+
+##changing resolution
+for tif in range (len(fullPath2imgsS)):
+    gdal.Warp(SWR_tiff_100[tif], fullPath2imgsS[tif], xRes=100, yRes=100)
+
+swr_100_df_krew = []
+for tif in range (len(SWR_tiff_100)):
+    swr_100 = readTiff_creatDF(SWR_tiff_100[0])
+    swr_100_df_krew.append(swr_100) 
+    
+all_swr = []
+for df in range (len(SWR_tiff_100)):
+    aaaa = swr_100_df_krew[df]['lwr'].values
+    all_swr.append(aaaa)
+
+all_swr_mean = np.mean(all_swr, axis = 0)
+lat_swr = (swr_100_df_krew[0][['x']].values).T
+lon_swr = (swr_100_df_krew[0][['y']].values).T
+latLon_swr = np.vstack([lat_swr,lon_swr,all_swr_mean])
+
+SWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/SWR_100_{}.tif'.format(i) for i in counter]
+
+
+#load data KREW 2010
+#ascii_grid_veg_indexKrew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_krew.npy')
+#
+#veg_density_kr = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/veg_density_kr.npy')
+#
+#elev_krew = ascii_grid_veg_indexKrew[:,2]
+#tempDJF_gm_krew = -0.0033*elev_krew + 7.2339 #y = -0.0033x + 7.2339 #R² = 0.5074
+#
+#veg_snow_temp_density_krew = np.vstack([ascii_grid_veg_indexKrew[:,0],ascii_grid_veg_indexKrew[:,1].astype(int),ascii_grid_veg_indexKrew[:,2],
+#                                        ascii_grid_veg_indexKrew[:,3],ascii_grid_veg_indexKrew[:,4],ascii_grid_veg_indexKrew[:,5],
+#                                        ascii_grid_veg_indexKrew[:,6],tempDJF_gm_krew,veg_density_kr[:,2],tempDJF_gm_krew,tempDJF_gm_krew]).T
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_krew',veg_snow_temp_density_krew)
+
+## slope less than 30
+#snow_temp_vegdens_index_sL30_krew = veg_snow_temp_density_krew[(veg_snow_temp_density_krew[:,5]>-50)&(veg_snow_temp_density_krew[:,4]<30)]
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew',snow_temp_vegdens_index_sL30_krew)
+snow_temp_vegdens_index_sL30_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew.npy')
+
+#calculating topo_dimension from cut northness
+lat_long_nad83_krew = [np.min(snow_temp_vegdens_index_sL30_krew[:,0]),np.max(snow_temp_vegdens_index_sL30_krew[:,0]),np.min(snow_temp_vegdens_index_sL30_krew[:,1]),np.max(snow_temp_vegdens_index_sL30_krew[:,1])]
+lat_long_degre_krew = [37.029257, 37.08022, -119.20915406614355, -119.18251130946379]
+
+elev_krew = snow_temp_vegdens_index_sL30_krew[:,2]
+tempDJF_gm_krew = -0.0033*elev_krew + 7.2339 #y = -0.0033x + 7.2339 #R² = 0.5074
+elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
+
+snow_temp_vegdens_index_sL30_krew_df = pd.DataFrame(snow_temp_vegdens_index_sL30_krew, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
+
+elevationBand_krew = np.arange(min(snow_temp_vegdens_index_sL30_krew_df['z']),max(snow_temp_vegdens_index_sL30_krew_df['z']),67)
+snow_temp_vegdens_sL30_elevCls_krew = classificationElevation(snow_temp_vegdens_index_sL30_krew,elevationBand_krew,elev_class_inx)
+
+meanTemp_elevClass_krew = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)   
+
+# under canopy and 0pen fsca
+fsca_ut_krew, fsca_0p_krew = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
+#fsca_ut_samp_krew, fsca_0p_samp_krew = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
+##statistical test
+#statistic_krew1,pvalue_krew1,average_sample_exp_krew1,average_sample_shl_krew1,significant_krew1 = wilcoxonTest(fsca_ut_samp_krew, fsca_0p_samp_krew)
+
+# under canopy and 0pen fsca----exposed vs. sheltered
+fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
+#fsca open -minus- fsca under canopy
+fSCA_0u_exp_Krew, fSCA_0u_shl_Krew = fsca0pn_fscaUnTr(fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew, elev_class_inx)
+#statistical test
+#sample_size2 = 100      
+#fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size2)
+#statistic_Krew2,pvalue_Krew2,average_sample_exp_Krew2,average_sample_shl_Krew2,significant_krew2 = wilcoxonTest(fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp)
+#
+##y = -0.003300x + 7.287576
+tempDec_krew = -0.0033*elevationBand_krew + 7.287576 
+
+# under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
+fSCA_uT_rad_vegDens_krew = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
+#fSCA_ut_exp_l_sam_krew, fSCA_ut_exp_h_sam_krew, fSCA_ut_shl_l_sam_krew, fSCA_ut_shl_h_sam_krew = fSCAcalculation_elevNorthVegDensRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
+#statistic_ex_krew,pvalue_ex_krew,average_sample_l_ex_krew,average_sample_h_ex_krew,significant_ex_krew = wilcoxonTest(fSCA_ut_exp_l_sam_krew, fSCA_ut_exp_h_sam_krew)
+#statistic_sh_krew,pvalue_sh_krew,average_sample_l_sh_krew,average_sample_h_sh_krew,significant_sh_krew = wilcoxonTest(fSCA_ut_shl_l_sam_krew, fSCA_ut_shl_h_sam_krew)
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/significant_krew',[significant_krew1,significant_krew2,significant_ex_krew,significant_sh_krew])
+x_krew = np.arange(lat_long_nad83_krew[0], lat_long_nad83_krew[1]+1, 100)
+y_krew = np.arange(lat_long_nad83_krew[2], lat_long_nad83_krew[3]+1, 100)
+xx_krew, yy_krew = np.meshgrid(x_krew, y_krew, sparse=True)
+
+yindx = np.zeros((len(snow_temp_vegdens_sL30_elevCls_krew),1))
+snow_temp_vegdens_sL30_elevCls_krew2 = np.append(snow_temp_vegdens_sL30_elevCls_krew, yindx, 1)
+classifier_krew = np.arange(1000,len(x_krew)*len(y_krew)+1001)
+
+counter_x = 1
+for clss in range (len(x_krew)-1):
+    snow_temp_vegdens_sL30_elevCls_krew2[:,10][(snow_temp_vegdens_sL30_elevCls_krew2[:,0]>=x_krew[clss])&
+    (snow_temp_vegdens_sL30_elevCls_krew2[:,0]<=x_krew[clss+1])] = counter_x
+    counter_x += 1
+
+counter_y = 100
+for clss in range (len(y_krew)-1):
+    snow_temp_vegdens_sL30_elevCls_krew2[:,11][(snow_temp_vegdens_sL30_elevCls_krew2[:,1]>=y_krew[clss])&
+    (snow_temp_vegdens_sL30_elevCls_krew2[:,1]<=y_krew[clss+1])] = counter_y
+    counter_y += 100  
+
+
+classifier_xy = np.reshape((snow_temp_vegdens_sL30_elevCls_krew2[:,10]+snow_temp_vegdens_sL30_elevCls_krew2[:,11]), 
+                           (len(snow_temp_vegdens_sL30_elevCls_krew2),1))
+                           
+snow_temp_vegdens_sL30_elevCls_krew3 = np.append(snow_temp_vegdens_sL30_elevCls_krew2, classifier_xy, 1)
+aaaa_test1 = snow_temp_vegdens_sL30_elevCls_krew3[0:105710,:]
+
+classifier_xy_n0duplicate = (pd.DataFrame(classifier_xy)).drop_duplicates(inplace=False)
+classifier_xy_n0duplicate.index = np.arange(0,len(classifier_xy_n0duplicate))
+
+#calculating fsca in 100 * 100 pixel
+fSCA_cls_krew = []
+for clsf in range (len(classifier_xy_n0duplicate)):#
+     snw = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsf])&((snow_temp_vegdens_sL30_elevCls_krew3[:,5]==77)|(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==44))])
+     n0snw = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsf])&((snow_temp_vegdens_sL30_elevCls_krew3[:,5]==-7)|(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==-4))])
+     
+     if snw+n0snw != 0:
+         fSCA_ut = float(snw)/(snw+n0snw)
+     else: fSCA_ut = 0
+   
+     fSCA_cls_krew.append(fSCA_ut)
+
+#calculating fsca under canopy and open in 100 * 100 pixel
+fSCA_cls_ut_krew = []
+fSCA_cls_0p_krew = []
+for cls in range (len(classifier_xy_n0duplicate)):#
+     snwUT = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][cls])&(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==77)])
+     n0snwUT = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][cls])&(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==-7)])
+     snw0p = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][cls])&(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==44)])
+     n0snw0p = len(snow_temp_vegdens_sL30_elevCls_krew3[(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][cls])&(snow_temp_vegdens_sL30_elevCls_krew3[:,5]==-4)])
+     
+     if snwUT+n0snwUT != 0:
+         fSCA_ut = float(snwUT)/(snwUT+n0snwUT)
+     else: fSCA_ut = 0
+     
+     if snw0p+n0snw0p != 0:
+         fSCA_0p = float(snw0p)/(snw0p+n0snw0p) 
+     else: fSCA_0p = 0
+          
+     fSCA_cls_ut_krew.append(fSCA_ut)
+     fSCA_cls_0p_krew.append(fSCA_0p)
+
+#calculating average northness in 100 * 100 pixel
+nrth_cls_krew = []
+for clsN in range (len(classifier_xy_n0duplicate)):#
+     meanNrth = np.mean(snow_temp_vegdens_sL30_elevCls_krew3[:,3][(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsN])])
+     nrth_cls_krew.append(meanNrth)
+
+#calculating average temp in 100 * 100 pixel
+temp_cls_krew = []
+for clsT in range (len(classifier_xy_n0duplicate)):#
+     meanTemp = np.mean(snow_temp_vegdens_sL30_elevCls_krew3[:,7][(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsT])])
+     temp_cls_krew.append(meanTemp)
+     
+#calculating average veg density in 100 * 100 pixel
+vegD_cls_krew = []
+for clsV in range (len(classifier_xy_n0duplicate)):#
+     meanVD = np.mean(snow_temp_vegdens_sL30_elevCls_krew3[:,8][(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsV])])
+     vegD_cls_krew.append(meanVD)
+
+#calculating veg density under tree in 100 * 100 pixel
+
+vegD_ut_cls_krew = []
+for clsVu in range (len(classifier_xy_n0duplicate)):#
+     meanVDut = np.mean(snow_temp_vegdens_sL30_elevCls_krew3[:,8][(snow_temp_vegdens_sL30_elevCls_krew3[:,12]==classifier_xy_n0duplicate[0][clsVu]) & ((snow_temp_vegdens_sL30_elevCls_krew3[:,5]>=70) | (snow_temp_vegdens_sL30_elevCls_krew3[:,5]<=-6))])
+     vegD_ut_cls_krew.append(meanVDut)
+
+## snow maping
+#snow_lwr_vegdens_allExtent_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_krew.npy')
+#ouputPath_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_krew_lr3.png'
+#T_krew = 'KREW'
+#plotSnowMap_lowResol(snow_temp_vegdens_allExtent_krew,ouputPath_krew,T_krew)
+#
+##lat_long_nad83_krew = [np.min(snow_temp_vegdens_allExtent_krew[:,0]),np.max(snow_temp_vegdens_allExtent_krew[:,0]),np.min(snow_temp_vegdens_allExtent_krew[:,1]),np.max(snow_temp_vegdens_allExtent_krew[:,1])]
+#
+#ouputPath_nrt_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_krew_lr3.png'
+#plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_krew,ouputPath_nrt_krew,T_krew)
+
 #%% load data nrc 2010
 
 #ascii_grid_veg_indexnrc = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_nrc.npy')
@@ -933,74 +1227,6 @@ fSCA_uT_rad_vegDens_sc18m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #ouputPath_nrt_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc18m_lr2.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc18m,ouputPath_nrt_sc18m,T_sc18m)
 
-#%% load data KREW 2010
-#ascii_grid_veg_indexKrew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_krew.npy')
-#
-#veg_density_kr = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/veg_density_kr.npy')
-#
-#elev_krew = ascii_grid_veg_indexKrew[:,2]
-#tempDJF_gm_krew = -0.0033*elev_krew + 7.2339 #y = -0.0033x + 7.2339 #R² = 0.5074
-#
-#veg_snow_temp_density_krew = np.vstack([ascii_grid_veg_indexKrew[:,0],ascii_grid_veg_indexKrew[:,1].astype(int),ascii_grid_veg_indexKrew[:,2],
-#                                        ascii_grid_veg_indexKrew[:,3],ascii_grid_veg_indexKrew[:,4],ascii_grid_veg_indexKrew[:,5],
-#                                        ascii_grid_veg_indexKrew[:,6],tempDJF_gm_krew,veg_density_kr[:,2],tempDJF_gm_krew,tempDJF_gm_krew]).T
-#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_krew',veg_snow_temp_density_krew)
-
-## slope less than 30
-#snow_temp_vegdens_index_sL30_krew = veg_snow_temp_density_krew[(veg_snow_temp_density_krew[:,5]>-50)&(veg_snow_temp_density_krew[:,4]<30)]
-#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew',snow_temp_vegdens_index_sL30_krew)
-snow_temp_vegdens_index_sL30_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew.npy')
-aaaa_test1 = snow_temp_vegdens_index_sL30_krew[0:710,:]
-
-#calculating topo_dimension from cut northness
-lat_long_nad83_krew = [np.min(snow_temp_vegdens_index_sL30_krew[:,0]),np.max(snow_temp_vegdens_index_sL30_krew[:,0]),np.min(snow_temp_vegdens_index_sL30_krew[:,1]),np.max(snow_temp_vegdens_index_sL30_krew[:,1])]
-lat_long_degre_krew = [37.029257, 37.08022, -119.20915406614355, -119.18251130946379]
-
-elev_krew = snow_temp_vegdens_index_sL30_krew[:,2]
-tempDJF_gm_krew = -0.0033*elev_krew + 7.2339 #y = -0.0033x + 7.2339 #R² = 0.5074
-
-snow_temp_vegdens_index_sL30_krew_df = pd.DataFrame(snow_temp_vegdens_index_sL30_krew, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
-
-elevationBand_krew = np.arange(min(snow_temp_vegdens_index_sL30_krew_df['z']),max(snow_temp_vegdens_index_sL30_krew_df['z']),67)
-snow_temp_vegdens_sL30_elevCls_krew = classificationElevation(snow_temp_vegdens_index_sL30_krew,elevationBand_krew,elev_class_inx)
-
-meanTemp_elevClass_krew = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)   
-
-# under canopy and 0pen fsca
-fsca_ut_krew, fsca_0p_krew = fSCAcalculation_elevClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
-#fsca_ut_samp_krew, fsca_0p_samp_krew = fSCAcalculation_elevRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
-##statistical test
-#statistic_krew1,pvalue_krew1,average_sample_exp_krew1,average_sample_shl_krew1,significant_krew1 = wilcoxonTest(fsca_ut_samp_krew, fsca_0p_samp_krew)
-
-# under canopy and 0pen fsca----exposed vs. sheltered
-fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew = fSCAcalculation_elevNorthClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
-#fsca open -minus- fsca under canopy
-fSCA_0u_exp_Krew, fSCA_0u_shl_Krew = fsca0pn_fscaUnTr(fSCA_ut_exp_Krew, fSCA_ut_shl_Krew, fSCA_0p_exp_Krew, fSCA_0p_shl_Krew, elev_class_inx)
-#statistical test
-#sample_size2 = 100      
-#fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp = fSCAcalculation_elevNorthRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size2)
-#statistic_Krew2,pvalue_Krew2,average_sample_exp_Krew2,average_sample_shl_Krew2,significant_krew2 = wilcoxonTest(fSCA_0u_exp_Krew_samp, fSCA_0u_shl_Krew_samp)
-#
-##y = -0.003300x + 7.287576
-tempDec_krew = -0.0033*elevationBand_krew + 7.287576 
-
-# under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
-fSCA_uT_rad_vegDens_krew = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx)
-#fSCA_ut_exp_l_sam_krew, fSCA_ut_exp_h_sam_krew, fSCA_ut_shl_l_sam_krew, fSCA_ut_shl_h_sam_krew = fSCAcalculation_elevNorthVegDensRandom(snow_temp_vegdens_sL30_elevCls_krew,elev_class_inx,sample_size)
-#statistic_ex_krew,pvalue_ex_krew,average_sample_l_ex_krew,average_sample_h_ex_krew,significant_ex_krew = wilcoxonTest(fSCA_ut_exp_l_sam_krew, fSCA_ut_exp_h_sam_krew)
-#statistic_sh_krew,pvalue_sh_krew,average_sample_l_sh_krew,average_sample_h_sh_krew,significant_sh_krew = wilcoxonTest(fSCA_ut_shl_l_sam_krew, fSCA_ut_shl_h_sam_krew)
-#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/significant_krew',[significant_krew1,significant_krew2,significant_ex_krew,significant_sh_krew])
-
-## snow maping
-#snow_temp_vegdens_allExtent_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_krew.npy')
-#ouputPath_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_krew_lr3.png'
-#T_krew = 'KREW'
-#plotSnowMap_lowResol(snow_temp_vegdens_allExtent_krew,ouputPath_krew,T_krew)
-#
-##lat_long_nad83_krew = [np.min(snow_temp_vegdens_allExtent_krew[:,0]),np.max(snow_temp_vegdens_allExtent_krew[:,0]),np.min(snow_temp_vegdens_allExtent_krew[:,1]),np.max(snow_temp_vegdens_allExtent_krew[:,1])]
-#
-#ouputPath_nrt_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_krew_lr3.png'
-#plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_krew,ouputPath_nrt_krew,T_krew)
 
 #%% ploting fSCA vs. Dec temp lapse rate
 fSCA_0u = [fsca_ut_sc26m, fsca_0p_sc26m, fsca_ut_sc17a, fsca_0p_sc17a,
@@ -1493,11 +1719,11 @@ sns_0t.index = np.arange(0,len(sns_0t))
 
 plt.subplots(figsize=(60,40))
 plt.plot(A0t7599[0,A0t7599[0,:].argsort()],A0t7599[1,A0t7599[0,:].argsort()],linestyle='None',
-         color='navy', label=r'$\Delta$fSCA 75_99',linewidth=20, marker = "o", markersize = 60)#, markerfacecolor = 'black')
+         color='navy', label=r'$/Delta$fSCA 75_99',linewidth=20, marker = "o", markersize = 60)#, markerfacecolor = 'black')
 plt.plot(A0t5075[0,A0t5075[0,:].argsort()],A0t5075[1,A0t5075[0,:].argsort()],linestyle='None',
-         color='navy', label=r'$\Delta$fSCA 50_75',linewidth=20, marker = "s", markersize = 60)#, markerfacecolor = 'black')
+         color='navy', label=r'$/Delta$fSCA 50_75',linewidth=20, marker = "s", markersize = 60)#, markerfacecolor = 'black')
 plt.plot(A0t2550[0,A0t2550[0,:].argsort()],A0t2550[1,A0t2550[0,:].argsort()],linestyle='None',
-         color='navy', label=r'$\Delta$fSCA 25_50',linewidth=20, marker = "X", markersize = 60)#, markerfacecolor = 'black')
+         color='navy', label=r'$/Delta$fSCA 25_50',linewidth=20, marker = "X", markersize = 60)#, markerfacecolor = 'black')
 
 lowess = sm.nonparametric.lowess
 Z2 = lowess(sns_0t['fsca'],sns_0t['temp'],frac=0.7,it=2)
@@ -1563,17 +1789,17 @@ sns_shEx_0p.index = np.arange(0,len(sns_shEx_0p))
 
 plt.subplots(figsize=(60,40))
 #plt.plot(Bse0p7599[0,Bse0p7599[0,:].argsort()],Bse0p7599[1,Bse0p7599[0,:].argsort()],linestyle='None',
-#         color='mediumvioletred', label=r'$\Delta$fSCA open_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
+#         color='mediumvioletred', label=r'$/Delta$fSCA open_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
 #plt.plot(Bse0p5075[0,Bse0p5075[0,:].argsort()],Bse0p5075[1,Bse0p5075[0,:].argsort()],linestyle='None',
-#        color='mediumvioletred', label=r'$\Delta$fSCA open_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
+#        color='mediumvioletred', label=r'$/Delta$fSCA open_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
 #plt.plot(Bse0p2550[0,Bse0p2550[0,:].argsort()],Bse0p2550[1,Bse0p2550[0,:].argsort()],linestyle='None',
-#        color='mediumvioletred', label=r'$\Delta$fSCA open_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
+#        color='mediumvioletred', label=r'$/Delta$fSCA open_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
 plt.plot(BseUt7599[0,BseUt7599[0,:].argsort()],BseUt7599[1,BseUt7599[0,:].argsort()],linestyle='None',
-         color='deepskyblue', label=r'$\Delta$fSCA underTree_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
+         color='deepskyblue', label=r'$/Delta$fSCA underTree_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
 plt.plot(BseUt5075[0,BseUt5075[0,:].argsort()],BseUt5075[1,BseUt5075[0,:].argsort()],linestyle='None',
-        color='deepskyblue', label=r'$\Delta$fSCA underTree_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
+        color='deepskyblue', label=r'$/Delta$fSCA underTree_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
 plt.plot(BseUt2550[0,BseUt2550[0,:].argsort()],BseUt2550[1,BseUt2550[0,:].argsort()],linestyle='None',
-        color='deepskyblue', label=r'$\Delta$fSCA underTree_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
+        color='deepskyblue', label=r'$/Delta$fSCA underTree_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
 
 lowess = sm.nonparametric.lowess
 #Z3 = lowess(sns_shEx_0p['fsca'],sns_shEx_0p['temp'],frac=0.7,it=2)
@@ -1664,17 +1890,17 @@ sns_hlvd_shl.index = np.arange(0,len(sns_hlvd_shl))
 plt.subplots(figsize=(60,40))
 
 plt.plot(ChlE7599[0,ChlE7599[0,:].argsort()],ChlE7599[1,ChlE7599[0,:].argsort()],linestyle='None',
-         color='darkorange', label=r'$\Delta$fSCA exposed_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black'
+         color='darkorange', label=r'$/Delta$fSCA exposed_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black'
 plt.plot(ChlE5075[0,ChlE5075[0,:].argsort()],ChlE5075[1,ChlE5075[0,:].argsort()],linestyle='None',
-        color='darkorange', label=r'$\Delta$fSCA exposed_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
+        color='darkorange', label=r'$/Delta$fSCA exposed_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
 plt.plot(ChlE2550[0,ChlE2550[0,:].argsort()],ChlE2550[1,ChlE2550[0,:].argsort()],linestyle='None',
-        color='darkorange', label=r'$\Delta$fSCA exposed_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
+        color='darkorange', label=r'$/Delta$fSCA exposed_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
 #plt.plot(ChlS7599[0,ChlS7599[0,:].argsort()],ChlS7599[1,ChlS7599[0,:].argsort()],linestyle='None',
-#         color='darkgreen', label=r'$\Delta$fSCA sheltered_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
+#         color='darkgreen', label=r'$/Delta$fSCA sheltered_75_99',linewidth=20, marker = "o", markersize = 70)#, markerfacecolor = 'black')
 #plt.plot(ChlS5075[0,ChlS5075[0,:].argsort()],ChlS5075[1,ChlS5075[0,:].argsort()],linestyle='None',
-#        color='darkgreen', label=r'$\Delta$fSCA sheltered_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
+#        color='darkgreen', label=r'$/Delta$fSCA sheltered_50_75',linewidth=20, marker = "s", markersize = 70)#, markerfacecolor = 'black')
 #plt.plot(ChlS2550[0,ChlS2550[0,:].argsort()],ChlS2550[1,ChlS2550[0,:].argsort()],linestyle='None',
-#        color='darkgreen', label=r'$\Delta$fSCA sheltered_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
+#        color='darkgreen', label=r'$/Delta$fSCA sheltered_25_50',linewidth=20, marker = "X", markersize = 70)#, markerfacecolor = 'black')
 
 #sns.regplot(x="temp", y="fsca", data = sns_data, lowess = True)#, fit_reg = True,  order=2, ci=90 
 lowess = sm.nonparametric.lowess
