@@ -60,29 +60,32 @@ from lapseRate_elevNorthVegDClassification_allSites_rf_utility import *
 #snow_temp_vegdens_index_sL30_krew = veg_snow_temp_density_krew[(veg_snow_temp_density_krew[:,5]>-50)&(veg_snow_temp_density_krew[:,4]<30)]
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew',snow_temp_vegdens_index_sL30_krew)
 
-#loading LWR 
-path2images_LWR= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/res1b1/"
+#loading LWR and creating 100b100 tif files
+#path2images_LWR= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/res1b1/"
 counter = np.arange(1,122) #lst_hillslope_isoCalib1st
-LWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/LWR_100_{}.tif'.format(i) for i in counter]
-latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2images_LWR,LWR_tiff_100)
+path2LWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/LWR_100_{}.tif'.format(i) for i in counter]
+#latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2images_LWR,path2LWR_tiff_100)
 
-#%## loading SWR
-path2images_SWR = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/res1b1/"
-SWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/SWR_100_{}.tif'.format(i) for i in counter]
-latLon_swr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2images_SWR,SWR_tiff_100)
+#%## loading SWR and creating 100b100 tif files
+#path2images_SWR = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/res1b1/"
+path2SWR_tiff_100 = ['C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/SRad_in_Ground_day/SWR_100_{}.tif'.format(i) for i in counter]
+#latLon_swr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2images_SWR,path2SWR_tiff_100)
 
 #test projection
 #lwr_path_krew = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/LRad_in_Ground_day/20091201.tif"
 #lwr_df_krew1 = readTiff_creatDF(lwr_path_krew)
 #[min(lwr_df_krew1['x']),max(lwr_df_krew1['x']),min(lwr_df_krew1['y']),max(lwr_df_krew1['y'])]
 
-lwr_ls_krew1_limlLatLong = pd.DataFrame(latLon_lwr[(latLon_lwr[:,1]>=4100400)&(latLon_lwr[:,1]<=4105999)&
-                                       (latLon_lwr[:,0]>=303500)&(latLon_lwr[:,0]<=306000)], columns = ['x','y','lwr'])
-swr_ls_krew1_limlLatLong = pd.DataFrame(latLon_swr[(latLon_swr[:,1]>=4100400)&(latLon_swr[:,1]<=4105999)&
-                                       (latLon_swr[:,0]>=303500)&(latLon_swr[:,0]<=306000)], columns = ['x','y','swr'])
+#loading 100b100 lwr&swr tif files
+latLon_lwr_krew = creatingMeanRadiationfrom100b100tifFiles(path2LWR_tiff_100)
+lwr_ls_krew1_limlLatLong = pd.DataFrame(latLon_lwr_krew[(latLon_lwr_krew[:,1]>=4100400)&(latLon_lwr_krew[:,1]<=4105999)&
+                                       (latLon_lwr_krew[:,0]>=303500)&(latLon_lwr_krew[:,0]<=306000)], columns = ['x','y','lwr'])
 lwr_ls_krew1_limlLatLong2 = lwr_ls_krew1_limlLatLong.dropna()
-swr_ls_krew1_limlLatLong2 = swr_ls_krew1_limlLatLong.dropna()
 
+latLon_swr_krew = creatingMeanRadiationfrom100b100tifFiles(path2SWR_tiff_100)
+swr_ls_krew1_limlLatLong = pd.DataFrame(latLon_swr_krew[(latLon_swr_krew[:,1]>=4100400)&(latLon_swr_krew[:,1]<=4105999)&
+                                       (latLon_swr_krew[:,0]>=303500)&(latLon_swr_krew[:,0]<=306000)], columns = ['x','y','swr'])
+swr_ls_krew1_limlLatLong2 = swr_ls_krew1_limlLatLong.dropna()
 
 # loading other feature from fusion
 snow_temp_vegdens_index_sL30_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_krew.npy')
@@ -136,7 +139,6 @@ snow_temp_vegdens_sL30_elevCls_krew = snow_temp_vegdens_sL30_elevCls_krew[:,:10]
 snow_temp_vegdens_sL30_elevCls_precip_krew = np.append(snow_temp_vegdens_sL30_elevCls_krew, precip_krew1b1, 1)
 aaaa_test1 = snow_temp_vegdens_sL30_elevCls_precip_krew[0:105710,:]
 
-
 ## snow maping ##############################################################################
 #snow_lwr_vegdens_allExtent_krew = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_krew.npy')
 #ouputPath_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_contour_krew_lr3.png'
@@ -148,25 +150,34 @@ aaaa_test1 = snow_temp_vegdens_sL30_elevCls_precip_krew[0:105710,:]
 #ouputPath_nrt_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_krew_lr3.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_krew,ouputPath_nrt_krew,T_krew)
 
-# change resolution to 100b100 ###############################################################
+# change resolution to 100b100 #######################################################################
 snow_temp_vegdens_sL30_elevCls_precip_cls_krew = addClassifier2changeResolutionTo100B100 (lat_long_nad83_krew,snow_temp_vegdens_sL30_elevCls_precip_krew)
 classifier_krew = snow_temp_vegdens_sL30_elevCls_precip_cls_krew [:,13]
 
-#random forest AI modeling ###################################################################
-in_out_rf_krew = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_krew,snow_temp_vegdens_sL30_elevCls_precip_cls_krew)
+in_out_rf_krew0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_krew,snow_temp_vegdens_sL30_elevCls_precip_cls_krew)
 
-in_out_rf_krew_indx = (in_out_rf_krew ['x']-min(in_out_rf_krew ['x']))+(in_out_rf_krew ['y']-min(in_out_rf_krew ['y']))
+#define random forest AI features ###################################################################
+# defining index for adding lwr and swr
+in_out_rf_krew = in_out_rf_krew0.copy()
+roundingCoordinates (in_out_rf_krew) #rounding coodinates
+in_out_rf_krew_indx = 100*((in_out_rf_krew ['x']).astype(int))+(in_out_rf_krew ['y']).astype(int) #(in_out_rf_krew ['x']-min(in_out_rf_krew ['x']))+(in_out_rf_krew ['y']-min(in_out_rf_krew ['y']))
 in_out_rf_krew2 = pd.concat([in_out_rf_krew,in_out_rf_krew_indx],axis =1)
 in_out_rf_krew3 = pd.concat([in_out_rf_krew2,in_out_rf_krew_indx],axis =1)
 in_out_rf_krew_lswr = pd.concat([in_out_rf_krew3,in_out_rf_krew_indx],axis =1)
 in_out_rf_krew_lswr.columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr']
 
 #adding lwr and swr to the features
-swr_ls_krew1_limLatLong_indx = pd.DataFrame((swr_ls_krew1_limlLatLong2 ['x']-min(swr_ls_krew1_limlLatLong2 ['x']))+(swr_ls_krew1_limlLatLong2 ['y']-min(swr_ls_krew1_limlLatLong2 ['y'])), columns = ['indx'])
-swr_ls_krew1_limLatLong3 = pd.concat([swr_ls_krew1_limlLatLong2,swr_ls_krew1_limLatLong_indx],axis =1)
+swr_ls_krew1_limlLatLong20 = swr_ls_krew1_limlLatLong2.copy()
+swr_ls_krew1_limlLatLong20.index = np.arange(len(swr_ls_krew1_limlLatLong20))
+roundingCoordinates (swr_ls_krew1_limlLatLong20) #rounding coodinates
+swr_ls_krew1_limLatLong_indx = 100*((swr_ls_krew1_limlLatLong20 ['x']).astype(int))+(swr_ls_krew1_limlLatLong20 ['y']).astype(int)
+swr_ls_krew1_limLatLong3 = pd.concat([swr_ls_krew1_limlLatLong20,swr_ls_krew1_limLatLong_indx],axis =1)
 
-lwr_ls_krew1_limLatLong_indx = (lwr_ls_krew1_limlLatLong2 ['x']-min(lwr_ls_krew1_limlLatLong2 ['x']))+(lwr_ls_krew1_limlLatLong2 ['y']-min(lwr_ls_krew1_limlLatLong2 ['y']))
-lwr_ls_krew1_limLatLong3 = pd.concat([lwr_ls_krew1_limlLatLong2,lwr_ls_krew1_limLatLong_indx],axis =1)
+lwr_ls_krew1_limlLatLong20 = lwr_ls_krew1_limlLatLong2.copy()
+lwr_ls_krew1_limlLatLong20.index = np.arange(len(lwr_ls_krew1_limlLatLong20))
+roundingCoordinates (lwr_ls_krew1_limlLatLong20) #rounding coodinates
+lwr_ls_krew1_limLatLong_indx = 100*((lwr_ls_krew1_limlLatLong20 ['x']).astype(int))+(lwr_ls_krew1_limlLatLong20 ['y']).astype(int)
+lwr_ls_krew1_limLatLong3 = pd.concat([lwr_ls_krew1_limlLatLong20,lwr_ls_krew1_limLatLong_indx],axis =1)
 
 in_out_rf_krew_lswr_ls = (in_out_rf_krew_lswr.values).copy()
 lwr_ls_krew1_limLatLong_ls = lwr_ls_krew1_limLatLong3.values
@@ -180,179 +191,88 @@ for smpl in range (len(lwr_ls_krew1_limLatLong_indx)):#
 in_out_rf_krew_lswr_ls_drp = in_out_rf_krew_lswr_ls[in_out_rf_krew_lswr_ls[:,11] != in_out_rf_krew_lswr_ls[:,12]]    
 in_out_rf_krew_lswr_ls_drp_df = pd.DataFrame(in_out_rf_krew_lswr_ls_drp, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr'])
 
-#features and target for random forest model for fsca_open 
+# add classifier for fsca
+in_out_rf_krew_lswr_ls_drp_df2 = pd.concat([in_out_rf_krew_lswr_ls_drp_df,in_out_rf_krew_lswr_ls_drp_df['fsca']],axis =1)
+in_out_rf_krew_lswr_ls_drp_ls = in_out_rf_krew_lswr_ls_drp_df2.values
+in_out_rf_krew_lswr_ls_drp_ls[:,14][in_out_rf_krew_lswr_ls_drp_ls[:,10]<=0.3] = 1
+in_out_rf_krew_lswr_ls_drp_ls[:,14][(in_out_rf_krew_lswr_ls_drp_ls[:,10]<=0.55) & (in_out_rf_krew_lswr_ls_drp_ls[:,10]>=0.3)] = 2
+in_out_rf_krew_lswr_ls_drp_ls[:,14][(in_out_rf_krew_lswr_ls_drp_ls[:,10]<=0.8) & (in_out_rf_krew_lswr_ls_drp_ls[:,10]>=0.55)] = 3
+in_out_rf_krew_lswr_ls_drp_ls[:,14][in_out_rf_krew_lswr_ls_drp_ls[:,10]>0.8] = 4
+
+in_out_rf_krew_lswr_fcsa_drp_df = pd.DataFrame(in_out_rf_krew_lswr_ls_drp_ls, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr','fsca_classifier'])
+
+# random forest modeling #################################################################################
+## random forest modeling for different fsca bins for fsca_open--fsca_ut
+
+feature_importances_error_0putBin = randomForestModel44FscaBins(in_out_rf_krew_lswr_fcsa_drp_df)
+
+plt.subplots(figsize=(20,15))
+for countFeat in range (len(feature_importances_error_0putBin)): 
+    plt.plot(feature_importances_error_0putBin[countFeat][0].values[0], marker='s', markersize=20, linewidth=3.5)
+
+meanAbsError = [feature_importances_error_0putBin[i][1] for i in range (4)]
+legend = ['bin{}; MAE = {}'.format(i+1,meanAbsError[i]) for i in range (4)]
+plt.legend(legend,fontsize = 40)#, loc = 'upper center'
+plt.title('Importance of features in 4 fscaBins in Krew', fontsize=40)#, position=(0.04, 0.88), ha='left'
+
+ax = np.reshape(np.arange(0,len(feature_importances_error_0putBin[0][0].columns)),(1,5))
+sa_xticks = feature_importances_error_0putBin[0][0].columns
+plt.xticks(ax[0], sa_xticks, fontsize=40)#, rotation=25 
+plt.yticks(fontsize=40)
+plt.xlabel('Features', fontsize=40)
+plt.ylabel('Importance', fontsize=40)
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_0put_krew_bin.png')
+
+
+#features and target for random forest model for fsca_open ###########################################
 in_0p_rf_krew = in_out_rf_krew_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
 out_0p_rf_krew = in_out_rf_krew_lswr_ls_drp_df['fsca_0p']
-
-mean_abs_error_0p1,feature_importances_0p1 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,50,200)
-mean_abs_error_0p2,feature_importances_0p2 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,50,200)
-mean_abs_error_0p3,feature_importances_0p3 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,50,200)
-mean_abs_error_0p4,feature_importances_0p4 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,50,200)
-mean_abs_error_0p5,feature_importances_0p5 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,50,200)
-
-feature_importances_0p= [[feature_importances_0p1[i][1] for i in range (len(feature_importances_0p1))],
-                         [feature_importances_0p2[i][1] for i in range (len(feature_importances_0p1))],
-                         [feature_importances_0p3[i][1] for i in range (len(feature_importances_0p1))],
-                         [feature_importances_0p4[i][1] for i in range (len(feature_importances_0p1))],
-                         [feature_importances_0p5[i][1] for i in range (len(feature_importances_0p1))]]
-feature_importances_0p_mean = pd.DataFrame([np.mean([feature_importances_0p [i][0] for i in range (5)]),
-                              np.mean([feature_importances_0p [i][1] for i in range (5)]),
-                              np.mean([feature_importances_0p [i][2] for i in range (5)]),
-                              #np.mean([feature_importances_0p [i][3] for i in range (5)]),
-                              #np.mean([feature_importances_0p [i][4] for i in range (5)]),
-                              np.mean([feature_importances_0p [i][3] for i in range (5)])]).T
-feature_importances_0p_mean.columns = in_0p_rf_krew.columns
-mean_abs_error_0p = (mean_abs_error_0p1+mean_abs_error_0p2+mean_abs_error_0p3+mean_abs_error_0p4+mean_abs_error_0p5)/5.
+[feature_importances_0p_mean,mean_abs_error_0p] = randomForestModel4Fsca0pen (in_0p_rf_krew,out_0p_rf_krew,50,200)
 
 pathName_0p = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_0p_krew_lswr_non_150502 (error='
-plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'red')
+plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'red', 'fSCA_open')
 
+#### 2d plotting fsca_open ###############################################################################
 # 2d plotting by color map temp & nrth
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['temp'], in_out_rf_krew_lswr_ls_drp_df['nrth'], 
-            c=out_0p_rf_krew, cmap='OrRd', s = 20**2, linewidth=0.5)
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA_open", fontsize=25, labelpad=+1)
-cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('northness', fontsize=40); plt.xlabel('temperature (C)', fontsize=40) 
-plt.title('change in fSCA_open based on temp&nrth', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCA0pen2.png')
-
+savepath_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCA0pen3.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,'OrRd',"fSCA_open",savepath_krew)
+   
 # 2d plotting by color map LWR & SWR
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['swr'], in_out_rf_krew_lswr_ls_drp_df['lwr'], 
-            c=out_0p_rf_krew, cmap='OrRd', s = 20**2, linewidth=0.5)
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA_open", fontsize=25, labelpad=+1)
-cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('lwr', fontsize=40); plt.xlabel('swr', fontsize=40) 
-plt.title('change in fSCA_open based on swr & lwr', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCA0pen2.png')
+savepath_lswr_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCA0pen3.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,'OrRd',"fSCA_open",savepath_lswr_krew)
     
-#####random forest AI modeling for fsca_underTree  ##########################################
+#####random forest AI modeling for fsca_underTree  ####################################################
 in_ut_rf_krew = in_out_rf_krew_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #vegD_ut,'nrth','elev','x','y', 0.065 random_state=50
 out_ut_rf_krew = in_out_rf_krew_lswr_ls_drp_df['fsca_ut']
 
-mean_abs_error_ut1,feature_importances_ut1 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,50,200)
-mean_abs_error_ut2,feature_importances_ut2 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,50,200)
-mean_abs_error_ut3,feature_importances_ut3 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,50,200)
-mean_abs_error_ut4,feature_importances_ut4 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,50,200)
-mean_abs_error_ut5,feature_importances_ut5 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,50,200)
-
-feature_importances_ut= [[feature_importances_ut1[i][1] for i in range (len(feature_importances_ut1))],
-                         [feature_importances_ut2[i][1] for i in range (len(feature_importances_ut1))],
-                         [feature_importances_ut3[i][1] for i in range (len(feature_importances_ut1))],
-                         [feature_importances_ut4[i][1] for i in range (len(feature_importances_ut1))],
-                         [feature_importances_ut5[i][1] for i in range (len(feature_importances_ut1))]]
-feature_importances_ut_mean = pd.DataFrame([np.mean([feature_importances_ut [i][0] for i in range (5)]),
-                              np.mean([feature_importances_ut [i][1] for i in range (5)]),
-                              np.mean([feature_importances_ut [i][2] for i in range (5)]),
-                              np.mean([feature_importances_ut [i][3] for i in range (5)]),
-                              #np.mean([feature_importances_ut [i][4] for i in range (5)]),
-                              #np.mean([feature_importances_ut [i][5] for i in range (5)]),
-                              np.mean([feature_importances_ut [i][4] for i in range (5)])]).T
-feature_importances_ut_mean.columns = in_ut_rf_krew.columns
-mean_abs_error_ut = (mean_abs_error_ut1+mean_abs_error_ut2+mean_abs_error_ut3+mean_abs_error_ut4+mean_abs_error_ut5)/5.
-
+[feature_importances_ut_mean,mean_abs_error_ut] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_krew,out_ut_rf_krew,50,200)
 pathName_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_ut_krew_non_lswr2 (error='
-plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkorange')
+plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkorange', 'fSCA_underTree')
 
+#### 2d plotting fsca_ut ###############################################################################
 # 2d plotting by color map temp & nrth
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['temp'], in_out_rf_krew_lswr_ls_drp_df['nrth'], 
-            c=out_ut_rf_krew, cmap='BuGn', s = 20**2, linewidth=0.5)
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA_underTree", fontsize=20, labelpad=+1)
-#cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)#
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('northness', fontsize=40); plt.xlabel('temperature (C)', fontsize=40) 
-plt.title('change in fSCA_underTree based on temp&nrth', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCAunderTree.png')
-
+savepath_tempNrth_ut_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCAunderTree2.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_ut_rf_krew,'BuGn',"fSCA_underTree",savepath_tempNrth_ut_krew)
 # 2d plotting by color map LWR & SWR
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['swr'], in_out_rf_krew_lswr_ls_drp_df['lwr'], 
-            c=out_ut_rf_krew, cmap='BuGn', s = 20**2, linewidth=0.5)
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA_underTree", fontsize=25, labelpad=+1)
-#cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.9','1.0'],fontsize=25)
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('lwr', fontsize=40); plt.xlabel('swr', fontsize=40) 
-plt.title('change in fSCA underTree based on swr & lwr', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCAunderTree.png')
+savepath_slwr_ut_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCAunderTree2.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_ut_rf_krew,'BuGn',"fSCA_underTree",savepath_slwr_ut_krew)
     
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_krew = in_out_rf_krew_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #'nrth','elev','x','y', 0.065 random_state=50
 out_ut_0p_rf_krew = pd.DataFrame(in_out_rf_krew_lswr_ls_drp_df['fsca_ut']-in_out_rf_krew_lswr_ls_drp_df['fsca_0p'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
-
-mean_abs_error_0p_ut1,feature_importances_0p_ut1 = randomForest_MLM (in_ut_0p_rf_krew, out_ut_0p_rf_krew,59,200)
-mean_abs_error_0p_ut2,feature_importances_0p_ut2 = randomForest_MLM (in_ut_0p_rf_krew, out_ut_0p_rf_krew,59,200)
-mean_abs_error_0p_ut3,feature_importances_0p_ut3 = randomForest_MLM (in_ut_0p_rf_krew, out_ut_0p_rf_krew,59,200)
-mean_abs_error_0p_ut4,feature_importances_0p_ut4 = randomForest_MLM (in_ut_0p_rf_krew, out_ut_0p_rf_krew,59,200)
-mean_abs_error_0p_ut5,feature_importances_0p_ut5 = randomForest_MLM (in_ut_0p_rf_krew, out_ut_0p_rf_krew,59,200)
-
-feature_importances_0p_ut= [[feature_importances_0p_ut1[i][1] for i in range (len(feature_importances_0p_ut1))],
-                           [feature_importances_0p_ut2[i][1] for i in range (len(feature_importances_0p_ut1))],
-                           [feature_importances_0p_ut3[i][1] for i in range (len(feature_importances_0p_ut1))],
-                           [feature_importances_0p_ut4[i][1] for i in range (len(feature_importances_0p_ut1))],
-                           [feature_importances_0p_ut5[i][1] for i in range (len(feature_importances_0p_ut1))]]
-feature_importances_0p_ut_mean = pd.DataFrame([np.mean([feature_importances_0p_ut [i][0] for i in range (5)]),
-                                 np.mean([feature_importances_0p_ut [i][1] for i in range (5)]),
-                                 np.mean([feature_importances_0p_ut [i][2] for i in range (5)]),
-                                 np.mean([feature_importances_0p_ut [i][3] for i in range (5)]),
-                                 #np.mean([feature_importances_0p_ut [i][4] for i in range (5)]),
-                                 #np.mean([feature_importances_0p_ut [i][5] for i in range (5)]),
-                                 np.mean([feature_importances_0p_ut [i][4] for i in range (5)])]).T
-feature_importances_0p_ut_mean.columns = in_ut_0p_rf_krew.columns
-mean_abs_error_oput = (mean_abs_error_0p_ut1+mean_abs_error_0p_ut2+mean_abs_error_0p_ut3+mean_abs_error_0p_ut4+mean_abs_error_0p_ut5)/5.
+[feature_importances_0p_ut_mean2,mean_abs_error_oput2] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_krew,out_ut_0p_rf_krew,59,200)
 
 pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_0p_ut_krew_lswr_ne_non (error='
-plot_rfm_importance (mean_abs_error_oput, feature_importances_0p_ut_mean, pathName_0p_ut, 'goldenrod')
+plot_rfm_importance (mean_abs_error_oput, feature_importances_0p_ut_mean, pathName_0p_ut, 'goldenrod', 'fSCAop-fSCAut')
 
+#### 2d plotting fsca_open_ut ###############################################################################
 # 2d plotting by color map temp & nrth
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['temp'], in_out_rf_krew_lswr_ls_drp_df['nrth'], 
-            c=out_ut_0p_rf_krew, cmap=cm.Purples_r, s = 20**2, linewidth=0.5)#viridis
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA0p_fSCAut", fontsize=20, labelpad=+1)
-#cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)#
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('northness', fontsize=40); plt.xlabel('temperature (C)', fontsize=40) 
-plt.title('change in fSCA0p_fSCAut based on temp&nrth', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCA0p_fSCAut.png')
-
+savepath_tempNrth_ut0p_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/temp_nrth_fSCA0p_fSCAut2.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_ut_0p_rf_krew,cm.Purples_r,"fSCA0p_fSCAut",savepath_tempNrth_ut0p_krew)
 # 2d plotting by color map LWR & SWR
-plt.subplots(figsize=(20,15))
-plt.scatter(in_out_rf_krew_lswr_ls_drp_df['swr'], in_out_rf_krew_lswr_ls_drp_df['lwr'], 
-            c=out_ut_0p_rf_krew, cmap=cm.Purples_r, s = 20**2, linewidth=0.5)
-
-cbar= plt.colorbar()
-cbar.set_label("fSCA0p_fSCAut", fontsize=25, labelpad=+1)
-#cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.9','1.0'],fontsize=25)
-
-plt.xticks(fontsize=35) #rotation='vertical', 
-plt.yticks(fontsize=35)
-plt.ylabel('lwr', fontsize=40); plt.xlabel('swr', fontsize=40) 
-plt.title('change in fSCA0p_fSCAut based on swr & lwr', fontsize=40)
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCA0p_fSCAut.png')
-
+savepath_slwr_ut0p_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCA0p_fSCAut2.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_ut_0p_rf_krew,cm.Purples_r,"fSCA0p_fSCAut",savepath_slwr_ut0p_krew)
 
 #%% load data nrc 2010
 

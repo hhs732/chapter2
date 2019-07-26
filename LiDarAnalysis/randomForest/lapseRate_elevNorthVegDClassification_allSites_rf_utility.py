@@ -643,7 +643,7 @@ def readTiff_creatDF(tiffFile):
     
     return lwr_df
 
-def readTiff_creatDF_res100(tiffFile):    
+def readTiff_creatDF_res100(tiffFile,columnName):    
     demset = gdal.Open(tiffFile)
     band = demset.GetRasterBand(1)
     lwr = band.ReadAsArray()
@@ -666,7 +666,7 @@ def readTiff_creatDF_res100(tiffFile):
     lwr_rp = np.reshape(lwr,(nrows*ncols)).T
     lwr_lat_lon1 = np.vstack([latitude_rp,longitude_rp,lwr_rp]).T
 
-    lwr_df = pd.DataFrame(lwr_lat_lon1,columns=['x','y','lwr'])
+    lwr_df = pd.DataFrame(lwr_lat_lon1,columns=['x','y',columnName])
     lwr_df.sort_values(by=['x','y'],inplace=True)
     lwr_df.index=np.arange(0,len(lwr_df))
     
@@ -702,6 +702,23 @@ def changeResolution0fMultipleTiffsAndCreateDF (path2imagesIn,path2images0ut):
     latLon_swr = np.vstack([lat_swr,lon_swr,all_wr_mean])
     
     return latLon_swr.T, fullPath2imgs
+
+def creatingMeanRadiationfrom100b100tifFiles (path2tiff_100):
+    lwr_df_krew = []    
+    for lwr in range (len(path2tiff_100)):
+        lwr_df_kr = readTiff_creatDF_res100(path2tiff_100[lwr],'lwr')
+        lwr_df_krew.append(lwr_df_kr)
+    
+    latLon_kr = lwr_df_krew[0][['x','y']] 
+    
+    lwr_krew = []
+    for df in range (len(lwr_df_krew)):
+        aaaa = lwr_df_krew[df]['lwr'].values
+        lwr_krew.append(aaaa)
+    lwr_mean_kr = np.mean(lwr_krew, axis = 0)
+    latLon_meanRadiation = np.vstack([latLon_kr['x'].values,latLon_kr['y'].values,lwr_mean_kr]).T
+    
+    return latLon_meanRadiation
 
 def addClassifier2changeResolutionTo100B100 (lat_long_nad83_krew,snow_temp_vegdens_sL30_elevCls_precip_krew):
     x_krew = np.arange(lat_long_nad83_krew[0], lat_long_nad83_krew[1]+1, 100)
@@ -860,7 +877,7 @@ def randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew, random_state,n_trees):
 
     return mean_abs_error1,feature_importances1    
 
-def plot_rfm_importance (mean_abs_error1, importances1, pathName, facecolor):
+def plot_rfm_importance (mean_abs_error1, importances1, pathName, facecolor,name):
     #ploting
     plt.subplots(figsize=(20,15))
     #plt.style.use('fivethirtyeight')
@@ -875,10 +892,213 @@ def plot_rfm_importance (mean_abs_error1, importances1, pathName, facecolor):
     #plt.invert_yaxis()
     # Axis labels and title
     plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
-    plt.title('Variable Importances (error={})'.format(mean_abs_error1), fontsize=45)
+    plt.title('Variable Importances for {} (mean absolute error={})'.format(name,mean_abs_error1), fontsize=35)
     plt.savefig('{}{}.png'.format(pathName,mean_abs_error1))
 
+#rounding coodinates
+def roundingCoordinates (in_out_rf_krew):
+    for coords in range (len(in_out_rf_krew['x'])):
+        if (in_out_rf_krew['x'][coords]/100. - (in_out_rf_krew['x'][coords]/100).astype(int)) != 0.0:
+            adjust_num = (in_out_rf_krew['x'][coords]/100. - (in_out_rf_krew['x'][coords]/100).astype(int))
+            new_x = in_out_rf_krew['x'][coords]-(adjust_num)*100.
+            in_out_rf_krew ['x'][coords] = new_x .astype(int)  
+        
+        if (in_out_rf_krew['y'][coords]/100. - (in_out_rf_krew['y'][coords]/100).astype(int)) != 0.0:
+            adjust_numY = (in_out_rf_krew['y'][coords]/100. - (in_out_rf_krew['y'][coords]/100).astype(int))
+            new_y = in_out_rf_krew['y'][coords]-(adjust_numY)*100.
+            in_out_rf_krew ['y'][coords] = new_y.astype(int)   
+           
+
+def randomForestModel44FscaBins(in_out_rf_krew_lswr_fcsa_drp_df):
+    
+    in_0pUt_rf_krew_b1 = in_out_rf_krew_lswr_fcsa_drp_df[['temp','precip','lwr','swr','VegD']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==1]
+    out_0p_rf_krew_b1 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_0p']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==1])
+    out_Ut_rf_krew_b1 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_ut']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==1])
+    out_0pUt_rf_krew_b1 = pd.Series(out_0p_rf_krew_b1['fsca_0p'] - out_Ut_rf_krew_b1['fsca_ut'])
+    
+    in_0pUt_rf_krew_b2 = in_out_rf_krew_lswr_fcsa_drp_df[['temp','precip','lwr','swr','VegD']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==2]
+    out_0p_rf_krew_b2 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_0p']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==2])
+    out_Ut_rf_krew_b2 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_ut']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==2])
+    out_0pUt_rf_krew_b2 = pd.Series(out_0p_rf_krew_b2['fsca_0p'] - out_Ut_rf_krew_b2['fsca_ut'])
+    
+    in_0pUt_rf_krew_b3 = in_out_rf_krew_lswr_fcsa_drp_df[['temp','precip','lwr','swr','VegD']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==3]
+    out_0p_rf_krew_b3 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_0p']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==3])
+    out_Ut_rf_krew_b3 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_ut']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==3])
+    out_0pUt_rf_krew_b3 = pd.Series(out_0p_rf_krew_b3['fsca_0p'] - out_Ut_rf_krew_b3['fsca_ut'])
+    
+    in_0pUt_rf_krew_b4 = in_out_rf_krew_lswr_fcsa_drp_df[['temp','precip','lwr','swr','VegD']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==4]
+    out_0p_rf_krew_b4 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_0p']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==4])
+    out_Ut_rf_krew_b4 = (in_out_rf_krew_lswr_fcsa_drp_df[['fsca_ut']][in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==4])
+    out_0pUt_rf_krew_b4 = pd.Series(out_0p_rf_krew_b4['fsca_0p'] - out_Ut_rf_krew_b4['fsca_ut'])
+    
+    #random forest for bins 1   
+    mean_abs_error_0p11,feature_importances_0p11 = randomForest_MLM (in_0pUt_rf_krew_b1, out_0pUt_rf_krew_b1,60,200)
+    mean_abs_error_0p12,feature_importances_0p12 = randomForest_MLM (in_0pUt_rf_krew_b1, out_0pUt_rf_krew_b1,60,200)
+    mean_abs_error_0p13,feature_importances_0p13 = randomForest_MLM (in_0pUt_rf_krew_b1, out_0pUt_rf_krew_b1,60,200)
+    mean_abs_error_0p14,feature_importances_0p14 = randomForest_MLM (in_0pUt_rf_krew_b1, out_0pUt_rf_krew_b1,60,200)
+    mean_abs_error_0p15,feature_importances_0p15 = randomForest_MLM (in_0pUt_rf_krew_b1, out_0pUt_rf_krew_b1,60,200)
+    
+    feature_importances_0p1= [[feature_importances_0p11[i][1] for i in range (len(feature_importances_0p11))],
+                             [feature_importances_0p12[i][1] for i in range (len(feature_importances_0p11))],
+                             [feature_importances_0p13[i][1] for i in range (len(feature_importances_0p11))],
+                             [feature_importances_0p14[i][1] for i in range (len(feature_importances_0p11))],
+                             [feature_importances_0p15[i][1] for i in range (len(feature_importances_0p11))]]
+    feature_importances_0p_mean1 = pd.DataFrame([np.mean([feature_importances_0p1 [i][0] for i in range (5)]),
+                                   np.mean([feature_importances_0p1 [i][1] for i in range (5)]),
+                                   np.mean([feature_importances_0p1 [i][2] for i in range (5)]),
+                                   np.mean([feature_importances_0p1 [i][3] for i in range (5)]),
+                                   np.mean([feature_importances_0p1 [i][4] for i in range (5)])]).T
+    
+    feature_importances_0p_mean1.columns = in_0pUt_rf_krew_b1.columns
+    mean_abs_error_0p1 = (mean_abs_error_0p11+mean_abs_error_0p12+mean_abs_error_0p13+mean_abs_error_0p14+mean_abs_error_0p15)/5.
+
+    #random forest for bins 2   
+    mean_abs_error_0p21,feature_importances_0p21 = randomForest_MLM (in_0pUt_rf_krew_b2, out_0pUt_rf_krew_b2,60,200)
+    mean_abs_error_0p22,feature_importances_0p22 = randomForest_MLM (in_0pUt_rf_krew_b2, out_0pUt_rf_krew_b2,60,200)
+    mean_abs_error_0p23,feature_importances_0p23 = randomForest_MLM (in_0pUt_rf_krew_b2, out_0pUt_rf_krew_b2,60,200)
+    mean_abs_error_0p24,feature_importances_0p24 = randomForest_MLM (in_0pUt_rf_krew_b2, out_0pUt_rf_krew_b2,60,200)
+    mean_abs_error_0p25,feature_importances_0p25 = randomForest_MLM (in_0pUt_rf_krew_b2, out_0pUt_rf_krew_b2,60,200)
+    
+    feature_importances_0p2= [[feature_importances_0p21[i][1] for i in range (len(feature_importances_0p21))],
+                             [feature_importances_0p22[i][1] for i in range (len(feature_importances_0p21))],
+                             [feature_importances_0p23[i][1] for i in range (len(feature_importances_0p21))],
+                             [feature_importances_0p24[i][1] for i in range (len(feature_importances_0p21))],
+                             [feature_importances_0p25[i][1] for i in range (len(feature_importances_0p21))]]
+    feature_importances_0p_mean2 = pd.DataFrame([np.mean([feature_importances_0p2 [i][0] for i in range (5)]),
+                                   np.mean([feature_importances_0p2 [i][1] for i in range (5)]),
+                                   np.mean([feature_importances_0p2 [i][2] for i in range (5)]),
+                                   np.mean([feature_importances_0p2 [i][3] for i in range (5)]),
+                                   np.mean([feature_importances_0p2 [i][4] for i in range (5)])]).T
+    
+    feature_importances_0p_mean2.columns = in_0pUt_rf_krew_b2.columns
+    mean_abs_error_0p2 = (mean_abs_error_0p21+mean_abs_error_0p22+mean_abs_error_0p23+mean_abs_error_0p24+mean_abs_error_0p25)/5.
+
+    #random forest for bins 3   
+    mean_abs_error_0p31,feature_importances_0p31 = randomForest_MLM (in_0pUt_rf_krew_b3, out_0pUt_rf_krew_b3,50,200)
+    mean_abs_error_0p32,feature_importances_0p32 = randomForest_MLM (in_0pUt_rf_krew_b3, out_0pUt_rf_krew_b3,50,200)
+    mean_abs_error_0p33,feature_importances_0p33 = randomForest_MLM (in_0pUt_rf_krew_b3, out_0pUt_rf_krew_b3,50,200)
+    mean_abs_error_0p34,feature_importances_0p34 = randomForest_MLM (in_0pUt_rf_krew_b3, out_0pUt_rf_krew_b3,50,200)
+    mean_abs_error_0p35,feature_importances_0p35 = randomForest_MLM (in_0pUt_rf_krew_b3, out_0pUt_rf_krew_b3,50,200)
+    
+    feature_importances_0p3= [[feature_importances_0p31[i][1] for i in range (len(feature_importances_0p31))],
+                             [feature_importances_0p32[i][1] for i in range (len(feature_importances_0p31))],
+                             [feature_importances_0p33[i][1] for i in range (len(feature_importances_0p31))],
+                             [feature_importances_0p34[i][1] for i in range (len(feature_importances_0p31))],
+                             [feature_importances_0p35[i][1] for i in range (len(feature_importances_0p31))]]
+    feature_importances_0p_mean3 = pd.DataFrame([np.mean([feature_importances_0p3 [i][0] for i in range (5)]),
+                                   np.mean([feature_importances_0p3 [i][1] for i in range (5)]),
+                                   np.mean([feature_importances_0p3 [i][2] for i in range (5)]),
+                                   np.mean([feature_importances_0p3 [i][3] for i in range (5)]),
+                                   np.mean([feature_importances_0p3 [i][4] for i in range (5)])]).T
+    
+    feature_importances_0p_mean3.columns = in_0pUt_rf_krew_b3.columns
+    mean_abs_error_0p3 = (mean_abs_error_0p31+mean_abs_error_0p32+mean_abs_error_0p33+mean_abs_error_0p34+mean_abs_error_0p35)/5.
+
+    #random forest for bins 4   
+    mean_abs_error_0p41,feature_importances_0p41 = randomForest_MLM (in_0pUt_rf_krew_b4, out_0pUt_rf_krew_b4,50,200)
+    mean_abs_error_0p42,feature_importances_0p42 = randomForest_MLM (in_0pUt_rf_krew_b4, out_0pUt_rf_krew_b4,50,200)
+    mean_abs_error_0p43,feature_importances_0p43 = randomForest_MLM (in_0pUt_rf_krew_b4, out_0pUt_rf_krew_b4,50,200)
+    mean_abs_error_0p44,feature_importances_0p44 = randomForest_MLM (in_0pUt_rf_krew_b4, out_0pUt_rf_krew_b4,50,200)
+    mean_abs_error_0p45,feature_importances_0p45 = randomForest_MLM (in_0pUt_rf_krew_b4, out_0pUt_rf_krew_b4,50,200)
+    
+    feature_importances_0p4= [[feature_importances_0p41[i][1] for i in range (len(feature_importances_0p41))],
+                             [feature_importances_0p42[i][1] for i in range (len(feature_importances_0p41))],
+                             [feature_importances_0p43[i][1] for i in range (len(feature_importances_0p41))],
+                             [feature_importances_0p44[i][1] for i in range (len(feature_importances_0p41))],
+                             [feature_importances_0p45[i][1] for i in range (len(feature_importances_0p41))]]
+    feature_importances_0p_mean4 = pd.DataFrame([np.mean([feature_importances_0p4 [i][0] for i in range (5)]),
+                                   np.mean([feature_importances_0p4 [i][1] for i in range (5)]),
+                                   np.mean([feature_importances_0p4 [i][2] for i in range (5)]),
+                                   np.mean([feature_importances_0p4 [i][3] for i in range (5)]),
+                                   np.mean([feature_importances_0p4 [i][4] for i in range (5)])]).T
+    
+    feature_importances_0p_mean4.columns = in_0pUt_rf_krew_b4.columns
+    mean_abs_error_0p4 = (mean_abs_error_0p41+mean_abs_error_0p42+mean_abs_error_0p43+mean_abs_error_0p44+mean_abs_error_0p45)/5.
+
+    return [[feature_importances_0p_mean1,mean_abs_error_0p1],[feature_importances_0p_mean2,mean_abs_error_0p2],[feature_importances_0p_mean3,mean_abs_error_0p3],[feature_importances_0p_mean4,mean_abs_error_0p4]]
 
 
+def randomForestModel4Fsca0pen (in_0p_rf_krew,out_0p_rf_krew,random_state,n_trees):
+        
+    mean_abs_error_0p1,feature_importances_0p1 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,random_state,n_trees)
+    mean_abs_error_0p2,feature_importances_0p2 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,random_state,n_trees)
+    mean_abs_error_0p3,feature_importances_0p3 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,random_state,n_trees)
+    mean_abs_error_0p4,feature_importances_0p4 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,random_state,n_trees)
+    mean_abs_error_0p5,feature_importances_0p5 = randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew,random_state,n_trees)
+    
+    feature_importances_0p= [[feature_importances_0p1[i][1] for i in range (len(feature_importances_0p1))],
+                             [feature_importances_0p2[i][1] for i in range (len(feature_importances_0p1))],
+                             [feature_importances_0p3[i][1] for i in range (len(feature_importances_0p1))],
+                             [feature_importances_0p4[i][1] for i in range (len(feature_importances_0p1))],
+                             [feature_importances_0p5[i][1] for i in range (len(feature_importances_0p1))]]
+    feature_importances_0p_mean = pd.DataFrame([np.mean([feature_importances_0p [i][0] for i in range (5)]),
+                                  np.mean([feature_importances_0p [i][1] for i in range (5)]),
+                                  np.mean([feature_importances_0p [i][2] for i in range (5)]),
+                                  np.mean([feature_importances_0p [i][3] for i in range (5)])]).T
+    feature_importances_0p_mean.columns = in_0p_rf_krew.columns
+    mean_abs_error_0p = (mean_abs_error_0p1+mean_abs_error_0p2+mean_abs_error_0p3+mean_abs_error_0p4+mean_abs_error_0p5)/5.
+    
+    return [feature_importances_0p_mean,mean_abs_error_0p]
 
+def randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_krew,out_ut_rf_krew,random_state,n_trees):
+    
+    mean_abs_error_ut1,feature_importances_ut1 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,random_state,n_trees)
+    mean_abs_error_ut2,feature_importances_ut2 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,random_state,n_trees)
+    mean_abs_error_ut3,feature_importances_ut3 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,random_state,n_trees)
+    mean_abs_error_ut4,feature_importances_ut4 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,random_state,n_trees)
+    mean_abs_error_ut5,feature_importances_ut5 = randomForest_MLM (in_ut_rf_krew, out_ut_rf_krew,random_state,n_trees)
+    
+    feature_importances_ut= [[feature_importances_ut1[i][1] for i in range (len(feature_importances_ut1))],
+                             [feature_importances_ut2[i][1] for i in range (len(feature_importances_ut1))],
+                             [feature_importances_ut3[i][1] for i in range (len(feature_importances_ut1))],
+                             [feature_importances_ut4[i][1] for i in range (len(feature_importances_ut1))],
+                             [feature_importances_ut5[i][1] for i in range (len(feature_importances_ut1))]]
+    feature_importances_ut_mean = pd.DataFrame([np.mean([feature_importances_ut [i][0] for i in range (5)]),
+                                  np.mean([feature_importances_ut [i][1] for i in range (5)]),
+                                  np.mean([feature_importances_ut [i][2] for i in range (5)]),
+                                  np.mean([feature_importances_ut [i][3] for i in range (5)]),
+                                  np.mean([feature_importances_ut [i][4] for i in range (5)])]).T
+    feature_importances_ut_mean.columns = in_ut_rf_krew.columns
+    mean_abs_error_ut = (mean_abs_error_ut1+mean_abs_error_ut2+mean_abs_error_ut3+mean_abs_error_ut4+mean_abs_error_ut5)/5.
 
+    return [feature_importances_ut_mean,mean_abs_error_ut]
+
+def fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,cmap,cbarLabel,savepath):
+    plt.subplots(figsize=(20,15))
+    plt.scatter(in_out_rf_krew_lswr_ls_drp_df['temp'], in_out_rf_krew_lswr_ls_drp_df['nrth'], 
+                c=out_0p_rf_krew, cmap=cmap, s = 20**2, linewidth=0.5)
+    
+    cbar= plt.colorbar()
+    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)
+    cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
+    
+    plt.xticks(fontsize=35) #rotation='vertical', 
+    plt.yticks(fontsize=35)
+    plt.ylabel('northness', fontsize=40); plt.xlabel('temperature (C)', fontsize=40) 
+    plt.title('Change in {} based on temp&nrth'.format(cbarLabel), fontsize=40)
+    plt.savefig(savepath)
+    
+def fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,cmap,cbarLabel,savepath):
+    plt.subplots(figsize=(20,15))
+    plt.scatter(in_out_rf_krew_lswr_ls_drp_df['swr'], in_out_rf_krew_lswr_ls_drp_df['lwr'], 
+                c=out_0p_rf_krew, cmap=cmap, s = 20**2, linewidth=0.5)
+    
+    cbar= plt.colorbar()
+    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)
+    cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
+    
+    plt.xticks(fontsize=35) #rotation='vertical', 
+    plt.yticks(fontsize=35)
+    plt.ylabel('lwr', fontsize=40); plt.xlabel('swr', fontsize=40) 
+    plt.title('change in {} based on swr & lwr'.format(cbarLabel), fontsize=40)
+    plt.savefig(savepath)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
