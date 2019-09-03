@@ -672,7 +672,7 @@ def readTiff_creatDF_res100(tiffFile,columnName):
     
     return lwr_df
 
-def changeResolution0fMultipleTiffsAndCreateDF (path2imagesIn,path2images0ut):
+def changeResolution0fMultipleTiffsAndCreateDF (path2imagesIn,path2images0ut,columnName):
     # get the list of images
     listOfImgs=os.listdir(path2imagesIn)
     
@@ -688,7 +688,7 @@ def changeResolution0fMultipleTiffsAndCreateDF (path2imagesIn,path2images0ut):
     
     df_100 = []
     for tif in range (len(path2images0ut)):
-        wr_100 = readTiff_creatDF_res100(path2images0ut[0])
+        wr_100 = readTiff_creatDF_res100(path2images0ut[0],columnName)
         df_100.append(wr_100) 
         
     all_wr = []
@@ -877,6 +877,30 @@ def randomForest_MLM (in_0p_rf_krew, out_0p_rf_krew, random_state,n_trees):
 
     return mean_abs_error1,feature_importances1    
 
+def randomForest_sensMod_predict (in_0p_rf_krew, out_0p_rf_krew, random_state, n_trees, input_sensitivit):
+  
+    in_0p_rf_krew_train1, in_0p_rf_krew_test1, out_0p_rf_krew_train1, out_0p_rf_krew_test1 = train_test_split(in_0p_rf_krew, out_0p_rf_krew, test_size=0.3, random_state=random_state, shuffle= True) # 70% training and 30% test
+                
+    #Create a Gaussian Classifier
+    clf1=RandomForestRegressor(n_estimators=n_trees)
+    #Train the model using the training sets y_pred=clf.predict(X_test)
+    clf1.fit(in_0p_rf_krew_train1,out_0p_rf_krew_train1)
+
+    out_0p_rf_krew_pred1=clf1.predict(in_0p_rf_krew_test1)
+
+    errors1 = abs(out_0p_rf_krew_pred1 - out_0p_rf_krew_test1)
+    mean_abs_error1 = round(np.mean(errors1), 3)
+    # Get numerical feature importances
+    importances1 = list(clf1.feature_importances_)
+    feature_list1 = in_0p_rf_krew.columns
+    # List of tuples with variable and importance
+    feature_importances1 = [(feature, round(importance, 3)) for feature, importance in zip(feature_list1, importances1)]
+
+    output_senst =clf1.predict(input_sensitivit)
+
+    return [mean_abs_error1,feature_importances1,output_senst]   
+
+
 def plot_rfm_importance (mean_abs_error1, importances1, pathName, facecolor,name):
     #ploting
     plt.subplots(figsize=(20,15))
@@ -892,7 +916,7 @@ def plot_rfm_importance (mean_abs_error1, importances1, pathName, facecolor,name
     #plt.invert_yaxis()
     # Axis labels and title
     plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
-    plt.title('Variable Importances for {} (mean absolute error={})'.format(name,mean_abs_error1), fontsize=35)
+    plt.title('Variable Importances for {} (MAE={})'.format(name,mean_abs_error1), fontsize=35)
     plt.savefig('{}{}.png'.format(pathName,mean_abs_error1))
 
 #rounding coodinates
@@ -1065,12 +1089,18 @@ def randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_krew,out_ut_rf_krew,random_
 
 def fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,cmap,cbarLabel,savepath):
     plt.subplots(figsize=(20,15))
+    #norm= matplotlib.colors.Normalize(vmin=0,vmax=1)
+
     plt.scatter(in_out_rf_krew_lswr_ls_drp_df['temp'], in_out_rf_krew_lswr_ls_drp_df['nrth'], 
-                c=out_0p_rf_krew, cmap=cmap, s = 20**2, linewidth=0.5)
+                c=out_0p_rf_krew, cmap=cmap, s = 20**2, linewidth=0.5)#spcb = 
     
-    cbar= plt.colorbar()
-    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)
-    cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
+    vmin = np.min(out_0p_rf_krew)
+    vmax = np.max(out_0p_rf_krew)
+    mid = (vmin+vmax)/2
+
+    cbar= plt.colorbar(ticks=[vmin, mid, vmax])#spcb,-0.6, -0.2, 0.2, 0.6
+    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)#
+    cbar.ax.set_yticklabels([format(vmin, '.2f'), format(mid, '.2f'), format(vmax, '.2f')],fontsize=25) #,'0.2','0.4','0.6','0.8'
     
     plt.xticks(fontsize=35) #rotation='vertical', 
     plt.yticks(fontsize=35)
@@ -1083,19 +1113,120 @@ def fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_0p_rf_krew,c
     plt.scatter(in_out_rf_krew_lswr_ls_drp_df['swr'], in_out_rf_krew_lswr_ls_drp_df['lwr'], 
                 c=out_0p_rf_krew, cmap=cmap, s = 20**2, linewidth=0.5)
     
-    cbar= plt.colorbar()
-    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)
-    cbar.ax.set_yticklabels(['0','0.2','0.4','0.6','0.8','1.0'],fontsize=25)
+    vmin = np.min(out_0p_rf_krew)
+    vmax = np.max(out_0p_rf_krew)
+    mid = (vmin+vmax)/2
+
+    cbar= plt.colorbar(ticks=[vmin, mid, vmax])#spcb,-0.6, -0.2, 0.2, 0.6
+    cbar.set_label(cbarLabel, fontsize=25, labelpad=+1)#
+    cbar.ax.set_yticklabels([format(vmin, '.2f'), format(mid, '.2f'), format(vmax, '.2f')],fontsize=25) #,'0.2','0.4','0.6','0.8'
     
     plt.xticks(fontsize=35) #rotation='vertical', 
     plt.yticks(fontsize=35)
     plt.ylabel('lwr', fontsize=40); plt.xlabel('swr', fontsize=40) 
     plt.title('change in {} based on swr & lwr'.format(cbarLabel), fontsize=40)
     plt.savefig(savepath)
+
+def plotrandomForestimportancesfor4bins(feature_importances_error_0putBin,importance_bins_krew,color_krew,siteName,savePath):   
+    plt.subplots(figsize=(20,15))
+    y_values = np.arange(0,len(feature_importances_error_0putBin[0][0].columns))
+    indx = -1.6
+    bar_width = 0.2
+    for bins in range(len(importance_bins_krew)):
+        plt.barh(y_values+indx*bar_width, importance_bins_krew[bins], bar_width, facecolor = color_krew[bins])#, alpha=0.2,orientation = 'horizontal', 
+        indx += 1
+        
+    # Tick labels for x axis
+    feature_list1 = feature_importances_error_0putBin[0][0].columns
+    plt.xticks(fontsize=35) #rotation='vertical', 
+    plt.yticks(y_values, feature_list1, fontsize=35)
     
+    plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
     
+    meanAbsError = [feature_importances_error_0putBin[i][1] for i in range (4)]
+    fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
+    legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
+    plt.legend(legend,fontsize = 22)#, loc = 'upper center'
+    plt.title('Importance of features in 4 fSCA bins in {}'.format(siteName), fontsize=40)#, position=(0.04, 0.88), ha='left'
     
+    plt.savefig(savePath)
+randomForest_sensMod_predict
+def plotSensitivitySWRvegDensity(sens_vegSwr_krew_up,sens_vegSwr_krew_low,lent1,lent2,savePath1,color_up,color_low,siteName):
+
+    vegDens_sens = np.arange(0.01*lent1,lent2*0.01,0.01)
+
+    plt.subplots(figsize=(30,20))
+    plt.plot(vegDens_sens,sens_vegSwr_krew_up[2], c = color_up, mec = 'black', mfc = color_up, 
+             marker = '^', linewidth=7, markersize=20)
+    plt.plot(vegDens_sens,sens_vegSwr_krew_low[2],c = color_low, mec = 'black', mfc = color_low, 
+             marker = 'v', linewidth=7, markersize=20)
+    plt.xticks(fontsize=35) #rotation='vertical', 
+    plt.yticks(fontsize=35)
+    plt.ylabel('Predicted fSCAopen-fSCAunder in {}'.format(siteName), fontsize=40)
+    plt.xlabel('Vegetation density', fontsize=40) 
+    legend = ['Predicted fSCAopen-fSCAunder for 80% of SWR in {}'.format(siteName),'Predicted fSCAopen-fSCAunder for 20% of SWR in {}'.format(siteName)]
+    plt.legend(legend,fontsize = 34)#, loc = 'upper center'
+    plt.title('Predicted fSCAopen-fSCAunder for 2 percentiles of SWR in {}'.format(siteName), fontsize=40, y = 1.04)#, position=(0.04, 0.88), ha='left'
+    plt.savefig(savePath1)
+
+
+#def plotSensitivitySWRvegDensity(sens_vegSwr_krew_up,sens_vegSwr_krew_low,savePath1,savePath2,color_up,color_low,siteName,cmap):
+#
+#    vegDens_sens = np.arange(0.01,1.01,0.01)
+#
+#    plt.subplots(figsize=(30,20))
+#    plt.plot(vegDens_sens,sens_vegSwr_krew_up[2], c = color_up, mec = 'black', mfc = color_up, 
+#             marker = '^', linewidth=7, markersize=20)
+#    plt.plot(vegDens_sens,sens_vegSwr_krew_low[2],c = color_low, mec = 'black', mfc = color_low, 
+#             marker = 'v', linewidth=7, markersize=20)
+#    plt.xticks(fontsize=35) #rotation='vertical', 
+#    plt.yticks(fontsize=35)
+#    plt.ylabel('Predicted fSCAopen-fSCAunder in {}'.format(siteName), fontsize=40)
+#    plt.xlabel('Vegetation density', fontsize=40) 
+#    legend = ['Predicted fSCAopen-fSCAunder for 80% of SWR in {}'.format(siteName),'Predicted fSCAopen-fSCAunder for 20% of SWR in {}'.format(siteName)]
+#    plt.legend(legend,fontsize = 34)#, loc = 'upper center'
+#    plt.title('Predicted fSCAopen-fSCAunder for 2 percentiles of SWR in {}'.format(siteName), fontsize=40, y = 1.04)#, position=(0.04, 0.88), ha='left'
+#    plt.savefig(savePath1)
+                
     
+#    fig, ax = plt.subplots(figsize=(30,25))
+#    plt.scatter(sens_vegSwr_krew_low[2], sens_vegSwr_krew_up[2], 
+#                c=vegDens_sens, cmap=cmap, s = 27**2, linewidth=0.5)#spcb = 
+#    vmin = 0.01
+#    vmax = 1
+#    mid = (vmin+vmax)/2
+#    cbar= plt.colorbar(ticks=[vmin, mid, vmax])#spcb,-0.6, -0.2, 0.2, 0.6
+#    cbar.set_label('Vegetation density (VD)', fontsize=30, labelpad=+1)#
+#    cbar.ax.set_yticklabels([format(vmin, '.2f'), format(mid, '.2f'), format(vmax, '.2f')],fontsize=25) #,'0.2','0.4','0.6','0.8'
+#    plt.xticks(np.arange(round(min(min(sens_vegSwr_krew_low[2]),min(sens_vegSwr_krew_up[2]))-0.02,2),
+#                round(max(max(sens_vegSwr_krew_low[2]),max(sens_vegSwr_krew_up[2]))+0.02,2),0.04),fontsize=40) #rotation='vertical', 
+#    plt.yticks(np.arange(round(min(min(sens_vegSwr_krew_low[2]),min(sens_vegSwr_krew_up[2]))-0.02,2),
+#                round(max(max(sens_vegSwr_krew_low[2]),max(sens_vegSwr_krew_up[2]))+0.02,2),0.04),fontsize=40)
+#    plt.ylabel('Predicted fSCAopen-fSCAunder for 80% of SWR in {}'.format(siteName), fontsize=40)
+#    plt.xlabel('Predicted fSCAopen-fSCAunder for 20% of SWR in {}'.format(siteName), fontsize=40) 
+#    ax.xaxis.set_label_coords(0.5, -0.07)
+#    plt.title('Predicted fSCAopen-fSCAunder for 80%  vs. 20% of SWR for different VD in {}'.format(siteName), 
+#              fontsize=32, y =1.03)#, position=(0.04, 0.88), ha='left'
+#    
+#    plt.savefig(savePath2)
+
+        
+# ploting features with lines   
+#plt.subplots(figsize=(20,15))
+#for countFeat in range (len(feature_importances_error_0putBin)): 
+#    plt.plot(feature_importances_error_0putBin[countFeat][0].values[0], marker='s', markersize=20, linewidth=3.5)
+#
+#meanAbsError = [feature_importances_error_0putBin[i][1] for i in range (4)]
+#legend = ['bin{}; MAE = {}'.format(i+1,meanAbsError[i]) for i in range (4)]
+#plt.legend(legend,fontsize = 40)#, loc = 'upper center'
+#plt.title('Importance of features in 4 fscaBins in Krew', fontsize=40)#, position=(0.04, 0.88), ha='left'
+#
+#ax = np.reshape(np.arange(0,len(feature_importances_error_0putBin[0][0].columns)),(1,5))
+#sa_xticks = feature_importances_error_0putBin[0][0].columns
+#plt.xticks(ax[0], sa_xticks, fontsize=40)#, rotation=25 
+#plt.yticks(fontsize=40)
+#plt.xlabel('Features', fontsize=40)
+#plt.ylabel('Importance', fontsize=40)   
     
     
     

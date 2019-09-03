@@ -6,7 +6,7 @@ import matplotlib.ticker as ticker
 import csv
 import scipy.io as sio
 from datetime import datetime
-
+import matplotlib.ticker as plticker
 
 def calculatingDay0fSnowDisappearanceLastDay0fSnow0nGroundHourBased(snwdpth_df):
     FDSS = []
@@ -105,7 +105,7 @@ bp1['boxes'][1].set(color='green', linewidth=2, facecolor = 'olive', hatch = '/'
 
 plt.title('Sagehen Creek Watershed (SCW), CA',fontsize=50)
 
-plt.xticks([1,2], ['0pen2016','underTree2016'], fontsize=40, rotation=25)#3,4,'underTree_LSG','0pen_LSG','open2016','open2017',
+plt.xticks([1,2], ['0pen site','under Tree'], fontsize=40, rotation=25)#3,4,'underTree_LSG','0pen_LSG','open2016','open2017',
 plt.yticks(fontsize=40)
 #plt.xlabel('vegSc_year', fontsize=30)
 plt.ylabel('Snow disappearance day - Julian days', fontsize=40)
@@ -405,10 +405,78 @@ plt.yticks(fontsize=40)
 #plt.xlabel('vegSc_year', fontsize=30)
 plt.ylabel('day of snow disappearance - Julian days', fontsize=40)
 plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/obseravation_analysis/obsData_dsd_krew2.png')
+#%%
+d11 = [FDSS_ls0,FDSS_lsT]#LDSS_ls0,,LDSS_lsT
+d12 = [ssd_krw_op10,ssd_krw_ut10,ssd_krw_op11,ssd_krw_ut11,ssd_krw_op12,ssd_krw_ut12]
+d21 = [FDSS05_vcm_op, FDSS05_vcm_ut,FDSS06_vcm_op, FDSS06_vcm_ut,  
+       FDSS08_vcm_op, FDSS08_vcm_ut,FDSS09_vcm_op, FDSS09_vcm_ut,
+       FDSS10_vcm_op, FDSS10_vcm_ut,FDSS11_vcm_op, FDSS11_vcm_ut]
+d22 = [FDSS07_nwt_op, FDSS07_nwt_ut, FDSS08_nwt_op, FDSS08_nwt_ut, FDSS09_nwt_op, FDSS09_nwt_ut, 
+       FDSS10_nwt_op, FDSS10_nwt_ut, FDSS11_nwt_op, FDSS11_nwt_ut]
+#%%
+fig, ax = plt.subplots(2,2, figsize=(60,50))
+bp1 = ax[0,0].boxplot(d11, patch_artist=True)
+bp1['boxes'][0].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp1['boxes'][1].set(color='green', linewidth=2, facecolor = 'olive', hatch = '/')
+ax[0,0].set_title('Sagehen Creek Watershed (SCW), CA',fontsize=50)
+ax[0,0].set_xticklabels(['0pen2016','underTree2016'], fontsize=40)#, rotation=25[1,2]
+ax[0,0].set_yticklabels(np.arange(60,150,10),fontsize=40)
+ax[0,0].set_ylabel('Snow disappearance day (Julian days)', fontsize=50)
+ax[0,0].legend([bp1["boxes"][0], bp1["boxes"][1]], ['Open Areas', 'Under Trees'],fontsize = 40,loc='upper left')#, loc='upper right'
 
+bp5 = ax[0, 1].boxplot(d12, patch_artist=True)
+bp5['boxes'][0].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp5['boxes'][1].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp5['boxes'][2].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp5['boxes'][3].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+bp5['boxes'][4].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp5['boxes'][5].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+ax[0, 1].set_title('King River Experimental Watershed (KREW), CA',fontsize=50)
+ax[0, 1].set_xticks([1.5,3.5,5.5])
+ax[0, 1].set_xticklabels(['2010','2011','2012'], fontsize=50)#, position =[1,2,3], ha = 'left''right', rotation=25[1,2]
+ax[0, 1].set_yticklabels(np.arange(100,190,10),fontsize=50)
+ax[0,1].legend([bp5["boxes"][0], bp5["boxes"][1]], ['Open Areas', 'Under Trees'],fontsize = 40,loc='upper left')#, loc='upper right'
 
+bp2 = ax[1, 0].boxplot(d21, patch_artist=True)
+bp2['boxes'][0].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp2['boxes'][1].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp2['boxes'][2].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp2['boxes'][3].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+bp2['boxes'][4].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp2['boxes'][5].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp2['boxes'][6].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp2['boxes'][7].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+bp2['boxes'][8].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp2['boxes'][9].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp2['boxes'][10].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp2['boxes'][11].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+ax[1, 0].set_title('Jemez (JMZ), NM',fontsize=50)
+ax[1, 0].set_xticks([1.5,3.5,5.5,7.5,9.5,11.5])
+ax[1, 0].set_xticklabels(['2005','2006','2008','2009','2010','2011'],
+                          fontsize=50)#, rotation=40'open2016','open2017',
+ax[1, 0].set_yticklabels(np.arange(30,170,10),fontsize=50)
+ax[1, 0].set_ylabel('Snow disappearance day (Julian days)', fontsize=50)
+ax[1,0].legend([bp2["boxes"][0], bp2["boxes"][1]], ['Open Areas', 'Under Trees'],fontsize = 40,loc='upper left')#, loc='upper right'
 
+bp4 = ax[1, 1].boxplot(d22, patch_artist=True)
+bp4['boxes'][0].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp4['boxes'][1].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp4['boxes'][2].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp4['boxes'][3].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+bp4['boxes'][4].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp4['boxes'][5].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+bp4['boxes'][6].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
+bp4['boxes'][7].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
+bp4['boxes'][8].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
+bp4['boxes'][9].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
+ax[1, 1].set_title('Niwot Ridge Creek (NRC), C0',fontsize=50)
+ax[1, 1].set_xticks([1.5,3.5,5.5,7.5,9.5])
+ax[1, 1].set_xticklabels(['2007','2008','2009','2010','2011'],
+            fontsize=50)#, rotation=40'open2016','open2017',
+ax[1, 1].set_yticklabels(np.arange(125,210,10),fontsize=50)
+ax[1,1].legend([bp4["boxes"][0], bp4["boxes"][1]], ['Open Areas', 'Under Trees'],fontsize = 40,loc='upper left')#, loc='upper right'
 
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/obseravation_analysis/obsData_dsd.png')
 
 
 

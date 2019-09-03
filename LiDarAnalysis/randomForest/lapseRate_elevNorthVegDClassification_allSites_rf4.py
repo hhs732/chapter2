@@ -230,13 +230,20 @@ importance_bins_krew = np.array([feature_importances_error_0putBin[0][0].values[
                             feature_importances_error_0putBin[2][0].values[0],
                             feature_importances_error_0putBin[3][0].values[0]])
 #percentages = (np.random.randint(5,20, (len(people), segments)))
-y_values = np.arange(1,len(feature_importances_error_0putBin[0][0].columns)+1)
 color_krew = ['lightsalmon','tomato','crimson','brown']#gold #darkorange #rosybrown #indianred
 plt.subplots(figsize=(20,15))
-lft = 0
-for imp, clr in zip(importance_bins_krew,color_krew):
-    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
-    lft += imp
+#y_values = np.arange(1,len(feature_importances_error_0putBin[0][0].columns)+1)
+#lft = 0
+#for imp, clr in zip(importance_bins_krew,color_krew):
+#    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
+#    lft += imp
+y_values = np.arange(0,len(feature_importances_error_0putBin[0][0].columns))
+indx = -1.6
+bar_width = 0.2
+for bins in range(len(importance_bins_krew)):
+    plt.barh(y_values+indx*bar_width, importance_bins_krew[bins], bar_width, facecolor = color_krew[bins])#, alpha=0.2,orientation = 'horizontal', 
+    indx += 1
+    
 # Tick labels for x axis
 feature_list1 = feature_importances_error_0putBin[0][0].columns
 plt.xticks(fontsize=35) #rotation='vertical', 
@@ -247,10 +254,10 @@ plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40)
 meanAbsError = [feature_importances_error_0putBin[i][1] for i in range (4)]
 fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
 legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
-plt.legend(legend,fontsize = 24)#, loc = 'upper center'
+plt.legend(legend,fontsize = 22)#, loc = 'upper center'
 plt.title('Importance of features in 4 fSCA bins in Krew', fontsize=40)#, position=(0.04, 0.88), ha='left'
 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_tempD2M_0put_krew_bin_bar2.png')
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/importance_tempD2M_0put_krew_bin_bar3.png')
 
 ##features and target for random forest model for fsca_open ###########################################
 #in_0p_rf_krew = in_out_rf_krew_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
@@ -300,6 +307,23 @@ fscaPlottingByColorMap4tempNrth(in_out_rf_krew_lswr_ls_drp_df,out_ut_0p_rf_krew,
 # 2d plotting by color map LWR & SWR
 savepath_slwr_ut0p_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCA0p_fSCAut3.png'
 fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_ut_0p_rf_krew,'spring_r',"fSCA0p_fSCAut",savepath_slwr_ut0p_krew)
+
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_Krew_sens = np.mean(in_out_rf_krew_lswr_ls_drp_df['temp']) * np.ones(100)
+precip_Krew_sens = np.mean(in_out_rf_krew_lswr_ls_drp_df['precip']) * np.ones(100)
+lwr_Krew_sens = np.mean(in_out_rf_krew_lswr_ls_drp_df['lwr']) * np.ones(100)
+swr_Krew_sens_up = in_out_rf_krew_lswr_ls_drp_df['swr'].quantile(0.2) * np.ones(100)
+swr_Krew_sens_low = in_out_rf_krew_lswr_ls_drp_df['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_krew_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_Krew_sens],[precip_Krew_sens,vegDens_sens,lwr_Krew_sens,swr_Krew_sens_up]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_krew_up = randomForest_sensMod_predict(in_ut_0p_rf_krew,out_ut_0p_rf_krew,59,200,in_ut_0p_rf_krew_vegSen_up)
+
+in_ut_0p_rf_krew_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_Krew_sens],[precip_Krew_sens,vegDens_sens,lwr_Krew_sens,swr_Krew_sens_low]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_krew_low = randomForest_sensMod_predict(in_ut_0p_rf_krew,out_ut_0p_rf_krew,59,200,in_ut_0p_rf_krew_vegSen_low)
+
+savePath1_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/deltaFsca_predicted_krew.png'
+savePath2_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/deltaFsca_predicted_scatter_krew.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_krew_up,sens_vegSwr_krew_low,savePath1_krew,savePath2_krew,'brown','lightsalmon','KREW','YlOrRd')
 
 #%% load data Jemez 2010
 #ascii_grid_veg_indexJmz = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_jmz.npy')
@@ -569,7 +593,7 @@ fscaPlottingByColorMap4swrLwr(in_out_rf_jmz_lswr_ls_drp_df,out_ut_0p_rf_jmz,'vir
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc26m_retile',snow_temp_vegdens_index_sL30_sc26m)
 
 #loading LWR and creating 100b100 tif files
-counter = np.arange(1,184) #lst_hillslope_isoCalib1st
+counter = np.arange(1,118) #lst_hillslope_isoCalib1st
 #path2imagesIn_lwr_scw= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/LRAD/"
 path2images0ut_lwr_scw = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/lwr100/LWR_100_{}.tif".format(i) for i in counter]
 #latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_lwr_scw,path2images0ut_lwr_scw,'lwr')
@@ -583,12 +607,12 @@ path2images0ut_swr_scw = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-f
 latLon_lwr_scw = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_scw[0:117])
 lwr_ls_scw_limlLatLong = pd.DataFrame(latLon_lwr_scw[(latLon_lwr_scw[:,1]>=4365000)&(latLon_lwr_scw[:,1]<=4372000)&
                                        (latLon_lwr_scw[:,0]>=731000)&(latLon_lwr_scw[:,0]<=738000)], columns = ['x','y','lwr'])
-lwr_ls_scw_limlLatLong2 = lwr_ls_scw_limlLatLong.dropna()
+lwr_ls_sc26m_limlLatLong2 = lwr_ls_scw_limlLatLong.dropna()
 
-latLon_swr_scw = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_scw[0:117])
+latLon_swr_scw = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_scw[0:117])
 swr_ls_scw_limlLatLong = pd.DataFrame(latLon_swr_scw[(latLon_swr_scw[:,1]>=4365000)&(latLon_swr_scw[:,1]<=4372000)&
                                      (latLon_swr_scw[:,0]>=731000)&(latLon_swr_scw[:,0]<=738000)], columns = ['x','y','swr'])
-swr_ls_scw_limlLatLong2 = swr_ls_scw_limlLatLong.dropna()
+swr_ls_sc26m_limlLatLong2 = swr_ls_scw_limlLatLong.dropna()
 
 #******************************************************************************************************
 #******************************************************************************************************
@@ -596,18 +620,21 @@ swr_ls_scw_limlLatLong2 = swr_ls_scw_limlLatLong.dropna()
 #******************************************************************************************************
 #******************************************************************************************************
 # loading other feature from fusion
-
 snow_temp_vegdens_index_sL30_sc26m = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc26m_retile.npy')
-coords_scw = [np.min(snow_temp_vegdens_index_sL30_sc26m[:,0]),np.max(snow_temp_vegdens_index_sL30_sc26m[:,0]),
-              np.min(snow_temp_vegdens_index_sL30_sc26m[:,1]),np.max(snow_temp_vegdens_index_sL30_sc26m[:,1])]
+lat_long_nad83_sc26m = [np.min(snow_temp_vegdens_index_sL30_sc26m[:,0]),np.max(snow_temp_vegdens_index_sL30_sc26m[:,0]),
+                      np.min(snow_temp_vegdens_index_sL30_sc26m[:,1]),np.max(snow_temp_vegdens_index_sL30_sc26m[:,1])]
 
 elev_sc26m = snow_temp_vegdens_index_sL30_sc26m[:,2]
 tempDJF_sc26m = -0.0016 * elev_sc26m + 1.802
+elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
+
+tempDec_sc26m = -0.0013047442 * elev_sc26m + + 2.0480940252
 
 snow_temp_vegdens_index_sL30_sc26m_df = pd.DataFrame(snow_temp_vegdens_index_sL30_sc26m, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
+snow_temp_vegdens_index_sL30_sc26m_df['temp'] = tempDec_sc26m
 
 elevationBand_sc = np.arange(min(snow_temp_vegdens_index_sL30_sc26m_df['z']),max(snow_temp_vegdens_index_sL30_sc26m_df['z']),67)
-snow_temp_vegdens_sL30_elevCls_sc26m = classificationElevation(snow_temp_vegdens_index_sL30_sc26m,elevationBand_sc,elev_class_inx)
+snow_temp_vegdens_sL30_elevCls_sc26m = classificationElevation(snow_temp_vegdens_index_sL30_sc26m_df.values,elevationBand_sc,elev_class_inx)
 
 meanTemp_elevClass_sc = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_sc26m,elev_class_inx)   
 
@@ -648,6 +675,156 @@ fSCA_uT_rad_vegDens_sc26m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #ouputPath_nrt_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc26m_retile_lr2.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc26m,ouputPath_nrt_sc26m,T_sc26m)
 
+### precipitation dec to march for SCW  y = 0.0867x - 130.65
+elev_sc26m = snow_temp_vegdens_sL30_elevCls_sc26m[:,2]
+precip_sc26m1b1 = np.reshape((0.0867 * elev_sc26m - 130.65),(len(snow_temp_vegdens_sL30_elevCls_sc26m),1))
+
+#adding precip column
+snow_temp_vegdens_sL30_elevCls_sc26m = snow_temp_vegdens_sL30_elevCls_sc26m[:,:10]
+
+snow_temp_vegdens_sL30_elevCls_precip_sc26m = np.append(snow_temp_vegdens_sL30_elevCls_sc26m, precip_sc26m1b1, 1)
+
+# change resolution to 100b100 #######################################################################
+snow_temp_vegdens_sL30_elevCls_precip_cls_sc26m = addClassifier2changeResolutionTo100B100 (lat_long_nad83_sc26m,snow_temp_vegdens_sL30_elevCls_precip_sc26m)
+aaaa_test1 = snow_temp_vegdens_sL30_elevCls_precip_cls_sc26m[11200000:,:]
+
+#******************************************************************************************************
+#******************************************************************************************************
+#******************************************************************************************************
+
+#classifier_sc26m = snow_temp_vegdens_sL30_elevCls_precip_cls_sc26m [:,13]
+#in_out_rf_sc26m0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_sc26m,snow_temp_vegdens_sL30_elevCls_precip_cls_sc26m)
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc26m_tempDec',in_out_rf_sc26m0)
+in_out_rf_sc26m0 = pd.DataFrame(np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc26m_tempDec.npy'),
+                              columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca'])
+
+#define random forest AI features ###################################################################
+# defining index for adding lwr and swr
+in_out_rf_sc26m = in_out_rf_sc26m0.copy()
+roundingCoordinates (in_out_rf_sc26m) #rounding coodinates
+            
+in_out_rf_sc26m_indx = 100*((in_out_rf_sc26m ['x']).astype(int))+(in_out_rf_sc26m ['y']).astype(int) #(in_out_rf_sc26m ['x']-min(in_out_rf_sc26m ['x']))+(in_out_rf_sc26m ['y']-min(in_out_rf_sc26m ['y']))
+in_out_rf_sc26m2 = pd.concat([in_out_rf_sc26m,in_out_rf_sc26m_indx],axis =1)
+in_out_rf_sc26m3 = pd.concat([in_out_rf_sc26m2,in_out_rf_sc26m_indx],axis =1)
+in_out_rf_sc26m_lswr = pd.concat([in_out_rf_sc26m3,in_out_rf_sc26m_indx],axis =1)
+in_out_rf_sc26m_lswr.columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr']
+
+#adding lwr and swr to the features
+swr_ls_sc26m1_limlLatLong20 = swr_ls_sc26m_limlLatLong2.copy()
+swr_ls_sc26m1_limlLatLong20.index = np.arange(len(swr_ls_sc26m1_limlLatLong20))
+roundingCoordinates (swr_ls_sc26m1_limlLatLong20) #rounding coodinates
+swr_ls_sc26m1_limLatLong_indx = 100*((swr_ls_sc26m1_limlLatLong20 ['x']).astype(int))+(swr_ls_sc26m1_limlLatLong20 ['y']).astype(int)
+swr_ls_sc26m1_limLatLong3 = pd.concat([swr_ls_sc26m1_limlLatLong20,swr_ls_sc26m1_limLatLong_indx],axis =1)
+
+lwr_ls_sc26m1_limlLatLong20 = lwr_ls_sc26m_limlLatLong2.copy()
+lwr_ls_sc26m1_limlLatLong20.index = np.arange(len(lwr_ls_sc26m1_limlLatLong20))
+roundingCoordinates (lwr_ls_sc26m1_limlLatLong20) #rounding coodinates
+lwr_ls_sc26m1_limLatLong_indx = 100*((lwr_ls_sc26m1_limlLatLong20 ['x']).astype(int))+(lwr_ls_sc26m1_limlLatLong20 ['y']).astype(int)
+lwr_ls_sc26m1_limLatLong3 = pd.concat([lwr_ls_sc26m1_limlLatLong20,lwr_ls_sc26m1_limLatLong_indx],axis =1)
+
+in_out_rf_sc26m_lswr_ls = (in_out_rf_sc26m_lswr.values).copy()
+lwr_ls_sc26m1_limLatLong_ls = lwr_ls_sc26m1_limLatLong3.values
+swr_ls_sc26m1_limLatLong_ls = swr_ls_sc26m1_limLatLong3.values
+for smpl in range (len(lwr_ls_sc26m1_limLatLong_indx)):#
+    indxMLWR = abs(in_out_rf_sc26m_lswr_ls[:,11]-lwr_ls_sc26m1_limLatLong_ls[smpl,3])
+    indxMSWR = abs(in_out_rf_sc26m_lswr_ls[:,11]-swr_ls_sc26m1_limLatLong_ls[smpl,3])
+    in_out_rf_sc26m_lswr_ls[:,12][indxMLWR<1]=lwr_ls_sc26m1_limLatLong_ls[smpl,2]
+    in_out_rf_sc26m_lswr_ls[:,13][indxMSWR<1]=swr_ls_sc26m1_limLatLong_ls[smpl,2]
+    
+in_out_rf_sc26m_lswr_ls_drp = in_out_rf_sc26m_lswr_ls[in_out_rf_sc26m_lswr_ls[:,11] != in_out_rf_sc26m_lswr_ls[:,12]]    
+in_out_rf_sc26m_lswr_ls_drp_df = pd.DataFrame(in_out_rf_sc26m_lswr_ls_drp, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr'])
+
+# add classifier for fsca
+in_out_rf_sc26m_lswr_ls_drp_df2 = pd.concat([in_out_rf_sc26m_lswr_ls_drp_df,in_out_rf_sc26m_lswr_ls_drp_df['fsca']],axis =1)
+in_out_rf_sc26m_lswr_ls_drp_ls = in_out_rf_sc26m_lswr_ls_drp_df2.values
+in_out_rf_sc26m_lswr_ls_drp_ls[:,14][in_out_rf_sc26m_lswr_ls_drp_ls[:,10]<=0.3] = 1
+in_out_rf_sc26m_lswr_ls_drp_ls[:,14][(in_out_rf_sc26m_lswr_ls_drp_ls[:,10]<=0.55) & (in_out_rf_sc26m_lswr_ls_drp_ls[:,10]>=0.3)] = 2
+in_out_rf_sc26m_lswr_ls_drp_ls[:,14][(in_out_rf_sc26m_lswr_ls_drp_ls[:,10]<=0.8) & (in_out_rf_sc26m_lswr_ls_drp_ls[:,10]>=0.55)] = 3
+in_out_rf_sc26m_lswr_ls_drp_ls[:,14][in_out_rf_sc26m_lswr_ls_drp_ls[:,10]>0.8] = 4
+
+in_out_rf_sc26m_lswr_fcsa_drp_df = pd.DataFrame(in_out_rf_sc26m_lswr_ls_drp_ls, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr','fsca_classifier'])
+
+# random forest modeling #################################################################################
+## random forest modeling for different fsca bins for fsca_open--fsca_ut
+
+feature_importances_error_0putBin_sc26m = randomForestModel44FscaBins(in_out_rf_sc26m_lswr_fcsa_drp_df)
+
+importance_bins_sc26m = np.array([feature_importances_error_0putBin_sc26m[0][0].values[0],
+                            feature_importances_error_0putBin_sc26m[1][0].values[0],
+                            feature_importances_error_0putBin_sc26m[2][0].values[0],
+                            feature_importances_error_0putBin_sc26m[3][0].values[0]])
+#percentages = (np.random.randint(5,20, (len(people), segments)))
+y_values = np.arange(1,len(feature_importances_error_0putBin_sc26m[0][0].columns)+1)
+color_sc26m = ['plum','mediumorchid','m','rebeccapurple']#rosybrown #indianred
+plt.subplots(figsize=(20,15))
+lft = 0
+for imp, clr in zip(importance_bins_sc26m,color_sc26m):
+    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
+    lft += imp
+# Tick labels for x axis
+feature_list1 = feature_importances_error_0putBin_sc26m[0][0].columns
+plt.xticks(fontsize=35) #rotation='vertical', 
+plt.yticks(y_values, feature_list1, fontsize=35)
+
+plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
+
+meanAbsError = [feature_importances_error_0putBin_sc26m[i][1] for i in range (4)]
+fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
+legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
+plt.legend(legend,fontsize = 28)#, loc = 'upper center'
+plt.title('Importance of features in 4 fSCA bins in SCW_26Mar', fontsize=40)#, position=(0.04, 0.88), ha='left'
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0put_scw26m_bins_bar.png')
+
+##features and target for random forest model for fsca_open ###########################################
+#in_0p_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
+#out_0p_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df['fsca_0p']
+#[feature_importances_0p_mean,mean_abs_error_0p] = randomForestModel4Fsca0pen (in_0p_rf_sc26m,out_0p_rf_sc26m,50,200)
+#
+#pathName_0p = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/importance_0p_sc26m_lswr (error='
+#plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'lightseagreen', 'fSCA_open in sc26m')
+#
+##### 2d plotting fsca_open ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/temp_nrth_fSCA0pen3_sc26m.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc26m_lswr_ls_drp_df,out_0p_rf_sc26m,'OrRd',"fSCA_open in sc26m",savepath_sc26m)
+#   
+## 2d plotting by color map LWR & SWR
+#savepath_lswr_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/swr_lwr_fSCA0pen3_sc26m.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc26m_lswr_ls_drp_df,out_0p_rf_sc26m,'OrRd',"fSCA_open in sc26m",savepath_lswr_sc26m)
+#    
+######random forest AI modeling for fsca_underTree  ####################################################
+#in_ut_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #vegD_ut,'nrth','elev','x','y', 0.065 random_state=50
+#out_ut_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df['fsca_ut']
+#
+#[feature_importances_ut_mean,mean_abs_error_ut] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_sc26m,out_ut_rf_sc26m,50,200)
+#pathName_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/importance_ut_sc26m_non_lswr (error='
+#plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkgreen', 'fSCA_underTree for sc26m')
+#
+##### 2d plotting fsca_ut ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_tempNrth_ut_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/temp_nrth_fSCAunderTree_sc26m.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc26m_lswr_ls_drp_df,out_ut_rf_sc26m,'BuGn',"fSCA_underTree for sc26m",savepath_tempNrth_ut_sc26m)
+## 2d plotting by color map LWR & SWR
+#savepath_slwr_ut_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/swr_lwr_fSCAunderTree_sc26m.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc26m_lswr_ls_drp_df,out_ut_rf_sc26m,'BuGn',"fSCA_underTree for sc26m",savepath_slwr_ut_sc26m)
+    
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
+in_ut_0p_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc26m = pd.DataFrame(in_out_rf_sc26m_lswr_ls_drp_df['fsca_ut']-in_out_rf_sc26m_lswr_ls_drp_df['fsca_0p'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+[feature_importances_0p_ut_mean2,mean_abs_error_oput2] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc26m,out_ut_0p_rf_sc26m,59,200)
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0p_ut_sc26m_lswr (error='
+plot_rfm_importance (mean_abs_error_oput2, feature_importances_0p_ut_mean2, pathName_0p_ut, 'plum', 'fSCAop-fSCAut for SCW_26Mar')
+
+#### 2d plotting fsca_open_ut ###############################################################################
+# 2d plotting by color map temp & nrth
+savepath_tempNrth_ut0p_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/temp_nrth_fSCA0p_fSCAut_sc26m.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_sc26m_lswr_ls_drp_df,out_ut_0p_rf_sc26m,'RdPu',"fSCA0p_fSCAut for sc26m",savepath_tempNrth_ut0p_sc26m)
+# 2d plotting by color map LWR & SWR
+savepath_slwr_ut0p_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/swr_lwr_fSCA0p_fSCAut_sc26m.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_sc26m_lswr_ls_drp_df,out_ut_0p_rf_sc26m,'plasma_r',"fSCA0p_fSCAut for sc26m",savepath_slwr_ut0p_sc26m)
+
 #%% load data sagehen creek 17 April 2016
 #ascii_grid_veg_index17a = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_sc17A.npy')
 ##calculating topo_dimension from cut northness
@@ -665,17 +842,51 @@ fSCA_uT_rad_vegDens_sc26m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #snow_temp_vegdens_index_sL30_sc17a = veg_snow_temp_density_sc17a[(veg_snow_temp_density_sc17a[:,5]>-50)&(veg_snow_temp_density_sc17a[:,4]<30)]
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc17a',snow_temp_vegdens_index_sL30_sc17a)
 
+#****************************************************************************************************
+#loading LWR and creating 100b100 tif files
+#path2imagesIn_lwr_sc17a= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/JMZ/Jemez_domain/LRad_in_Ground_day/"
+counter = np.arange(1,140) #lst_hillslope_isoCalib1st
+path2images0ut_lwr_sc17a = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/lwr100/LWR_100_{}.tif".format(i) for i in counter]
+#latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_lwr_sc17a,path2images0ut_lwr_sc17a)
+
+#%## loading SWR and creating 100b100 tif files
+#path2imagesIn_swr_sc17a= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/Jemez_domain/SRad_in_Ground_day/"
+path2images0ut_swr_sc17a = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/swr100/SWR_100_{}.tif".format(i) for i in counter]
+#latLon_lwr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_swr_sc17a,path2images0ut_swr_sc17a)
+
+#loading 100b100 lwr&swr tif files
+latLon_lwr_sc17a = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_sc17a[0:139])
+lwr_ls_sc17a_limlLatLong = pd.DataFrame(latLon_lwr_sc17a[(latLon_lwr_sc17a[:,1]>=4365000)&(latLon_lwr_sc17a[:,1]<=4372000)&
+                                       (latLon_lwr_sc17a[:,0]>=731000)&(latLon_lwr_sc17a[:,0]<=738000)], columns = ['x','y','lwr'])
+lwr_ls_sc17a_limlLatLong2 = lwr_ls_sc17a_limlLatLong.dropna()
+
+latLon_swr_sc17a = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_sc17a[0:139])
+swr_ls_sc17a_limlLatLong = pd.DataFrame(latLon_swr_sc17a[(latLon_swr_sc17a[:,1]>=4365000)&(latLon_swr_sc17a[:,1]<=4372000)&
+                                     (latLon_swr_sc17a[:,0]>=731000)&(latLon_swr_sc17a[:,0]<=738000)], columns = ['x','y','swr'])
+swr_ls_sc17a_limlLatLong2 = swr_ls_sc17a_limlLatLong.dropna()
+
+#******************************************************************************************************
+#******************************************************************************************************
+# DO NOT NEED TO RUN THIS SECTION EVERY TIME, BECAUSE I SAVE """in_out_rf_sc17a0" IN 100*100 FORMAT
+#******************************************************************************************************
+#******************************************************************************************************
+# loading other feature from fusion
 snow_temp_vegdens_index_sL30_sc17a = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc17a.npy')
 aaaa_test2 = snow_temp_vegdens_index_sL30_sc17a[0:710,:]
 
 elev_sc17a = snow_temp_vegdens_index_sL30_sc17a[:,2]
 tempDJF_sc17a = -0.0016 * elev_sc17a + 1.802
 
+tempDec_sc17a = -0.0013 * elev_sc17a + 2.7982
+
 snow_temp_vegdens_index_sL30_sc17a_df = pd.DataFrame(snow_temp_vegdens_index_sL30_sc17a, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
 aaaa_test = snow_temp_vegdens_index_sL30_sc17a[700780:710057,:]
 
+snow_temp_vegdens_index_sL30_sc17a_df['temp']=tempDec_sc17a
+elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
+
 elevationBand_sc17a = np.arange(min(snow_temp_vegdens_index_sL30_sc17a_df['z']),max(snow_temp_vegdens_index_sL30_sc17a_df['z']),67)
-snow_temp_vegdens_sL30_elevCls_sc17a = classificationElevation(snow_temp_vegdens_index_sL30_sc17a,elevationBand_sc17a,elev_class_inx)
+snow_temp_vegdens_sL30_elevCls_sc17a = classificationElevation(snow_temp_vegdens_index_sL30_sc17a_df.values,elevationBand_sc17a,elev_class_inx)
 
 meanTemp_elevClass_sc = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_sc17a,elev_class_inx)   
 
@@ -713,6 +924,158 @@ fSCA_uT_rad_vegDens_sc17a = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #ouputPath_nrt_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc17a_lr2.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc17a,ouputPath_nrt_sc17a,T_sc17a)
 
+### precipitation dec to march for scw y = 0.0895x - 132.34
+elev_sc17a = snow_temp_vegdens_sL30_elevCls_sc17a[:,2]
+precip_sc17a1b1 = np.reshape((0.0895 * elev_sc17a - 132.34),(len(snow_temp_vegdens_sL30_elevCls_sc17a),1))
+
+#adding precip column
+snow_temp_vegdens_sL30_elevCls_sc17a = snow_temp_vegdens_sL30_elevCls_sc17a[:,:10]
+
+snow_temp_vegdens_sL30_elevCls_precip_sc17a = np.append(snow_temp_vegdens_sL30_elevCls_sc17a, precip_sc17a1b1, 1)
+
+# change resolution to 100b100 #######################################################################
+lat_long_nad83_sc17a = [np.min(snow_temp_vegdens_sL30_elevCls_precip_sc17a[:,0]),np.max(snow_temp_vegdens_sL30_elevCls_precip_sc17a[:,0]),np.min(snow_temp_vegdens_sL30_elevCls_precip_sc17a[:,1]),np.max(snow_temp_vegdens_sL30_elevCls_precip_sc17a[:,1])]
+snow_temp_vegdens_sL30_elevCls_precip_cls_sc17a = addClassifier2changeResolutionTo100B100 (lat_long_nad83_sc17a,snow_temp_vegdens_sL30_elevCls_precip_sc17a)
+aaaa_test = snow_temp_vegdens_sL30_elevCls_precip_cls_sc17a[12600000:,:]
+
+#******************************************************************************************************
+#******************************************************************************************************
+#******************************************************************************************************
+
+#classifier_sc17a = snow_temp_vegdens_sL30_elevCls_precip_cls_sc17a [:,13]
+#in_out_rf_sc17a0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_sc17a,snow_temp_vegdens_sL30_elevCls_precip_cls_sc17a)
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc17a_tempDec',in_out_rf_sc17a0)
+in_out_rf_sc17a0 = pd.DataFrame(np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc17a_tempDec.npy'),
+                              columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca'])
+
+#define random forest AI features ###################################################################
+# defining index for adding lwr and swr
+in_out_rf_sc17a = in_out_rf_sc17a0.copy()
+roundingCoordinates (in_out_rf_sc17a) #rounding coodinates
+            
+in_out_rf_sc17a_indx = 100*((in_out_rf_sc17a ['x']).astype(int))+(in_out_rf_sc17a ['y']).astype(int) #(in_out_rf_sc17a ['x']-min(in_out_rf_sc17a ['x']))+(in_out_rf_sc17a ['y']-min(in_out_rf_sc17a ['y']))
+in_out_rf_sc17a2 = pd.concat([in_out_rf_sc17a,in_out_rf_sc17a_indx],axis =1)
+in_out_rf_sc17a3 = pd.concat([in_out_rf_sc17a2,in_out_rf_sc17a_indx],axis =1)
+in_out_rf_sc17a_lswr = pd.concat([in_out_rf_sc17a3,in_out_rf_sc17a_indx],axis =1)
+in_out_rf_sc17a_lswr.columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr']
+
+#adding lwr and swr to the features
+swr_ls_sc17a1_limlLatLong20 = swr_ls_sc17a_limlLatLong2.copy()
+swr_ls_sc17a1_limlLatLong20.index = np.arange(len(swr_ls_sc17a1_limlLatLong20))
+roundingCoordinates (swr_ls_sc17a1_limlLatLong20) #rounding coodinates
+swr_ls_sc17a1_limLatLong_indx = 100*((swr_ls_sc17a1_limlLatLong20 ['x']).astype(int))+(swr_ls_sc17a1_limlLatLong20 ['y']).astype(int)
+swr_ls_sc17a1_limLatLong3 = pd.concat([swr_ls_sc17a1_limlLatLong20,swr_ls_sc17a1_limLatLong_indx],axis =1)
+
+lwr_ls_sc17a1_limlLatLong20 = lwr_ls_sc17a_limlLatLong2.copy()
+lwr_ls_sc17a1_limlLatLong20.index = np.arange(len(lwr_ls_sc17a1_limlLatLong20))
+roundingCoordinates (lwr_ls_sc17a1_limlLatLong20) #rounding coodinates
+lwr_ls_sc17a1_limLatLong_indx = 100*((lwr_ls_sc17a1_limlLatLong20 ['x']).astype(int))+(lwr_ls_sc17a1_limlLatLong20 ['y']).astype(int)
+lwr_ls_sc17a1_limLatLong3 = pd.concat([lwr_ls_sc17a1_limlLatLong20,lwr_ls_sc17a1_limLatLong_indx],axis =1)
+
+in_out_rf_sc17a_lswr_ls = (in_out_rf_sc17a_lswr.values).copy()
+lwr_ls_sc17a1_limLatLong_ls = lwr_ls_sc17a1_limLatLong3.values
+swr_ls_sc17a1_limLatLong_ls = swr_ls_sc17a1_limLatLong3.values
+for smpl in range (len(lwr_ls_sc17a1_limLatLong_indx)):#
+    indxMLWR = abs(in_out_rf_sc17a_lswr_ls[:,11]-lwr_ls_sc17a1_limLatLong_ls[smpl,3])
+    indxMSWR = abs(in_out_rf_sc17a_lswr_ls[:,11]-swr_ls_sc17a1_limLatLong_ls[smpl,3])
+    in_out_rf_sc17a_lswr_ls[:,12][indxMLWR<1]=lwr_ls_sc17a1_limLatLong_ls[smpl,2]
+    in_out_rf_sc17a_lswr_ls[:,13][indxMSWR<1]=swr_ls_sc17a1_limLatLong_ls[smpl,2]
+    
+in_out_rf_sc17a_lswr_ls_drp = in_out_rf_sc17a_lswr_ls[in_out_rf_sc17a_lswr_ls[:,11] != in_out_rf_sc17a_lswr_ls[:,12]]    
+in_out_rf_sc17a_lswr_ls_drp_df = pd.DataFrame(in_out_rf_sc17a_lswr_ls_drp, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr'])
+
+# add classifier for fsca
+in_out_rf_sc17a_lswr_ls_drp_df2 = pd.concat([in_out_rf_sc17a_lswr_ls_drp_df,in_out_rf_sc17a_lswr_ls_drp_df['fsca']],axis =1)
+in_out_rf_sc17a_lswr_ls_drp_ls = in_out_rf_sc17a_lswr_ls_drp_df2.values
+in_out_rf_sc17a_lswr_ls_drp_ls[:,14][in_out_rf_sc17a_lswr_ls_drp_ls[:,10]<=0.3] = 1
+in_out_rf_sc17a_lswr_ls_drp_ls[:,14][(in_out_rf_sc17a_lswr_ls_drp_ls[:,10]<=0.55) & (in_out_rf_sc17a_lswr_ls_drp_ls[:,10]>=0.3)] = 2
+in_out_rf_sc17a_lswr_ls_drp_ls[:,14][(in_out_rf_sc17a_lswr_ls_drp_ls[:,10]<=0.8) & (in_out_rf_sc17a_lswr_ls_drp_ls[:,10]>=0.55)] = 3
+in_out_rf_sc17a_lswr_ls_drp_ls[:,14][in_out_rf_sc17a_lswr_ls_drp_ls[:,10]>0.8] = 4
+
+in_out_rf_sc17a_lswr_fcsa_drp_df = pd.DataFrame(in_out_rf_sc17a_lswr_ls_drp_ls, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr','fsca_classifier'])
+
+# random forest modeling #################################################################################
+## random forest modeling for different fsca bins for fsca_open--fsca_ut
+
+feature_importances_error_0putBin_sc17a = randomForestModel44FscaBins(in_out_rf_sc17a_lswr_fcsa_drp_df)
+
+importance_bins_sc17a = np.array([feature_importances_error_0putBin_sc17a[0][0].values[0],
+                            feature_importances_error_0putBin_sc17a[1][0].values[0],
+                            feature_importances_error_0putBin_sc17a[2][0].values[0],
+                            feature_importances_error_0putBin_sc17a[3][0].values[0]])
+#percentages = (np.random.randint(5,20, (len(people), segments)))
+y_values = np.arange(1,len(feature_importances_error_0putBin_sc17a[0][0].columns)+1)
+color_sc17a = ['pink','hotpink','fuchsia','purple']#rosybrown #indianred
+plt.subplots(figsize=(20,15))
+lft = 0
+for imp, clr in zip(importance_bins_sc17a,color_sc17a):
+    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
+    lft += imp
+# Tick labels for x axis
+feature_list1 = feature_importances_error_0putBin_sc17a[0][0].columns
+plt.xticks(fontsize=35) #rotation='vertical', 
+plt.yticks(y_values, feature_list1, fontsize=35)
+
+plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
+
+meanAbsError = [feature_importances_error_0putBin_sc17a[i][1] for i in range (4)]
+fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
+legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
+plt.legend(legend,fontsize = 28)#, loc = 'upper center'
+plt.title('Importance of features in 4 fSCA bins in SCW_17Apr', fontsize=40)#, position=(0.04, 0.88), ha='left'
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0put_scW17a_bins_bar.png')
+
+##features and target for random forest model for fsca_open ###########################################
+#in_0p_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
+#out_0p_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df['fsca_0p']
+#[feature_importances_0p_mean,mean_abs_error_0p] = randomForestModel4Fsca0pen (in_0p_rf_sc17a,out_0p_rf_sc17a,50,200)
+#
+#pathName_0p = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/importance_0p_sc17a_lswr (error='
+#plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'lightseagreen', 'fSCA_open in sc17a')
+#
+##### 2d plotting fsca_open ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/temp_nrth_fSCA0pen3_sc17a.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc17a_lswr_ls_drp_df,out_0p_rf_sc17a,'OrRd',"fSCA_open in sc17a",savepath_sc17a)
+#   
+## 2d plotting by color map LWR & SWR
+#savepath_lswr_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/swr_lwr_fSCA0pen3_sc17a.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc17a_lswr_ls_drp_df,out_0p_rf_sc17a,'OrRd',"fSCA_open in sc17a",savepath_lswr_sc17a)
+#    
+######random forest AI modeling for fsca_underTree  ####################################################
+#in_ut_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #vegD_ut,'nrth','elev','x','y', 0.065 random_state=50
+#out_ut_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df['fsca_ut']
+#
+#[feature_importances_ut_mean,mean_abs_error_ut] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_sc17a,out_ut_rf_sc17a,50,200)
+#pathName_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/importance_ut_sc17a_non_lswr (error='
+#plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkgreen', 'fSCA_underTree for sc17a')
+#
+##### 2d plotting fsca_ut ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_tempNrth_ut_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/temp_nrth_fSCAunderTree_sc17a.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc17a_lswr_ls_drp_df,out_ut_rf_sc17a,'BuGn',"fSCA_underTree for sc17a",savepath_tempNrth_ut_sc17a)
+## 2d plotting by color map LWR & SWR
+#savepath_slwr_ut_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/swr_lwr_fSCAunderTree_sc17a.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc17a_lswr_ls_drp_df,out_ut_rf_sc17a,'BuGn',"fSCA_underTree for sc17a",savepath_slwr_ut_sc17a)
+    
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
+in_ut_0p_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc17a = pd.DataFrame(in_out_rf_sc17a_lswr_ls_drp_df['fsca_ut']-in_out_rf_sc17a_lswr_ls_drp_df['fsca_0p'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+[feature_importances_0p_ut_mean2,mean_abs_error_oput2] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc17a,out_ut_0p_rf_sc17a,59,200)
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0p_ut_sc17a_lswr (error='
+plot_rfm_importance (mean_abs_error_oput2, feature_importances_0p_ut_mean2, pathName_0p_ut, 'hotpink', 'fSCAop-fSCAut for SCW_17Apr')
+
+#### 2d plotting fsca_open_ut ###############################################################################
+# 2d plotting by color map temp & nrth
+savepath_tempNrth_ut0p_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/temp_nrth_fSCA0p_fSCAut_scw17a.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_sc17a_lswr_ls_drp_df,out_ut_0p_rf_sc17a,'RdPu',"fSCA0p_fSCAut for SCW17Apr",savepath_tempNrth_ut0p_sc17a)
+# 2d plotting by color map LWR & SWR
+savepath_slwr_ut0p_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/swr_lwr_fSCA0p_fSCAut_scw17a.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_sc17a_lswr_ls_drp_df,out_ut_0p_rf_sc17a,'plasma_r',"fSCA0p_fSCAut for SCW17Apr",savepath_slwr_ut0p_sc17a)
+#cm.Purples
+
 #%% load data sagehen creek 18 May 2016
 #ascii_grid_veg_index18m = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/ascii_index_pr_sc24May.npy')
 ##calculating topo_dimension from cut northness
@@ -731,16 +1094,48 @@ fSCA_uT_rad_vegDens_sc17a = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #snow_temp_vegdens_index_sL30_sc18m = veg_snow_temp_density_sc18m[(veg_snow_temp_density_sc18m[:,5]>-50)&(veg_snow_temp_density_sc18m[:,4]<30)]
 #np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc18m',snow_temp_vegdens_index_sL30_sc18m)
 
+#****************************************************************************************************
+#loading LWR and creating 100b100 tif files
+#path2imagesIn_lwr_jmz= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/JMZ/Jemez_domain/LRad_in_Ground_day/"
+counter = np.arange(1,184) #lst_hillslope_isoCalib1st
+path2images0ut_lwr_sc18m = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/lwr100/LWR_100_{}.tif".format(i) for i in counter]
+#latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_lwr_sc18m,path2images0ut_lwr_sc18m)
+
+#%## loading SWR and creating 100b100 tif files
+#path2imagesIn_swr_sc18m= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/Jemez_domain/SRad_in_Ground_day/"
+path2images0ut_swr_sc18m = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/Sagehen_snowPalm/Sagehen 2016/swr100/SWR_100_{}.tif".format(i) for i in counter]
+#latLon_lwr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_swr_sc18m,path2images0ut_swr_sc18m)
+#loading 100b100 lwr&swr tif files
+latLon_lwr_sc18m = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_sc18m)
+lwr_ls_sc18m_limlLatLong = pd.DataFrame(latLon_lwr_sc18m[(latLon_lwr_sc18m[:,1]>=4365000)&(latLon_lwr_sc18m[:,1]<=4372000)&
+                                       (latLon_lwr_sc18m[:,0]>=731000)&(latLon_lwr_sc18m[:,0]<=738000)], columns = ['x','y','lwr'])
+lwr_ls_sc18m_limlLatLong2 = lwr_ls_sc18m_limlLatLong.dropna()
+
+latLon_swr_sc18m = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_sc18m)
+swr_ls_sc18m_limlLatLong = pd.DataFrame(latLon_swr_sc18m[(latLon_swr_sc18m[:,1]>=4365000)&(latLon_swr_sc18m[:,1]<=4372000)&
+                                     (latLon_swr_sc18m[:,0]>=731000)&(latLon_swr_sc18m[:,0]<=738000)], columns = ['x','y','swr'])
+swr_ls_sc18m_limlLatLong2 = swr_ls_sc18m_limlLatLong.dropna()
+
+#******************************************************************************************************
+#******************************************************************************************************
+# DO NOT NEED TO RUN THIS SECTION EVERY TIME, BECAUSE I SAVE """in_out_rf_sc18m0" IN 100*100 FORMAT
+#******************************************************************************************************
+#******************************************************************************************************
+# loading other feature from fusion
 snow_temp_vegdens_index_sL30_sc18m = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_sc18m.npy')
 aaaa_test3 = snow_temp_vegdens_index_sL30_sc18m[0:710,:]
 
 elev_sc18m = snow_temp_vegdens_index_sL30_sc18m[:,2]
 tempDJF_sc18m = -0.0016 * elev_sc18m + 1.802
 
+tempDec_sc18m = -0.002 * elev_sc18m + 5.2481
+
 snow_temp_vegdens_index_sL30_sc18m_df = pd.DataFrame(snow_temp_vegdens_index_sL30_sc18m, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
+snow_temp_vegdens_index_sL30_sc18m_df['temp'] = tempDec_sc18m
+elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
 
 elevationBand_sc18m = np.arange(min(snow_temp_vegdens_index_sL30_sc18m_df['z']),max(snow_temp_vegdens_index_sL30_sc18m_df['z']),67)
-snow_temp_vegdens_sL30_elevCls_sc18m = classificationElevation(snow_temp_vegdens_index_sL30_sc18m,elevationBand_sc18m,elev_class_inx)
+snow_temp_vegdens_sL30_elevCls_sc18m = classificationElevation(snow_temp_vegdens_index_sL30_sc18m_df.values,elevationBand_sc18m,elev_class_inx)
 
 meanTemp_elevClass_sc = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx)   
 
@@ -759,7 +1154,7 @@ fSCA_0u_exp_sc18m, fSCA_0u_shl_sc18m = fsca0pn_fscaUnTr(fSCA_ut_exp_sc18m, fSCA_
 #statistic_sc18m2,pvalue_sc18m2,average_sample_exp_sc18m2,average_sample_shl_sc18m2,significant_sc18m2 = wilcoxonTest(fSCA_0u_exp_sc18m_samp, fSCA_0u_shl_sc18m_samp)
 #
 ##y = -0.0020x + 5.2481
-tempDec_sc18m = -0.002 * elevationBand_sc18m + 5.2481
+#tempDec_sc18m = -0.002 * elevationBand_sc18m + 5.2481
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_sc18m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_sc18m,elev_class_inx)
@@ -778,6 +1173,157 @@ fSCA_uT_rad_vegDens_sc18m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 #ouputPath_nrt_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_sc18m_lr2.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_sc18m,ouputPath_nrt_sc18m,T_sc18m)
 
+### precipitation dec to march for SCW y = 0.0922x - 129.79
+elev_sc18m = snow_temp_vegdens_sL30_elevCls_sc18m[:,2]
+precip_sc18m1b1 = np.reshape((0.0922 * elev_sc18m - 129.79),(len(snow_temp_vegdens_sL30_elevCls_sc18m),1))
+
+#adding precip column
+snow_temp_vegdens_sL30_elevCls_sc18m = snow_temp_vegdens_sL30_elevCls_sc18m[:,:10]
+
+snow_temp_vegdens_sL30_elevCls_precip_sc18m = np.append(snow_temp_vegdens_sL30_elevCls_sc18m, precip_sc18m1b1, 1)
+
+# change resolution to 100b100 #######################################################################
+lat_long_nad83_sc18m = [np.min(snow_temp_vegdens_sL30_elevCls_precip_sc18m[:,0]),np.max(snow_temp_vegdens_sL30_elevCls_precip_sc18m[:,0]),np.min(snow_temp_vegdens_sL30_elevCls_precip_sc18m[:,1]),np.max(snow_temp_vegdens_sL30_elevCls_precip_sc18m[:,1])]
+snow_temp_vegdens_sL30_elevCls_precip_cls_sc18m = addClassifier2changeResolutionTo100B100 (lat_long_nad83_sc18m,snow_temp_vegdens_sL30_elevCls_precip_sc18m)
+aaaa_test3 = snow_temp_vegdens_sL30_elevCls_precip_cls_sc18m[13300000:,:]
+
+#******************************************************************************************************
+#******************************************************************************************************
+#******************************************************************************************************
+
+#classifier_sc18m = snow_temp_vegdens_sL30_elevCls_precip_cls_sc18m [:,13]
+#in_out_rf_sc18m0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_sc18m,snow_temp_vegdens_sL30_elevCls_precip_cls_sc18m)
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc18m_tempDec',in_out_rf_sc18m0)
+in_out_rf_sc18m0 = pd.DataFrame(np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/in_out_rf_sc18m_tempDec.npy'),
+                              columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca'])
+
+#define random forest AI features ###################################################################
+# defining index for adding lwr and swr
+in_out_rf_sc18m = in_out_rf_sc18m0.copy()
+roundingCoordinates (in_out_rf_sc18m) #rounding coodinates
+            
+in_out_rf_sc18m_indx = 100*((in_out_rf_sc18m ['x']).astype(int))+(in_out_rf_sc18m ['y']).astype(int) #(in_out_rf_sc18m ['x']-min(in_out_rf_sc18m ['x']))+(in_out_rf_sc18m ['y']-min(in_out_rf_sc18m ['y']))
+in_out_rf_sc18m2 = pd.concat([in_out_rf_sc18m,in_out_rf_sc18m_indx],axis =1)
+in_out_rf_sc18m3 = pd.concat([in_out_rf_sc18m2,in_out_rf_sc18m_indx],axis =1)
+in_out_rf_sc18m_lswr = pd.concat([in_out_rf_sc18m3,in_out_rf_sc18m_indx],axis =1)
+in_out_rf_sc18m_lswr.columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr']
+
+#adding lwr and swr to the features
+swr_ls_sc18m1_limlLatLong20 = swr_ls_sc18m_limlLatLong2.copy()
+swr_ls_sc18m1_limlLatLong20.index = np.arange(len(swr_ls_sc18m1_limlLatLong20))
+roundingCoordinates (swr_ls_sc18m1_limlLatLong20) #rounding coodinates
+swr_ls_sc18m1_limLatLong_indx = 100*((swr_ls_sc18m1_limlLatLong20 ['x']).astype(int))+(swr_ls_sc18m1_limlLatLong20 ['y']).astype(int)
+swr_ls_sc18m1_limLatLong3 = pd.concat([swr_ls_sc18m1_limlLatLong20,swr_ls_sc18m1_limLatLong_indx],axis =1)
+
+lwr_ls_sc18m1_limlLatLong20 = lwr_ls_sc18m_limlLatLong2.copy()
+lwr_ls_sc18m1_limlLatLong20.index = np.arange(len(lwr_ls_sc18m1_limlLatLong20))
+roundingCoordinates (lwr_ls_sc18m1_limlLatLong20) #rounding coodinates
+lwr_ls_sc18m1_limLatLong_indx = 100*((lwr_ls_sc18m1_limlLatLong20 ['x']).astype(int))+(lwr_ls_sc18m1_limlLatLong20 ['y']).astype(int)
+lwr_ls_sc18m1_limLatLong3 = pd.concat([lwr_ls_sc18m1_limlLatLong20,lwr_ls_sc18m1_limLatLong_indx],axis =1)
+
+in_out_rf_sc18m_lswr_ls = (in_out_rf_sc18m_lswr.values).copy()
+lwr_ls_sc18m1_limLatLong_ls = lwr_ls_sc18m1_limLatLong3.values
+swr_ls_sc18m1_limLatLong_ls = swr_ls_sc18m1_limLatLong3.values
+for smpl in range (len(lwr_ls_sc18m1_limLatLong_indx)):#
+    indxMLWR = abs(in_out_rf_sc18m_lswr_ls[:,11]-lwr_ls_sc18m1_limLatLong_ls[smpl,3])
+    indxMSWR = abs(in_out_rf_sc18m_lswr_ls[:,11]-swr_ls_sc18m1_limLatLong_ls[smpl,3])
+    in_out_rf_sc18m_lswr_ls[:,12][indxMLWR<1]=lwr_ls_sc18m1_limLatLong_ls[smpl,2]
+    in_out_rf_sc18m_lswr_ls[:,13][indxMSWR<1]=swr_ls_sc18m1_limLatLong_ls[smpl,2]
+    
+in_out_rf_sc18m_lswr_ls_drp = in_out_rf_sc18m_lswr_ls[in_out_rf_sc18m_lswr_ls[:,11] != in_out_rf_sc18m_lswr_ls[:,12]]    
+in_out_rf_sc18m_lswr_ls_drp_df = pd.DataFrame(in_out_rf_sc18m_lswr_ls_drp, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr'])
+
+# add classifier for fsca
+in_out_rf_sc18m_lswr_ls_drp_df2 = pd.concat([in_out_rf_sc18m_lswr_ls_drp_df,in_out_rf_sc18m_lswr_ls_drp_df['fsca']],axis =1)
+in_out_rf_sc18m_lswr_ls_drp_ls = in_out_rf_sc18m_lswr_ls_drp_df2.values
+in_out_rf_sc18m_lswr_ls_drp_ls[:,14][in_out_rf_sc18m_lswr_ls_drp_ls[:,10]<=0.3] = 1
+in_out_rf_sc18m_lswr_ls_drp_ls[:,14][(in_out_rf_sc18m_lswr_ls_drp_ls[:,10]<=0.55) & (in_out_rf_sc18m_lswr_ls_drp_ls[:,10]>=0.3)] = 2
+in_out_rf_sc18m_lswr_ls_drp_ls[:,14][(in_out_rf_sc18m_lswr_ls_drp_ls[:,10]<=0.8) & (in_out_rf_sc18m_lswr_ls_drp_ls[:,10]>=0.55)] = 3
+in_out_rf_sc18m_lswr_ls_drp_ls[:,14][in_out_rf_sc18m_lswr_ls_drp_ls[:,10]>0.8] = 4
+
+in_out_rf_sc18m_lswr_fcsa_drp_df = pd.DataFrame(in_out_rf_sc18m_lswr_ls_drp_ls, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr','fsca_classifier'])
+
+# random forest modeling #################################################################################
+## random forest modeling for different fsca bins for fsca_open--fsca_ut
+
+feature_importances_error_0putBin_sc18m = randomForestModel44FscaBins(in_out_rf_sc18m_lswr_fcsa_drp_df)
+
+importance_bins_sc18m = np.array([feature_importances_error_0putBin_sc18m[0][0].values[0],
+                            feature_importances_error_0putBin_sc18m[1][0].values[0],
+                            feature_importances_error_0putBin_sc18m[2][0].values[0],
+                            feature_importances_error_0putBin_sc18m[3][0].values[0]])
+#percentages = (np.random.randint(5,20, (len(people), segments)))
+y_values = np.arange(1,len(feature_importances_error_0putBin_sc18m[0][0].columns)+1)
+color_sc18m = ['thistle','orchid','blueviolet','darkslateblue']#rosybrown #indianred
+plt.subplots(figsize=(20,15))
+lft = 0
+for imp, clr in zip(importance_bins_sc18m,color_sc18m):
+    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
+    lft += imp
+# Tick labels for x axis
+feature_list1 = feature_importances_error_0putBin_sc18m[0][0].columns
+plt.xticks(fontsize=35) #rotation='vertical', 
+plt.yticks(y_values, feature_list1, fontsize=35)
+
+plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
+
+meanAbsError = [feature_importances_error_0putBin_sc18m[i][1] for i in range (4)]
+fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
+legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
+plt.legend(legend,fontsize = 24)#, loc = 'upper center'
+plt.title('Importance of features in 4 fSCA bins in SCW_18May', fontsize=40)#, position=(0.04, 0.88), ha='left'
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0put_scw18m_bins_bar.png')
+
+##features and target for random forest model for fsca_open ###########################################
+#in_0p_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
+#out_0p_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df['fsca_0p']
+#[feature_importances_0p_mean,mean_abs_error_0p] = randomForestModel4Fsca0pen (in_0p_rf_sc18m,out_0p_rf_sc18m,50,200)
+#
+#pathName_0p = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/importance_0p_sc18m_lswr (error='
+#plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'lightseagreen', 'fSCA_open in sc18m')
+#
+##### 2d plotting fsca_open ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/temp_nrth_fSCA0pen3_sc18m.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc18m_lswr_ls_drp_df,out_0p_rf_sc18m,'OrRd',"fSCA_open in sc18m",savepath_sc18m)
+#   
+## 2d plotting by color map LWR & SWR
+#savepath_lswr_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/swr_lwr_fSCA0pen3_sc18m.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc18m_lswr_ls_drp_df,out_0p_rf_sc18m,'OrRd',"fSCA_open in sc18m",savepath_lswr_sc18m)
+#    
+######random forest AI modeling for fsca_underTree  ####################################################
+#in_ut_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #vegD_ut,'nrth','elev','x','y', 0.065 random_state=50
+#out_ut_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df['fsca_ut']
+#
+#[feature_importances_ut_mean,mean_abs_error_ut] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_sc18m,out_ut_rf_sc18m,50,200)
+#pathName_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/importance_ut_sc18m_non_lswr (error='
+#plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkgreen', 'fSCA_underTree for sc18m')
+#
+##### 2d plotting fsca_ut ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_tempNrth_ut_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/temp_nrth_fSCAunderTree_sc18m.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_sc18m_lswr_ls_drp_df,out_ut_rf_sc18m,'BuGn',"fSCA_underTree for sc18m",savepath_tempNrth_ut_sc18m)
+## 2d plotting by color map LWR & SWR
+#savepath_slwr_ut_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/swr_lwr_fSCAunderTree_sc18m.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_sc18m_lswr_ls_drp_df,out_ut_rf_sc18m,'BuGn',"fSCA_underTree for sc18m",savepath_slwr_ut_sc18m)
+    
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
+in_ut_0p_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc18m = pd.DataFrame(in_out_rf_sc18m_lswr_ls_drp_df['fsca_ut']-in_out_rf_sc18m_lswr_ls_drp_df['fsca_0p'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+[feature_importances_0p_ut_mean2,mean_abs_error_oput2] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc18m,out_ut_0p_rf_sc18m,59,200)
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/importance_0p_ut_sc18m_lswr (error='
+plot_rfm_importance (mean_abs_error_oput2, feature_importances_0p_ut_mean2, pathName_0p_ut, 'blueviolet', 'fSCAop-fSCAut for SCW_18May')
+
+#### 2d plotting fsca_open_ut ###############################################################################
+# 2d plotting by color map temp & nrth
+savepath_tempNrth_ut0p_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/temp_nrth_fSCA0p_fSCAut_sc18m.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_sc18m_lswr_ls_drp_df,out_ut_0p_rf_sc18m,'RdPu',"fSCA0p_fSCAut for SCW_18May",savepath_tempNrth_ut0p_sc18m)
+# 2d plotting by color map LWR & SWR
+savepath_slwr_ut0p_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/SCW/swr_lwr_fSCA0p_fSCAut_sc18m.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_sc18m_lswr_ls_drp_df,out_ut_0p_rf_sc18m,'plasma_r',"fSCA0p_fSCAut for SCW_18May",savepath_slwr_ut0p_sc18m)
+#cm.Purples
 
 #%% load data nrc 2010
 
@@ -800,15 +1346,15 @@ fSCA_uT_rad_vegDens_sc18m = fSCAcalculation_elevNorthVegDensClassific(snow_temp_
 
 #####################################################################################################
 #loading LWR and creating 100b100 tif files
-path2imagesIn_lwr_nrc= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/LRad_in_Ground_day/"
-counter = np.arange(1,122) #lst_hillslope_isoCalib1st
+#path2imagesIn_lwr_nrc= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/LRad_in_Ground_day/"
+counter = np.arange(1,152) #lst_hillslope_isoCalib1st
 path2images0ut_lwr_nrc = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/100b100_lwr/LWR_100_{}.tif".format(i) for i in counter]
-#latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_lwr_nrc,path2images0ut_lwr_nrc)
+#latLon_lwr,path_lwr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_lwr_nrc,path2images0ut_lwr_nrc,'lwr')
 
 #%## loading SWR and creating 100b100 tif files
-path2imagesIn_swr_nrc= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/SRad_in_Ground_day/"
+#path2imagesIn_swr_nrc= "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/Boulder april/SRAD_inGround_day/"
 path2images0ut_swr_nrc = ["C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/Boulder_SnowPALM/100b100_swr/SWR_100_{}.tif".format(i) for i in counter]
-#latLon_lwr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_swr_nrc,path2images0ut_swr_nrc)
+#latLon_swr,path_swr = changeResolution0fMultipleTiffsAndCreateDF(path2imagesIn_swr_nrc,path2images0ut_swr_nrc,'lwr')
 
 #loading 100b100 lwr&swr tif files
 latLon_lwr_nrc = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_nrc)
@@ -821,18 +1367,28 @@ swr_ls_nrc_limlLatLong = pd.DataFrame(latLon_swr_nrc[(latLon_swr_nrc[:,1]>=44255
                                      (latLon_swr_nrc[:,0]>=450000)&(latLon_swr_nrc[:,0]<=455100)], columns = ['x','y','swr'])
 swr_ls_nrc_limlLatLong2 = swr_ls_nrc_limlLatLong.dropna()
 
+#******************************************************************************************************
+#******************************************************************************************************
+# DO NOT NEED TO RUN THIS SECTION EVERY TIME, BECAUSE I SAVE """in_out_rf_sc18m0" IN 100*100 FORMAT
+#******************************************************************************************************
+#******************************************************************************************************
 # loading other feature from fusion
 snow_temp_vegdens_index_sL30_nrc = np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snow_temp_vegdens_index_sL30_nrc.npy')
 aaaa_test1 = snow_temp_vegdens_index_sL30_nrc[0:19710,:]
+lat_long_nad83_nrc = [np.min(snow_temp_vegdens_index_sL30_nrc[:,0]),np.max(snow_temp_vegdens_index_sL30_nrc[:,0]),
+                        np.min(snow_temp_vegdens_index_sL30_nrc[:,1]),np.max(snow_temp_vegdens_index_sL30_nrc[:,1])]
 
 elev_nrc = snow_temp_vegdens_index_sL30_nrc[:,2]
 tempDJF_gm_nrc = -0.007512*elev_nrc + 14.168475
 
-snow_temp_vegdens_index_sL30_nrc_df = pd.DataFrame(snow_temp_vegdens_index_sL30_nrc, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
+tempDec_nrc = -0.00777*elev_nrc + 17.81629
 
+snow_temp_vegdens_index_sL30_nrc_df = pd.DataFrame(snow_temp_vegdens_index_sL30_nrc, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
+snow_temp_vegdens_index_sL30_nrc_df['temp'] = tempDec_nrc
 elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
+
 elevationBand_nrc = np.arange(min(snow_temp_vegdens_index_sL30_nrc_df['z']),max(snow_temp_vegdens_index_sL30_nrc_df['z']),65)
-snow_temp_vegdens_sL30_elevCls_nrc = classificationElevation(snow_temp_vegdens_index_sL30_nrc,elevationBand_nrc,elev_class_inx)
+snow_temp_vegdens_sL30_elevCls_nrc = classificationElevation(snow_temp_vegdens_index_sL30_nrc_df.values,elevationBand_nrc,elev_class_inx)
 aaaa_test2 = snow_temp_vegdens_sL30_elevCls_nrc[0:710,:]
 
 meanTemp_elevClass_nrc = calculationMeanTempforEachElevClassification(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx)   
@@ -853,7 +1409,7 @@ fSCA_0u_exp_nrc, fSCA_0u_shl_nrc = fsca0pn_fscaUnTr(fSCA_ut_exp_nrc, fSCA_ut_shl
 
 ## December
 ##y = -0.00777x + 17.81629
-tempDec_nrc = -0.00777*elevationBand_nrc + 17.81629
+#tempDec_nrc = -0.00777*elevationBand_nrc + 17.81629
 
 # under canopy fsca // exposed vs. sheltered  //  dense vs. spare veg density
 fSCA_uT_rad_vegDens_nrc = fSCAcalculation_elevNorthVegDensClassific(snow_temp_vegdens_sL30_elevCls_nrc,elev_class_inx)
@@ -871,6 +1427,158 @@ fSCA_uT_rad_vegDens_nrc = fSCAcalculation_elevNorthVegDensClassific(snow_temp_ve
 #ouputPath_nrt_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/snowMap_nrth_contour_nrc_lr2.png'
 #plotSnowMap_northness_lowResol(snow_temp_vegdens_allExtent_nrc,ouputPath_nrt_nrc,T_nrc)
 
+### precipitation dec to march for NRC  y = 0.0342x - 68.977
+elev_nrc = snow_temp_vegdens_sL30_elevCls_nrc[:,2] 
+precip_nrc1b1 = np.reshape((0.0342 * elev_nrc - 68.977),(len(snow_temp_vegdens_sL30_elevCls_nrc),1))
+
+#adding precip column
+snow_temp_vegdens_sL30_elevCls_nrc = snow_temp_vegdens_sL30_elevCls_nrc[:,:10]
+
+snow_temp_vegdens_sL30_elevCls_precip_nrc = np.append(snow_temp_vegdens_sL30_elevCls_nrc, precip_nrc1b1, 1)
+
+# change resolution to 100b100 #######################################################################
+snow_temp_vegdens_sL30_elevCls_precip_cls_nrc = addClassifier2changeResolutionTo100B100 (lat_long_nad83_nrc,snow_temp_vegdens_sL30_elevCls_precip_nrc)
+aaaa_test2 = snow_temp_vegdens_sL30_elevCls_precip_cls_nrc[11130000:,:]
+
+#******************************************************************************************************
+#******************************************************************************************************
+#******************************************************************************************************
+
+#classifier_nrc = snow_temp_vegdens_sL30_elevCls_precip_cls_nrc [:,13]
+#in_out_rf_nrc0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_nrc,snow_temp_vegdens_sL30_elevCls_precip_cls_nrc)
+#np.save('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/in_out_rf_nrc_tempDec',in_out_rf_nrc0)
+in_out_rf_nrc0 = pd.DataFrame(np.load('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/NRC/in_out_rf_nrc_tempDec.npy'),
+                              columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca'])
+
+#define random forest AI features ###################################################################
+# defining index for adding lwr and swr
+in_out_rf_nrc = in_out_rf_nrc0.copy()
+roundingCoordinates (in_out_rf_nrc) #rounding coodinates
+            
+in_out_rf_nrc_indx = 100*((in_out_rf_nrc ['x']).astype(int))+(in_out_rf_nrc ['y']).astype(int) #(in_out_rf_nrc ['x']-min(in_out_rf_nrc ['x']))+(in_out_rf_nrc ['y']-min(in_out_rf_nrc ['y']))
+in_out_rf_nrc2 = pd.concat([in_out_rf_nrc,in_out_rf_nrc_indx],axis =1)
+in_out_rf_nrc3 = pd.concat([in_out_rf_nrc2,in_out_rf_nrc_indx],axis =1)
+in_out_rf_nrc_lswr = pd.concat([in_out_rf_nrc3,in_out_rf_nrc_indx],axis =1)
+in_out_rf_nrc_lswr.columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr']
+
+#adding lwr and swr to the features
+swr_ls_nrc1_limlLatLong20 = swr_ls_nrc_limlLatLong2.copy()
+swr_ls_nrc1_limlLatLong20.index = np.arange(len(swr_ls_nrc1_limlLatLong20))
+roundingCoordinates (swr_ls_nrc1_limlLatLong20) #rounding coodinates
+swr_ls_nrc1_limLatLong_indx = 100*((swr_ls_nrc1_limlLatLong20 ['x']).astype(int))+(swr_ls_nrc1_limlLatLong20 ['y']).astype(int)
+swr_ls_nrc1_limLatLong3 = pd.concat([swr_ls_nrc1_limlLatLong20,swr_ls_nrc1_limLatLong_indx],axis =1)
+
+lwr_ls_nrc1_limlLatLong20 = lwr_ls_nrc_limlLatLong2.copy()
+lwr_ls_nrc1_limlLatLong20.index = np.arange(len(lwr_ls_nrc1_limlLatLong20))
+roundingCoordinates (lwr_ls_nrc1_limlLatLong20) #rounding coodinates
+lwr_ls_nrc1_limLatLong_indx = 100*((lwr_ls_nrc1_limlLatLong20 ['x']).astype(int))+(lwr_ls_nrc1_limlLatLong20 ['y']).astype(int)
+lwr_ls_nrc1_limLatLong3 = pd.concat([lwr_ls_nrc1_limlLatLong20,lwr_ls_nrc1_limLatLong_indx],axis =1)
+
+in_out_rf_nrc_lswr_ls = (in_out_rf_nrc_lswr.values).copy()
+lwr_ls_nrc1_limLatLong_ls = lwr_ls_nrc1_limLatLong3.values
+swr_ls_nrc1_limLatLong_ls = swr_ls_nrc1_limLatLong3.values
+for smpl in range (len(lwr_ls_nrc1_limLatLong_indx)):#
+    indxMLWR = abs(in_out_rf_nrc_lswr_ls[:,11]-lwr_ls_nrc1_limLatLong_ls[smpl,3])
+    indxMSWR = abs(in_out_rf_nrc_lswr_ls[:,11]-swr_ls_nrc1_limLatLong_ls[smpl,3])
+    in_out_rf_nrc_lswr_ls[:,12][indxMLWR<1]=lwr_ls_nrc1_limLatLong_ls[smpl,2]
+    in_out_rf_nrc_lswr_ls[:,13][indxMSWR<1]=swr_ls_nrc1_limLatLong_ls[smpl,2]
+    
+in_out_rf_nrc_lswr_ls_drp = in_out_rf_nrc_lswr_ls[in_out_rf_nrc_lswr_ls[:,11] != in_out_rf_nrc_lswr_ls[:,12]]    
+in_out_rf_nrc_lswr_ls_drp_df = pd.DataFrame(in_out_rf_nrc_lswr_ls_drp, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr'])
+
+# add classifier for fsca
+in_out_rf_nrc_lswr_ls_drp_df2 = pd.concat([in_out_rf_nrc_lswr_ls_drp_df,in_out_rf_nrc_lswr_ls_drp_df['fsca']],axis =1)
+in_out_rf_nrc_lswr_ls_drp_ls = in_out_rf_nrc_lswr_ls_drp_df2.values
+in_out_rf_nrc_lswr_ls_drp_ls[:,14][in_out_rf_nrc_lswr_ls_drp_ls[:,10]<=0.3] = 1
+in_out_rf_nrc_lswr_ls_drp_ls[:,14][(in_out_rf_nrc_lswr_ls_drp_ls[:,10]<=0.55) & (in_out_rf_nrc_lswr_ls_drp_ls[:,10]>=0.3)] = 2
+in_out_rf_nrc_lswr_ls_drp_ls[:,14][(in_out_rf_nrc_lswr_ls_drp_ls[:,10]<=0.8) & (in_out_rf_nrc_lswr_ls_drp_ls[:,10]>=0.55)] = 3
+in_out_rf_nrc_lswr_ls_drp_ls[:,14][in_out_rf_nrc_lswr_ls_drp_ls[:,10]>0.8] = 4
+
+in_out_rf_nrc_lswr_fcsa_drp_df0 = pd.DataFrame(in_out_rf_nrc_lswr_ls_drp_ls, columns = ['x','y','elev','nrth','temp','precip','VegD','vegD_ut','fsca_0p','fsca_ut','fsca','indx','lwr','swr','fsca_classifier'])
+in_out_rf_nrc_lswr_fcsa_drp_df = in_out_rf_nrc_lswr_fcsa_drp_df0.drop([2402])
+# random forest modeling #################################################################################
+## random forest modeling for different fsca bins for fsca_open--fsca_ut
+
+feature_importances_error_0putBin_nrc = randomForestModel44FscaBins(in_out_rf_nrc_lswr_fcsa_drp_df)
+
+importance_bins_nrc = np.array([feature_importances_error_0putBin_nrc[0][0].values[0],
+                            feature_importances_error_0putBin_nrc[1][0].values[0],
+                            feature_importances_error_0putBin_nrc[2][0].values[0],
+                            feature_importances_error_0putBin_nrc[3][0].values[0]])
+#percentages = (np.random.randint(5,20, (len(people), segments)))
+y_values = np.arange(1,len(feature_importances_error_0putBin_nrc[0][0].columns)+1)
+color_nrc = ['paleturquoise','deepskyblue','blue','midnightblue']#rosybrown #indianred
+plt.subplots(figsize=(20,15))
+lft = 0
+for imp, clr in zip(importance_bins_nrc,color_nrc):
+    plt.barh(y_values,imp,left = lft,facecolor = clr)#,orientation = 'horizontal', 
+    lft += imp
+# Tick labels for x axis
+feature_list1 = feature_importances_error_0putBin_nrc[0][0].columns
+plt.xticks(fontsize=35) #rotation='vertical', 
+plt.yticks(y_values, feature_list1, fontsize=35)
+
+plt.ylabel('Features', fontsize=40); plt.xlabel('Importance', fontsize=40) 
+
+meanAbsError = [feature_importances_error_0putBin_nrc[i][1] for i in range (4)]
+fSCA_bin=['<0.3','0.3-0.55','0.55-0.8','>0.8']
+legend = ['fSCA_bin {}; MAE = {}'.format(fSCA_bin[i],meanAbsError[i]) for i in range (4)]
+plt.legend(legend,fontsize = 24)#, loc = 'upper center'
+plt.title('Importance of features in 4 fSCA bins in NRC', fontsize=40)#, position=(0.04, 0.88), ha='left'
+
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/importance_0put_nrc_bins_bar.png')
+
+##features and target for random forest model for fsca_open ###########################################
+#in_0p_rf_nrc = in_out_rf_nrc_lswr_ls_drp_df[['temp','precip','lwr','swr']] #''nrth',elev','x','y', 0.065 random_state=50
+#out_0p_rf_nrc = in_out_rf_nrc_lswr_ls_drp_df['fsca_0p']
+#[feature_importances_0p_mean,mean_abs_error_0p] = randomForestModel4Fsca0pen (in_0p_rf_nrc,out_0p_rf_nrc,50,200)
+#
+#pathName_0p = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/importance_0p_nrc_lswr (error='
+#plot_rfm_importance (mean_abs_error_0p, feature_importances_0p_mean, pathName_0p, 'lightseagreen', 'fSCA_open in nrc')
+#
+##### 2d plotting fsca_open ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/temp_nrth_fSCA0pen3_nrc.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_nrc_lswr_ls_drp_df,out_0p_rf_nrc,'OrRd',"fSCA_open in nrc",savepath_nrc)
+#   
+## 2d plotting by color map LWR & SWR
+#savepath_lswr_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/swr_lwr_fSCA0pen3_nrc.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_nrc_lswr_ls_drp_df,out_0p_rf_nrc,'OrRd',"fSCA_open in nrc",savepath_lswr_nrc)
+#    
+######random forest AI modeling for fsca_underTree  ####################################################
+#in_ut_rf_nrc = in_out_rf_nrc_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #vegD_ut,'nrth','elev','x','y', 0.065 random_state=50
+#out_ut_rf_nrc = in_out_rf_nrc_lswr_ls_drp_df['fsca_ut']
+#
+#[feature_importances_ut_mean,mean_abs_error_ut] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_rf_nrc,out_ut_rf_nrc,50,200)
+#pathName_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/importance_ut_nrc_non_lswr (error='
+#plot_rfm_importance (mean_abs_error_ut, feature_importances_ut_mean, pathName_ut, 'darkgreen', 'fSCA_underTree for nrc')
+#
+##### 2d plotting fsca_ut ###############################################################################
+## 2d plotting by color map temp & nrth
+#savepath_tempNrth_ut_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/temp_nrth_fSCAunderTree_nrc.png'
+#fscaPlottingByColorMap4tempNrth(in_out_rf_nrc_lswr_ls_drp_df,out_ut_rf_nrc,'BuGn',"fSCA_underTree for nrc",savepath_tempNrth_ut_nrc)
+## 2d plotting by color map LWR & SWR
+#savepath_slwr_ut_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/swr_lwr_fSCAunderTree_nrc.png'
+#fscaPlottingByColorMap4swrLwr(in_out_rf_nrc_lswr_ls_drp_df,out_ut_rf_nrc,'BuGn',"fSCA_underTree for nrc",savepath_slwr_ut_nrc)
+    
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
+in_ut_0p_rf_nrc0 = in_out_rf_nrc_lswr_ls_drp_df[['temp','precip','VegD','lwr','swr']] #'nrth','elev','x','y', 0.065 random_state=50
+in_ut_0p_rf_nrc = in_ut_0p_rf_nrc0.drop([2402])
+out_ut_0p_rf_nrc0 = pd.DataFrame(in_out_rf_nrc_lswr_ls_drp_df['fsca_ut']-in_out_rf_nrc_lswr_ls_drp_df['fsca_0p'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+out_ut_0p_rf_nrc = out_ut_0p_rf_nrc0.drop([2402])
+[feature_importances_0p_ut_mean2,mean_abs_error_oput2] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_nrc,out_ut_0p_rf_nrc,59,200)
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/importance_0p_ut_nrc_lswr (error='
+plot_rfm_importance (mean_abs_error_oput2, feature_importances_0p_ut_mean2, pathName_0p_ut, 'cornflowerblue', 'fSCAop-fSCAut for NRC')
+
+#### 2d plotting fsca_open_ut ###############################################################################
+# 2d plotting by color map temp & nrth
+savepath_tempNrth_ut0p_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/temp_nrth_fSCA0p_fSCAut_nrc.png'
+fscaPlottingByColorMap4tempNrth(in_out_rf_nrc_lswr_fcsa_drp_df,out_ut_0p_rf_nrc,'RdPu',"fSCA0p_fSCAut for NRC",savepath_tempNrth_ut0p_nrc)
+# 2d plotting by color map LWR & SWR
+savepath_slwr_ut0p_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/swr_lwr_fSCA0p_fSCAut_nrc.png'
+fscaPlottingByColorMap4swrLwr(in_out_rf_nrc_lswr_fcsa_drp_df,out_ut_0p_rf_nrc,'plasma_r',"fSCA0p_fSCAut for NRC",savepath_slwr_ut0p_nrc)
+#cm.Purples
 
 
 
