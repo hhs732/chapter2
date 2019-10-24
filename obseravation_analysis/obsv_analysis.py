@@ -450,7 +450,7 @@ bp2['boxes'][8].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '
 bp2['boxes'][9].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
 bp2['boxes'][10].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
 bp2['boxes'][11].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
-ax[1, 0].set_title('Jemez (JMZ), NM',fontsize=50)
+ax[1, 0].set_title('Jemez River Basin (JRB), NM',fontsize=50)
 ax[1, 0].set_xticks([1.5,3.5,5.5,7.5,9.5,11.5])
 ax[1, 0].set_xticklabels(['2005','2006','2008','2009','2010','2011'],
                           fontsize=50)#, rotation=40'open2016','open2017',
@@ -469,14 +469,14 @@ bp4['boxes'][6].set(color='wheat', linewidth=2, facecolor = 'pink', hatch = '/')
 bp4['boxes'][7].set(color='darkgreen', linewidth=2, facecolor = 'pink', hatch = '/')
 bp4['boxes'][8].set(color='wheat', linewidth=2, facecolor = 'skyblue', hatch = '/')
 bp4['boxes'][9].set(color='darkgreen', linewidth=2, facecolor = 'olive', hatch = '/')
-ax[1, 1].set_title('Niwot Ridge Creek (NRC), C0',fontsize=50)
+ax[1, 1].set_title('Niwot Ridge (NR), CO',fontsize=50)
 ax[1, 1].set_xticks([1.5,3.5,5.5,7.5,9.5])
 ax[1, 1].set_xticklabels(['2007','2008','2009','2010','2011'],
             fontsize=50)#, rotation=40'open2016','open2017',
 ax[1, 1].set_yticklabels(np.arange(125,210,10),fontsize=50)
 ax[1,1].legend([bp4["boxes"][0], bp4["boxes"][1]], ['Open Areas', 'Under Trees'],fontsize = 40,loc='upper left')#, loc='upper right'
 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/obseravation_analysis/obsData_dsd.png')
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/obseravation_analysis/obsData_dsd2.png')
 
 
 

@@ -297,7 +297,39 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_k,importan
 ## 2d plotting by color map LWR & SWR
 #savepath_slwr_ut_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/Krew/swr_lwr_fSCAunderTree2.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_krew_lswr_ls_drp_df,out_ut_rf_krew,'BuGn',"fSCA_underTree",savepath_slwr_ut_krew)
-#    
+
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_krew_lswr_fcsa_drp_df2080 = in_out_rf_krew_lswr_fcsa_drp_df[(in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_krew_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_krew2080 = in_out_rf_krew_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_krew2080 = pd.DataFrame(in_out_rf_krew_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_krew_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_krew2080,mean_abs_error_oput2_krew2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_krew2080,out_ut_0p_rf_krew2080,59,200)
+print len(in_ut_0p_rf_krew2080[in_ut_0p_rf_krew2080['VegD']>0.95])
+print(len(in_ut_0p_rf_krew2080[in_ut_0p_rf_krew2080['VegD']<0.15]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/krew/importance_0p_ut_krew_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_krew2080 , feature_importances_0p_ut_mean2_krew2080 , pathName_0p_ut, 'indianred', 'fSCAop-fSCAut for JRB')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_krew_sens = np.mean(in_out_rf_krew_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_krew_sens = np.mean(in_out_rf_krew_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_krew_sens = np.mean(in_out_rf_krew_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_krew_sens_up = in_out_rf_krew_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_krew_sens_low = in_out_rf_krew_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_krew_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_krew_sens],[precip_krew_sens,lwr_krew_sens,swr_krew_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_krew_up = randomForest_sensMod_predict(in_ut_0p_rf_krew2080,out_ut_0p_rf_krew2080,59,200,in_ut_0p_rf_krew_vegSen_up[15:95])
+
+in_ut_0p_rf_krew_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_krew_sens],[precip_krew_sens,lwr_krew_sens,swr_krew_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_krew_low = randomForest_sensMod_predict(in_ut_0p_rf_krew2080,out_ut_0p_rf_krew2080,59,200,in_ut_0p_rf_krew_vegSen_low[15:95])
+
+savePath1_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/krew/deltaFsca_predicted_krew2080_2.png'
+#savePath2_krew = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/krew/deltaFsca_predicted_scatter_krew2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_krew_up,sens_vegSwr_krew_low,15,95,savePath1_krew,'brown','lightsalmon','krew')#savePath2_jmz,,'viridis_r'
+    
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_krew = in_out_rf_krew_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
 out_ut_0p_rf_krew = pd.DataFrame(in_out_rf_krew_lswr_ls_drp_df['fsca_0p']-in_out_rf_krew_lswr_ls_drp_df['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
@@ -548,6 +580,38 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_sc26m,impo
 ## 2d plotting by color map LWR & SWR
 #savepath_slwr_ut_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/swr_lwr_fSCAunderTree_sc26m.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_sc26m_lswr_ls_drp_df,out_ut_rf_sc26m,'BuGn',"fSCA_underTree for sc26m",savepath_slwr_ut_sc26m)
+
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_sc26m_lswr_fcsa_drp_df2080 = in_out_rf_sc26m_lswr_fcsa_drp_df[(in_out_rf_sc26m_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_sc26m_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_sc26m2080 = in_out_rf_sc26m_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc26m2080 = pd.DataFrame(in_out_rf_sc26m_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_sc26m_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_sc26m2080,mean_abs_error_oput2_sc26m2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc26m2080,out_ut_0p_rf_sc26m2080,59,200)
+print len(in_ut_0p_rf_sc26m2080[in_ut_0p_rf_sc26m2080['VegD']>0.60])
+print(len(in_ut_0p_rf_sc26m2080[in_ut_0p_rf_sc26m2080['VegD']<0.05]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/importance_0p_ut_sc26m_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_sc26m2080 , feature_importances_0p_ut_mean2_sc26m2080 , pathName_0p_ut, 'plum', 'fSCAop-fSCAut for sc26m')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_sc26m_sens = np.mean(in_out_rf_sc26m_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_sc26m_sens = np.mean(in_out_rf_sc26m_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_sc26m_sens = np.mean(in_out_rf_sc26m_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_sc26m_sens_up = in_out_rf_sc26m_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_sc26m_sens_low = in_out_rf_sc26m_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_sc26m_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_sc26m_sens],[precip_sc26m_sens,lwr_sc26m_sens,swr_sc26m_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc26m_up = randomForest_sensMod_predict(in_ut_0p_rf_sc26m2080,out_ut_0p_rf_sc26m2080,59,200,in_ut_0p_rf_sc26m_vegSen_up[5:65])
+
+in_ut_0p_rf_sc26m_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_sc26m_sens],[precip_sc26m_sens,lwr_sc26m_sens,swr_sc26m_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc26m_low = randomForest_sensMod_predict(in_ut_0p_rf_sc26m2080,out_ut_0p_rf_sc26m2080,59,200,in_ut_0p_rf_sc26m_vegSen_low[5:65])
+
+savePath1_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/deltaFsca_predicted_sc26m2080.png'
+#savePath2_sc26m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc26m/deltaFsca_predicted_scatter_sc26m2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_sc26m_up,sens_vegSwr_sc26m_low,5,65,savePath1_sc26m,'rebeccapurple','plum','sc26m')#savePath2_jmz,,'viridis_r'
     
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_sc26m = in_out_rf_sc26m_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
@@ -800,6 +864,38 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_sc17a,impo
 ## 2d plotting by color map LWR & SWR
 #savepath_slwr_ut_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/swr_lwr_fSCAunderTree_sc17a.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_sc17a_lswr_ls_drp_df,out_ut_rf_sc17a,'BuGn',"fSCA_underTree for sc17a",savepath_slwr_ut_sc17a)
+
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_sc17a_lswr_fcsa_drp_df2080 = in_out_rf_sc17a_lswr_fcsa_drp_df[(in_out_rf_sc17a_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_sc17a_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_sc17a2080 = in_out_rf_sc17a_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc17a2080 = pd.DataFrame(in_out_rf_sc17a_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_sc17a_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_sc17a2080,mean_abs_error_oput2_sc17a2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc17a2080,out_ut_0p_rf_sc17a2080,59,200)
+print len(in_ut_0p_rf_sc17a2080[in_ut_0p_rf_sc17a2080['VegD']>0.70])
+print(len(in_ut_0p_rf_sc17a2080[in_ut_0p_rf_sc17a2080['VegD']<0.05]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/importance_0p_ut_sc17a_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_sc17a2080 , feature_importances_0p_ut_mean2_sc17a2080 , pathName_0p_ut, 'hotpink', 'fSCAop-fSCAut for sc17a')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_sc17a_sens = np.mean(in_out_rf_sc17a_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_sc17a_sens = np.mean(in_out_rf_sc17a_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_sc17a_sens = np.mean(in_out_rf_sc17a_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_sc17a_sens_up = in_out_rf_sc17a_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_sc17a_sens_low = in_out_rf_sc17a_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_sc17a_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_sc17a_sens],[precip_sc17a_sens,lwr_sc17a_sens,swr_sc17a_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc17a_up = randomForest_sensMod_predict(in_ut_0p_rf_sc17a2080,out_ut_0p_rf_sc17a2080,59,200,in_ut_0p_rf_sc17a_vegSen_up[5:70])
+
+in_ut_0p_rf_sc17a_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_sc17a_sens],[precip_sc17a_sens,lwr_sc17a_sens,swr_sc17a_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc17a_low = randomForest_sensMod_predict(in_ut_0p_rf_sc17a2080,out_ut_0p_rf_sc17a2080,59,200,in_ut_0p_rf_sc17a_vegSen_low[5:70])
+
+savePath1_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/deltaFsca_predicted_sc17a2080.png'
+#savePath2_sc17a = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc17a/deltaFsca_predicted_scatter_sc17a2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_sc17a_up,sens_vegSwr_sc17a_low,5,70,savePath1_sc17a,'purple','pink','sc17a')#savePath2_jmz,,'viridis_r'
     
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_sc17a = in_out_rf_sc17a_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
@@ -1052,7 +1148,40 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_sc18m,impo
 ## 2d plotting by color map LWR & SWR
 #savepath_slwr_ut_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/swr_lwr_fSCAunderTree_sc18m.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_sc18m_lswr_ls_drp_df,out_ut_rf_sc18m,'BuGn',"fSCA_underTree for sc18m",savepath_slwr_ut_sc18m)
-    
+
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_sc18m_lswr_fcsa_drp_df2080 = in_out_rf_sc18m_lswr_fcsa_drp_df[(in_out_rf_sc18m_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_sc18m_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_sc18m2080 = in_out_rf_sc18m_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_sc18m2080 = pd.DataFrame(in_out_rf_sc18m_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_sc18m_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_sc18m2080,mean_abs_error_oput2_sc18m2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_sc18m2080,out_ut_0p_rf_sc18m2080,59,200)
+print len(in_ut_0p_rf_sc18m2080[in_ut_0p_rf_sc18m2080['VegD']>0.60])
+print(len(in_ut_0p_rf_sc18m2080[in_ut_0p_rf_sc18m2080['VegD']<0.01]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/importance_0p_ut_sc18m_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_sc18m2080 , feature_importances_0p_ut_mean2_sc18m2080 , pathName_0p_ut, 'blueviolet', 'fSCAop-fSCAut for sc18m')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_sc18m_sens = np.mean(in_out_rf_sc18m_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_sc18m_sens = np.mean(in_out_rf_sc18m_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_sc18m_sens = np.mean(in_out_rf_sc18m_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_sc18m_sens_up = in_out_rf_sc18m_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_sc18m_sens_low = in_out_rf_sc18m_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_sc18m_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_sc18m_sens],[precip_sc18m_sens,lwr_sc18m_sens,swr_sc18m_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc18m_up = randomForest_sensMod_predict(in_ut_0p_rf_sc18m2080,out_ut_0p_rf_sc18m2080,59,200,in_ut_0p_rf_sc18m_vegSen_up[1:60])
+
+in_ut_0p_rf_sc18m_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_sc18m_sens],[precip_sc18m_sens,lwr_sc18m_sens,swr_sc18m_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_sc18m_low = randomForest_sensMod_predict(in_ut_0p_rf_sc18m2080,out_ut_0p_rf_sc18m2080,59,200,in_ut_0p_rf_sc18m_vegSen_low[1:60])
+
+savePath1_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/scw/deltaFsca_predicted_sc18m2080.png'
+#savePath2_sc18m = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/sc18m/deltaFsca_predicted_scatter_sc18m2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_sc18m_up,sens_vegSwr_sc18m_low,1,60,savePath1_sc18m,'blueviolet','orchid','sc18m')#savePath2_jmz,,'viridis_r'
+
+   
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_sc18m = in_out_rf_sc18m_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
 out_ut_0p_rf_sc18m = pd.DataFrame(in_out_rf_sc18m_lswr_ls_drp_df['fsca_0p']-in_out_rf_sc18m_lswr_ls_drp_df['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
@@ -1298,7 +1427,40 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_jmz,import
 #savepath_slwr_ut_jmz = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/jmz/swr_lwr_fSCAunderTree_jmz.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_jmz_lswr_ls_drp_df,out_ut_rf_jmz,'BuGn',"fSCA_underTree for JMZ",savepath_slwr_ut_jmz)
     
-#####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_jmz_lswr_fcsa_drp_df2080 = in_out_rf_jmz_lswr_fcsa_drp_df[(in_out_rf_jmz_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_jmz_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_jmz2080 = in_out_rf_jmz_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_jmz2080 = pd.DataFrame(in_out_rf_jmz_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_jmz_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_jmz2080,mean_abs_error_oput2_jmz2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_jmz2080,out_ut_0p_rf_jmz2080,59,200)
+print len(in_ut_0p_rf_jmz2080[in_ut_0p_rf_jmz2080['VegD']>0.68])
+print(len(in_ut_0p_rf_jmz2080[in_ut_0p_rf_jmz2080['VegD']<0.05]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/jmz/importance_0p_ut_jmz_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_jmz2080 , feature_importances_0p_ut_mean2_jmz2080 , pathName_0p_ut, 'mediumseagreen', 'fSCAop-fSCAut for JRB')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_jmz_sens = np.mean(in_out_rf_jmz_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_jmz_sens = np.mean(in_out_rf_jmz_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_jmz_sens = np.mean(in_out_rf_jmz_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_jmz_sens_up = in_out_rf_jmz_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_jmz_sens_low = in_out_rf_jmz_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_jmz_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_jmz_sens],[precip_jmz_sens,lwr_jmz_sens,swr_jmz_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_jmz_up = randomForest_sensMod_predict(in_ut_0p_rf_jmz2080,out_ut_0p_rf_jmz2080,59,200,in_ut_0p_rf_jmz_vegSen_up[5:68])
+
+in_ut_0p_rf_jmz_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_jmz_sens],[precip_jmz_sens,lwr_jmz_sens,swr_jmz_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_jmz_low = randomForest_sensMod_predict(in_ut_0p_rf_jmz2080,out_ut_0p_rf_jmz2080,59,200,in_ut_0p_rf_jmz_vegSen_low[5:68])
+
+savePath1_jmz = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/jmz/deltaFsca_predicted_jmz2080.png'
+#savePath2_jmz = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/jmz/deltaFsca_predicted_scatter_jmz2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_jmz_up,sens_vegSwr_jmz_low,5,68,savePath1_jmz,'darkolivegreen','yellowgreen','JMZ')#savePath2_jmz,,'viridis_r'
+
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for whole domain ##########################################
+
 in_ut_0p_rf_jmz = in_out_rf_jmz_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
 out_ut_0p_rf_jmz = pd.DataFrame(in_out_rf_jmz_lswr_ls_drp_df['fsca_0p']-in_out_rf_jmz_lswr_ls_drp_df['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
 [feature_importances_0p_ut_mean2_jmz,mean_abs_error_oput2_jmz] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_jmz,out_ut_0p_rf_jmz,59,200)
@@ -1567,7 +1729,40 @@ plotrandomForestimportancesfor4bins(feature_importances_error_0putBin_nrc,import
 ## 2d plotting by color map LWR & SWR
 #savepath_slwr_ut_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/swr_lwr_fSCAunderTree_nrc.png'
 #fscaPlottingByColorMap4swrLwr(in_out_rf_nrc_lswr_ls_drp_df,out_ut_rf_nrc,'BuGn',"fSCA_underTree for nrc",savepath_slwr_ut_nrc)
-    
+ 
+#####random forest AI modeling for fSCA_0pen -- fsca_underTree for 20% to 80% fSCA ##########################################
+
+in_out_rf_nrc_lswr_fcsa_drp_df2080 = in_out_rf_nrc_lswr_fcsa_drp_df[(in_out_rf_nrc_lswr_fcsa_drp_df['fsca_classifier']==2) | (in_out_rf_nrc_lswr_fcsa_drp_df['fsca_classifier']==3)]
+
+in_ut_0p_rf_nrc2080 = in_out_rf_nrc_lswr_fcsa_drp_df2080[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
+out_ut_0p_rf_nrc2080 = pd.DataFrame(in_out_rf_nrc_lswr_fcsa_drp_df2080['fsca_0p']-in_out_rf_nrc_lswr_fcsa_drp_df2080['fsca_ut'], columns = ['fSCA_op_M_fSCA_ut']).iloc[:,0]
+
+[feature_importances_0p_ut_mean2_nrc2080,mean_abs_error_oput2_nrc2080] = randomForestModel4FscaUnderTree0r40p_ut(in_ut_0p_rf_nrc2080,out_ut_0p_rf_nrc2080,59,200)
+print len(in_ut_0p_rf_nrc2080[in_ut_0p_rf_nrc2080['VegD']>0.64])
+print(len(in_ut_0p_rf_nrc2080[in_ut_0p_rf_nrc2080['VegD']<0.05]))
+
+pathName_0p_ut = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/importance_0p_ut_nrc_2080 (error='
+plot_rfm_importance (mean_abs_error_oput2_nrc2080 , feature_importances_0p_ut_mean2_nrc2080 , pathName_0p_ut, 'cornflowerblue', 'fSCAop-fSCAut for JRB')
+
+##Prediction ********************************************************************************
+vegDens_sens = np.arange(0.01,1.01,0.01)
+temp_nrc_sens = np.mean(in_out_rf_nrc_lswr_fcsa_drp_df2080['temp']) * np.ones(100)
+precip_nrc_sens = np.mean(in_out_rf_nrc_lswr_fcsa_drp_df2080['precip']) * np.ones(100)
+lwr_nrc_sens = np.mean(in_out_rf_nrc_lswr_fcsa_drp_df2080['lwr']) * np.ones(100)
+swr_nrc_sens_up = in_out_rf_nrc_lswr_fcsa_drp_df2080['swr'].quantile(0.2) * np.ones(100)
+swr_nrc_sens_low = in_out_rf_nrc_lswr_fcsa_drp_df2080['swr'].quantile(0.8) * np.ones(100)
+
+in_ut_0p_rf_nrc_vegSen_up = pd.DataFrame(np.reshape(np.append([temp_nrc_sens],[precip_nrc_sens,lwr_nrc_sens,swr_nrc_sens_up,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_nrc_up = randomForest_sensMod_predict(in_ut_0p_rf_nrc2080,out_ut_0p_rf_nrc2080,59,200,in_ut_0p_rf_nrc_vegSen_up[5:64])
+
+in_ut_0p_rf_nrc_vegSen_low = pd.DataFrame(np.reshape(np.append([temp_nrc_sens],[precip_nrc_sens,lwr_nrc_sens,swr_nrc_sens_low,vegDens_sens]),(5,100)).T,columns = ['temp','precip','VegD','lwr','swr']).iloc[:,0:5]
+sens_vegSwr_nrc_low = randomForest_sensMod_predict(in_ut_0p_rf_nrc2080,out_ut_0p_rf_nrc2080,59,200,in_ut_0p_rf_nrc_vegSen_low[5:64])
+
+savePath1_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/deltaFsca_predicted_nrc2080_2.png'
+#savePath2_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/randomForest/nrc/deltaFsca_predicted_scatter_nrc2.png'
+plotSensitivitySWRvegDensity(sens_vegSwr_nrc_up,sens_vegSwr_nrc_low,5,64,savePath1_nrc,'blue','paleturquoise','nrc')#savePath2_jmz,,'viridis_r'
+
+   
 #####random forest AI modeling for fSCA_0pen -- fsca_underTree  ##########################################
 in_ut_0p_rf_nrc0 = in_out_rf_nrc_lswr_ls_drp_df[['temp','precip','lwr','swr','VegD']] #'nrth','elev','x','y', 0.065 random_state=50
 print (len(in_ut_0p_rf_nrc0[in_ut_0p_rf_nrc0['VegD']>0.65]))
@@ -1608,7 +1803,53 @@ savepath_slwr_ut0p_nrc = 'C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-fo
 fscaPlottingByColorMap4swrLwr(in_out_rf_nrc_lswr_fcsa_drp_df,out_ut_0p_rf_nrc,'plasma_r',"fSCA0p_fSCAut for NRC",savepath_slwr_ut0p_nrc)
 #cm.Purples
 
-#%% random forest model plots
+#%% random forest model prediction plots 20-80% fsca
+
+properties_rfm_pred_sc26m_2080=[sens_vegSwr_sc26m_up,sens_vegSwr_sc26m_low,5,65,'rebeccapurple','plum','SCW_26March']
+properties_rfm_pred_sc17a_2080=[sens_vegSwr_sc17a_up,sens_vegSwr_sc17a_low,5,70,'rebeccapurple','plum','SCW_17Apr'] #'purple','pink',
+properties_rfm_pred_sc18m_2080=[sens_vegSwr_sc18m_up,sens_vegSwr_sc18m_low,1,60,'rebeccapurple','plum','SCW_18May'] #'blueviolet','orchid',
+properties_rfm_pred_krew_2080=[sens_vegSwr_krew_up,sens_vegSwr_krew_low,15,95,'brown','lightsalmon','KREW2010']
+properties_rfm_pred_jmz_2080=[sens_vegSwr_jmz_up,sens_vegSwr_jmz_low,5,68,'darkolivegreen','yellowgreen','JRB2010']
+properties_rfm_pred_nrc_2080= [sens_vegSwr_nrc_up,sens_vegSwr_nrc_low,5,64,'blue','paleturquoise','NR2010']
+properties_rfm_pred_2080= [properties_rfm_pred_sc26m_2080,properties_rfm_pred_sc17a_2080,properties_rfm_pred_sc18m_2080,
+                           properties_rfm_pred_krew_2080,properties_rfm_pred_jmz_2080,properties_rfm_pred_nrc_2080]
+
+vegDens_sens0 = np.arange(-0.2,1.2,0.1)
+y0line = np.zeros((14,1))
+ylabel = ['fSCAopen-fSCAunder','','fSCAopen-fSCAunder','','fSCAopen-fSCAunder','']
+xlabel = ['','','','','Vegetation density','Vegetation density']
+xlimit = [(0,0.7),(0,0.7),(0,0.7),(0.1,0.99),(0,0.7),(0,0.7)]
+fig,axes = plt.subplots(figsize=(60,40)) #,sharey='row', sharex=True, squeeze=True
+for sites in range (6):
+    vegDens_sens = np.arange(0.01*properties_rfm_pred_2080[sites][2],properties_rfm_pred_2080[sites][3]*0.01,0.01)
+
+    plt.subplot(321+sites)
+    plt.plot(vegDens_sens,properties_rfm_pred_2080[sites][0][2], c = properties_rfm_pred_2080[sites][4], 
+             mec = 'black', mfc = properties_rfm_pred_2080[sites][4],marker = '^', linewidth=7, 
+             markersize=20)
+    plt.plot(vegDens_sens,properties_rfm_pred_2080[sites][1][2],c = properties_rfm_pred_2080[sites][5], 
+             mec = 'black', mfc = properties_rfm_pred_2080[sites][5],marker = 'v', linewidth=7, 
+             markersize=20)
+    
+    legend = ['Predicted delta fSCA for 80% of SWR', #.format(properties_rfm_pred_2080[sites][-1]
+              'Predicted  delta fSCA for 20% of SWR'] #.format(properties_rfm_pred_2080[sites][-1])
+    plt.legend(legend,fontsize = 35)#, loc = 'upper center'
+
+    plt.xticks(fontsize=45) #rotation='vertical', 
+    plt.yticks(fontsize=40)
+    axes.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    plt.title('{}'.format(properties_rfm_pred_2080[sites][-1]), fontsize=55)
+    plt.ylabel('{}'.format(ylabel[sites]), fontsize=50)
+    plt.xlabel('{}'.format(xlabel[sites]), fontsize=50)
+    plt.xlim(xlimit[sites])
+    
+    if (sites == 4 or sites == 3 or sites == 5):
+        plt.plot(vegDens_sens0,y0line,color='k')
+    
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/documents/myPapers/paper1_SDT/fsca_oput-predic2080.png')
+
+#%% random forest model plots for whole domain fsca 
+
 properties_rfm_sc26m=[mean_abs_error_oput2_sc26m, feature_importances_0p_ut_mean2_sc26m, 'orchid', 'SCWC_26Mar']
 properties_rfm_bins_sc26m=[feature_importances_error_0putBin_sc26m,importance_bins_sc26m,color_sc26m,'SCWC_26March']
 properties_rfm_pred_sc26m=[sens_vegSwr_sc26m_up,sens_vegSwr_sc26m_low,5,71,'rebeccapurple','plum','SCWC_26March']
@@ -1773,9 +2014,9 @@ meanTemp = [meanTemp_elevClass_sc,meanTemp_elevClass_sc,meanTemp_elevClass_sc,me
 #label0 = ['SCWC 26MAR2016-UnderTree','SCWC 26MAR2016-0pen','SCWC 17APR2016-UnderTree','SCWC 17APR2016-0pen',
 #          'SCWC 18MAY2016-UnderTree','SCWC 18MAY2016-0pen','KREW 2010-UnderTree','KREW 2010-0pen',
 #          'JRBN 2010-UnderTree','JRBN 2010 - 0pen','NRC 2010-UnderTree','NRC 2010 - 0pen']
-label0 = ['Under Tree','Open Area','Under Tree','Open Area','Under Tree','Open Area',
-         'Under Tree','Open Area','Under Tree','Open Area','Under Tree','Open Area']
-titlefig = ['SCWC 26Mar2016','SCWC 17Apr2016','SCWC 18May2016','KREW 2010','JRBN 2010','NRC 2010']
+label0 = ['Under Canopy','In Open','Under Canopy','In Open','Under Canopy','In Open',
+         'Under Canopy','In Open','Under Canopy','In Open','Under Canopy','In Open']
+titlefig = ['SCW 26Mar2016','SCW 17Apr2016','SCW 18May2016','KREW 2010','JRB 2010','NR 2010']
 
 color0 = ['plum','purple','plum','purple','plum','purple',
           'gold','darkred','lightgreen','darkgreen','deepskyblue','navy']#'olive',
@@ -1784,7 +2025,7 @@ markerS = [significant_sc26m1,significant_sc26m1,significant_sc26m1,significant_
 
 marker0 = ['^','o','^','o','^','o','^','o','^','o','^','o']
 
-location0 = ['lower left','lower left','uper right','lower left','lower left','lower left']
+location0 = ['lower left','lower left','lower left','lower left','lower left','lower left']
 #xlimit_fsca_DJF = [(0,1.5),(0,1.5),(0,1.5),(0.4,2.8),(-7.7,-3),(-7.5,-2)]
 xlimit_fsca_DJF = [(-2.4,-1.2),(-2.4,-1.2),(-2.4,-1.2),(0.4,2.8),(-8.3,-3.5),(-10.5,-5)]
 
@@ -1803,7 +2044,7 @@ for i in range (6):
     plt.plot(meanTemp[2*i],fSCA_0u[2*i], color = color0[2*i], linewidth=4, marker = marker0[2*i], markersize=40) #, 
     plt.plot(meanTemp[2*i+1],fSCA_0u[2*i+1], color = color0[2*i+1], linewidth=4, marker = marker0[2*i+1], markersize=40) #
 
-    plt.ylabel('fSCA%', fontsize=60)
+    plt.ylabel('fSCA(%)', fontsize=60)
     plt.yticks(fontsize=50)
     plt.xlabel('average temp of DJF (C)', fontsize=50)
     plt.xticks(fontsize=40)
@@ -1815,7 +2056,7 @@ for i in range (6):
     plt.title(titlefig[i], fontsize=45)
 #plt.title('fSCA under canopy and in open sites in different temp lapse rate in 4 sites', fontsize=70, y=2.25, x=-0.8) # loc = 'right', 
 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_jfd_fsca_all_retile5.png')
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_jfd_fsca_all_retile7.png')
 
 #%% ploting DJF temp vs terrain features delta fsca
 fSCA_d0u = [fSCA_0u_exp_sc26m, fSCA_0u_shl_sc26m,fSCA_0u_exp_sc17a, fSCA_0u_shl_sc17a,  
@@ -1834,7 +2075,7 @@ meanTemp2 = [meanTemp_elevClass_sc,meanTemp_elevClass_sc,meanTemp_elevClass_sc,m
 
 label = ['South facing','North facing','South facing','North facing','South facing','North facing',
          'South facing','North facing','South facing','North facing','South facing','North facing']
-titlefig = ['SCWC 26Mar2016','SCWC 17Apr2016','SCWC 18May2016','KREW 2010','JRBN 2010','NRC 2010']
+titlefig = ['SCW 26Mar2016','SCW 17Apr2016','SCW 18May2016','KREW 2010','JRB 2010','NR 2010']
 color1 = ['plum','purple','plum','purple','plum','purple','gold','darkred','lightgreen','darkgreen','deepskyblue','navy']#'olive',
 #marker = [significant_sc26m1,significant_sc17a1,significant_sc18m1,significant_krew1,significant_jmz1,significant_nrc1]
 
@@ -1869,7 +2110,7 @@ for i in range (6):
     plt.plot(meanTemp2[2*i],fSCA_d0u[2*i], color = color1[2*i], linewidth=4, marker = marker1[2*i], markersize=50) #, 
     plt.plot(meanTemp2[2*i+1],fSCA_d0u[2*i+1], color = color1[2*i+1], linewidth=4, marker = marker1[2*i+1], markersize=35) #
 
-    plt.ylabel('(fSCAopen - fSCAunderTree) / fSCAopen', fontsize=45)
+    plt.ylabel('(fSCAopen - fSCAunderCanopy) / fSCAopen', fontsize=45)
     plt.yticks(fontsize=30)
     plt.xlabel('average temp of DJF (C)', fontsize=45)
     plt.xticks(fontsize=30)
@@ -1887,7 +2128,7 @@ for i in range (6):
 
 #plt.title('(fSCA_open - fSCA_underTree)/fSCA_open based on northness in 4 sites', fontsize=60, y=2.24, x=-0.9) # loc = 'right', 
 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_deltaFsca_all8_retile5.png')
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_deltaFsca_all8_retile6.png')
 
 #%% ploting DJF temp vs terrain features delta fsca
 #fSCA_uT_rad_vegDens_krew = [fSCA_unTr_exp_l, fSCA_unTr_shl_l, fSCA_unTr_exp_h, fSCA_unTr_shl_h]
@@ -1974,7 +2215,7 @@ for i in range (6):
     plt.plot(meanTemp2[4*i+2],fSCA_0uV[4*i+2], color = color[4*i+2], linewidth=4, marker = marker[4*i+2], markersize=35) #
     plt.plot(meanTemp2[4*i+3],fSCA_0uV[4*i+3], color = color[4*i+3], linewidth=4, marker = marker[4*i+3], markersize=30) #
 
-    plt.ylabel('fSCA%', fontsize=60)
+    plt.ylabel('fSCA (%)', fontsize=60)
     plt.yticks(fontsize=50)
     plt.xlabel('average temp of DJF (C)', fontsize=50)
     plt.xticks(fontsize=40)
@@ -1986,7 +2227,7 @@ for i in range (6):
     plt.title(titlefig[i], fontsize=50) #, y=2.24, x=-0.9 loc = 'right', 
 #plt.title('fSCA classification based on northness and  vegetation density (VD)', fontsize=60, y=2.24, x=-0.65) # loc = 'right', 
 
-plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_vegDens_all8_retile5.png')
+plt.savefig('C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/lapseRate_fusion_lidar/tempLsr_nrth_vegDens_all8_retile6.png')
 
 #%%
 #fsca_0pUt_shl2550 = fsca0p_fscaUt_fscaLimit (fSCA_0p_shl_sc26m,fSCA_0p_shl_sc17a,fSCA_0p_shl_sc18m,fSCA_0p_shl_Krew,fSCA_0p_shl_Jmz,fSCA_0p_shl_nrc,
