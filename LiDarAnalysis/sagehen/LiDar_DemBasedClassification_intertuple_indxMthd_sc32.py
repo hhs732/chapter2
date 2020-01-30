@@ -258,7 +258,7 @@ def classificationNorthnessElev(index_ls,nrth1,nrth2,elev1,elev2,ncol,minX,minY)
 
 #%% dem snow off (veg) for vcm
 #if test_flag is False:    
-filenameS0fvcm = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/LiDarAnalysis/sagehen/dem2014snow0ff.tif"
+filenameS0fvcm = "C:/1UNRuniversityFolder/Dissertation/Chapter 2-snow-forest/gis/dem2014snow0ff.tif"
 elevationVegvcm = readPlotDEM(filenameS0fvcm,elevationMissNoS0f)#,pathNameS0fvcm
 
 dem_groundPointsVegVcm, dem_groundPointsVegVcm_df = creatingCentroidGroundpointsFromDem(filenameS0fvcm,elevationMissNoS0f)#,pathNameS)

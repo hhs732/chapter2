@@ -966,7 +966,11 @@ tempDJF_sc18m = -0.0016 * elev_sc18m + 1.802
 tempDec_sc18m = -0.002 * elev_sc18m + 5.2481
 
 snow_temp_vegdens_index_sL30_sc18m_df = pd.DataFrame(snow_temp_vegdens_index_sL30_sc18m, columns=['x','y','z','nrth','slp','snwIndx','grid','temp','vegDens','indx1','indx2'])
-#snow_temp_vegdens_index_sL30_sc18m_df['temp'] = tempDec_sc18m
+radTreeDens = snow_temp_vegdens_index_sL30_sc18m_df['vegDens'][(snow_temp_vegdens_index_sL30_sc18m_df['x']<=737486) & (snow_temp_vegdens_index_sL30_sc18m_df['x']>=737482) & (snow_temp_vegdens_index_sL30_sc18m_df['y']>=4368198) & (snow_temp_vegdens_index_sL30_sc18m_df['y']<=4368203)] 
+subCanDens = snow_temp_vegdens_index_sL30_sc18m_df['vegDens'][(snow_temp_vegdens_index_sL30_sc18m_df['x']>=737496) & (snow_temp_vegdens_index_sL30_sc18m_df['x']>=737512) & (snow_temp_vegdens_index_sL30_sc18m_df['y']>=4368234) & (snow_temp_vegdens_index_sL30_sc18m_df['y']<=4368248) & (snow_temp_vegdens_index_sL30_sc18m_df['vegDens']>0)] 
+hill1Dens = snow_temp_vegdens_index_sL30_sc18m_df['vegDens'][(snow_temp_vegdens_index_sL30_sc18m_df['x']>=737579) & (snow_temp_vegdens_index_sL30_sc18m_df['x']>=737597) & (snow_temp_vegdens_index_sL30_sc18m_df['y']>=4368377) & (snow_temp_vegdens_index_sL30_sc18m_df['y']<=4368400) & (snow_temp_vegdens_index_sL30_sc18m_df['vegDens']>0)] 
+
+
 elev_class_inx = [101,102,103,104,105,106,107,108,109,110]
 
 elevationBand_sc18m = np.arange(min(snow_temp_vegdens_index_sL30_sc18m_df['z']),max(snow_temp_vegdens_index_sL30_sc18m_df['z']),67)
