@@ -163,11 +163,12 @@ latLon_lwr_krew = creatingMeanRadiationfrom100b100tifFiles(path2LWR_tiff_100)
 lwr_ls_krew1_limlLatLong = pd.DataFrame(latLon_lwr_krew[(latLon_lwr_krew[:,1]>=4100400)&(latLon_lwr_krew[:,1]<=4105999)&
                                        (latLon_lwr_krew[:,0]>=303500)&(latLon_lwr_krew[:,0]<=306000)], columns = ['x','y','lwr'])
 lwr_ls_krew1_limlLatLong2 = lwr_ls_krew1_limlLatLong.dropna()
-
+#np.average(lwr_ls_krew1_limlLatLong2['lwr'][:])
 latLon_swr_krew = creatingMeanRadiationfrom100b100tifFiles(path2SWR_tiff_100)
 swr_ls_krew1_limlLatLong = pd.DataFrame(latLon_swr_krew[(latLon_swr_krew[:,1]>=4100400)&(latLon_swr_krew[:,1]<=4105999)&
                                        (latLon_swr_krew[:,0]>=303500)&(latLon_swr_krew[:,0]<=306000)], columns = ['x','y','swr'])
 swr_ls_krew1_limlLatLong2 = swr_ls_krew1_limlLatLong.dropna()
+np.average(swr_ls_krew1_limlLatLong2['swr'][:])
 
 #classifier_krew = snow_temp_vegdens_sL30_elevCls_precip_cls_krew [:,13]
 #in_out_rf_krew0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_krew,snow_temp_vegdens_sL30_elevCls_precip_cls_krew)
@@ -482,11 +483,13 @@ latLon_lwr_scw = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_scw
 lwr_ls_scw_limlLatLong = pd.DataFrame(latLon_lwr_scw[(latLon_lwr_scw[:,1]>=4365000)&(latLon_lwr_scw[:,1]<=4372000)&
                                        (latLon_lwr_scw[:,0]>=731000)&(latLon_lwr_scw[:,0]<=738000)], columns = ['x','y','lwr'])
 lwr_ls_sc26m_limlLatLong2 = lwr_ls_scw_limlLatLong.dropna()
+np.average(lwr_ls_sc26m_limlLatLong2['lwr'][:])
 
 latLon_swr_scw = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_scw[0:117])
 swr_ls_scw_limlLatLong = pd.DataFrame(latLon_swr_scw[(latLon_swr_scw[:,1]>=4365000)&(latLon_swr_scw[:,1]<=4372000)&
                                      (latLon_swr_scw[:,0]>=731000)&(latLon_swr_scw[:,0]<=738000)], columns = ['x','y','swr'])
 swr_ls_sc26m_limlLatLong2 = swr_ls_scw_limlLatLong.dropna()
+np.average(swr_ls_sc26m_limlLatLong2['swr'][:])
 
 #define random forest AI features ###################################################################
 # defining index for adding lwr and swr
@@ -769,6 +772,7 @@ latLon_swr_sc17a = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_s
 swr_ls_sc17a_limlLatLong = pd.DataFrame(latLon_swr_sc17a[(latLon_swr_sc17a[:,1]>=4365000)&(latLon_swr_sc17a[:,1]<=4372000)&
                                      (latLon_swr_sc17a[:,0]>=731000)&(latLon_swr_sc17a[:,0]<=738000)], columns = ['x','y','swr'])
 swr_ls_sc17a_limlLatLong2 = swr_ls_sc17a_limlLatLong.dropna()
+np.average(swr_ls_sc17a_limlLatLong2['swr'][:])
 
 #define random forest AI features ###################################################################
 # defining index for adding lwr and swr
@@ -1052,11 +1056,13 @@ latLon_lwr_sc18m = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_s
 lwr_ls_sc18m_limlLatLong = pd.DataFrame(latLon_lwr_sc18m[(latLon_lwr_sc18m[:,1]>=4365000)&(latLon_lwr_sc18m[:,1]<=4372000)&
                                        (latLon_lwr_sc18m[:,0]>=731000)&(latLon_lwr_sc18m[:,0]<=738000)], columns = ['x','y','lwr'])
 lwr_ls_sc18m_limlLatLong2 = lwr_ls_sc18m_limlLatLong.dropna()
+np.average(lwr_ls_sc18m_limlLatLong2['lwr'][:])
 
 latLon_swr_sc18m = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_sc18m)
 swr_ls_sc18m_limlLatLong = pd.DataFrame(latLon_swr_sc18m[(latLon_swr_sc18m[:,1]>=4365000)&(latLon_swr_sc18m[:,1]<=4372000)&
                                      (latLon_swr_sc18m[:,0]>=731000)&(latLon_swr_sc18m[:,0]<=738000)], columns = ['x','y','swr'])
 swr_ls_sc18m_limlLatLong2 = swr_ls_sc18m_limlLatLong.dropna()
+np.average(swr_ls_sc18m_limlLatLong2['swr'][:])
 
 #define random forest AI features ###################################################################
 # defining index for adding lwr and swr
@@ -1329,11 +1335,12 @@ latLon_lwr_jmz = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_jmz
 lwr_ls_jmz_limlLatLong = pd.DataFrame(latLon_lwr_jmz[(latLon_lwr_jmz[:,1]>=3970000)&(latLon_lwr_jmz[:,1]<=3976000)&
                                        (latLon_lwr_jmz[:,0]>=355000)&(latLon_lwr_jmz[:,0]<=361000)], columns = ['x','y','lwr'])
 lwr_ls_jmz_limlLatLong2 = lwr_ls_jmz_limlLatLong.dropna()
-
+np.average(lwr_ls_jmz_limlLatLong2['lwr'][:])
 latLon_swr_jmz = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_jmz)
 swr_ls_jmz_limlLatLong = pd.DataFrame(latLon_swr_jmz[(latLon_swr_jmz[:,1]>=3970000)&(latLon_swr_jmz[:,1]<=3976000)&
                                      (latLon_swr_jmz[:,0]>=355000)&(latLon_swr_jmz[:,0]<=361000)], columns = ['x','y','swr'])
 swr_ls_jmz_limlLatLong2 = swr_ls_jmz_limlLatLong.dropna()
+np.average(swr_ls_jmz_limlLatLong2['swr'][:])
 
 #define random forest AI features ###################################################################
 # defining index for adding lwr and swr
@@ -1626,11 +1633,13 @@ latLon_lwr_nrc = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_lwr_nrc
 lwr_ls_nrc_limlLatLong = pd.DataFrame(latLon_lwr_nrc[(latLon_lwr_nrc[:,1]>=4425500)&(latLon_lwr_nrc[:,1]<=4430700)&
                                        (latLon_lwr_nrc[:,0]>=450000)&(latLon_lwr_nrc[:,0]<=455100)], columns = ['x','y','lwr'])
 lwr_ls_nrc_limlLatLong2 = lwr_ls_nrc_limlLatLong.dropna()
+np.average(lwr_ls_nrc_limlLatLong2['lwr'][:])
 
 latLon_swr_nrc = creatingMeanRadiationfrom100b100tifFiles(path2images0ut_swr_nrc)
 swr_ls_nrc_limlLatLong = pd.DataFrame(latLon_swr_nrc[(latLon_swr_nrc[:,1]>=4425500)&(latLon_swr_nrc[:,1]<=4430700)&
                                      (latLon_swr_nrc[:,0]>=450000)&(latLon_swr_nrc[:,0]<=455100)], columns = ['x','y','swr'])
 swr_ls_nrc_limlLatLong2 = swr_ls_nrc_limlLatLong.dropna()
+np.average(swr_ls_nrc_limlLatLong2['swr'][:])
 
 #classifier_nrc = snow_temp_vegdens_sL30_elevCls_precip_cls_nrc [:,13]
 #in_out_rf_nrc0 = define_rf_features_fscaLatLonElevNorthTempPrecip_100B100 (classifier_nrc,snow_temp_vegdens_sL30_elevCls_precip_cls_nrc)
